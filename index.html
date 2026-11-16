@@ -1442,7 +1442,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark SPN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.2.1' : 'V7.18.2';
+const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.2.2' : 'V7.18.2';
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark SPN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -4171,7 +4171,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.
 function prdStnCard() {
   const U = PRD.stn && Array.isArray(PRD.stn.users) ? PRD.stn.users : null, pd = prdPaintDays();
   return '<div class="card prd-stn"><div class="card-h"><h2>' + icon('settings') + ' ตั้งค่าไลน์ผลิต</h2><span class="small muted">งานสีเข้าแผนกสีก่อนติดตั้ง ' + pd + ' วัน · ส่วนงานของบัญชีฝ่ายผลิต</span></div><div class="card-b">' +
-    '<div class="prd-set"><label for="prd-pd"><b>งานสี: ไม้ต้องเข้าแผนกสีก่อนวันติดตั้ง</b>' + tipI(spnTip('set_pd'), 'วันเข้าแผนกสี') + '</label><div class="addon" style="max-width:220px"><input class="input" id="prd-pd" inputmode="numeric" value="' + pd + '" aria-label="จำนวนวันก่อนวันติดตั้ง"><span>วัน</span></div>' +
+    '<div class="prd-set"><label for="prd-pd"><b>งานสี: ไม้ต้องเข้าแผนกสีก่อนวันติดตั้ง</b>' + tipI(spnTip('set_pd'), 'วันเข้าแผนกสี') + '</label><div class="addon" style="flex:0 0 150px;width:150px"><input class="input" id="prd-pd" inputmode="numeric" value="' + pd + '" style="flex:1;min-width:0;width:auto;text-align:right;font-weight:700" aria-label="จำนวนวันก่อนวันติดตั้ง"><span>วัน</span></div>' +
       '<button class="btn primary" data-act="prdPdSet">' + icon('check', 'sm') + ' บันทึก</button>' +
       '<div class="small muted">มาตรฐาน 21 วัน (0–120) · วันติดตั้ง = วันเริ่มที่จองแล้วของ Order ใน CN ที่เลข Order ตรงกับ Production (ยังไม่จอง = วันลูกค้าพร้อมให้ติดตั้ง) · ใช้เรียงคิวงานตัด / งานสี และเตือนเลยกำหนด</div></div>' +
     '<h3 class="prd-h3">ส่วนงานของบัญชีฝ่ายผลิต' + tipI(spnTip('set_st'), 'ส่วนงานของบัญชี') + ' <span class="small muted">— ล็อกอินแล้วเห็นเฉพาะงานของส่วนงานนั้น · ไม่ติ๊ก = ทุกส่วน · แผนก Support = ติ๊ก “สั่งทำ”</span></h3>' +
@@ -4383,7 +4383,9 @@ function prdRmCount(x) { return (x.removedAt ? 1 : 0) + (x.cutRemovedAt ? 1 : 0)
 async function prdRmOpen() {
   await prdRmLoad(true);
   const L = PRD.rm.L, row = (oid, kind, ref, what, at, by) => '<div class="prd-rmr"><div><b>' + what + '</b><div class="xs muted">ลบโดย ' + esc(by || 'Admin') + ' ' + fmtDT(at) + '</div></div>' +
-    '<button class="btn sm" data-act="prdAdmRestore" data-kind="' + kind + '" data-oid="' + esc(oid) + '"' + (ref ? ' data-ref="' + esc(ref) + '"' : '') + '>' + icon('undo', 'sm') + ' กู้คืน</button></div>';
+    '<span class="prd-rmb" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="btn sm" data-act="prdAdmRestore" data-kind="' + kind + '" data-oid="' + esc(oid) + '"' + (ref ? ' data-ref="' + esc(ref) + '"' : '') + '>' + icon('undo', 'sm') + ' กู้คืน</button>' +
+    /* SPN V1.2.2: ลบถาวร — เฉพาะ “ทั้งงาน” (พิมพ์ ลบถาวร ยืนยัน · ตรวจซ้ำที่ Server) */
+    (kind === 'order' ? '<button class="btn sm danger" data-act="prdPurge" data-oid="' + esc(oid) + '" title="ลบงานนี้ออกจากไลน์ผลิตจริง — กู้คืนไม่ได้">' + icon('trash', 'sm') + ' ลบถาวร</button>' : '') + '</span></div>';
   const body = PRD.rm.err ? notice('danger', esc(PRD.rm.err)) : !L.length ? empty('trash', 'ไม่มีรายการที่ลบ', 'รายการที่ Admin ลบ (ซ่อน) จะอยู่ที่นี่ — กู้คืนได้ทุกเมื่อ') :
     '<div class="prd-rml">' + L.map((x) => '<div class="prd-rmg"><div class="prd-rmh"><a class="mono strong" href="#/prd/o/' + encodeURIComponent(x.oid) + '" data-act="prdRmGo" data-oid="' + esc(x.oid) + '">' + esc(x.oid) + '</a>' + (x.title && x.title !== x.oid ? ' <span class="small muted">' + esc(x.title) + '</span>' : '') + '</div>' +
       (x.removedAt ? row(x.oid, 'order', '', 'ทั้งงาน', x.removedAt, x.removedBy) : '') + (x.cutRemovedAt ? row(x.oid, 'cut', '', 'ใบสั่งตัด (+ งานสี)', x.cutRemovedAt, x.cutRemovedBy) : '') +
@@ -4391,9 +4393,37 @@ async function prdRmOpen() {
       x.items.map((i) => row(x.oid, 'mo', i.key, 'สั่งทำ <span class="mono">' + esc(i.code) + '</span> ' + esc(i.name || ''), i.removedAt, i.removedBy)).join('') +
       (x.drops || []).map((i) => '<div class="prd-rmr"><div><b>Support ลบ: <span class="mono">' + esc(i.code) + '</span> ' + esc(i.name || '') + '</b><div class="xs muted">ลบโดย ' + esc(i.dropBy || '') + ' ' + fmtDT(i.dropAt) + '</div></div>' +
         '<button class="btn sm" data-act="prdDropUndo" data-oid="' + esc(x.oid) + '" data-key="' + esc(i.key) + '">' + icon('undo', 'sm') + ' กู้คืน</button></div>').join('') + '</div>').join('') + '</div>';
-  modal({ title: icon('trash') + ' รายการที่ลบ (ซ่อนจากทุกคน)', sub: 'ลบไว้ในแอปเท่านั้น — กู้คืนแล้วกลับมาพร้อมข้อมูลล่าสุดที่แผนส่ง', body: body, foot: '<button class="btn" data-act="closeOv">ปิด</button>' });
+  modal({ title: icon('trash') + ' รายการที่ลบ (ซ่อนจากทุกคน)', sub: 'ลบไว้ในแอปเท่านั้น — กู้คืนแล้วกลับมาพร้อมข้อมูลล่าสุดที่แผนส่ง · “ลบถาวร” (ทั้งงาน) = ลบจริง กู้คืนไม่ได้', body: body, foot: '<button class="btn" data-act="closeOv">ปิด</button>' });
 }
 on('prdRm', () => prdRmOpen());
+/* ---------- SPN V1.2.2 ลบถาวร (ผู้ใช้ 16/11 08:53–08:56 “ให้ลบถาวร แล้วให้พิม แล้วกด ลบ · เพิ่มปุ่มลบถาวรตรงนี้เลย”) ----------
+   เฉพาะ Admin · เฉพาะงานที่ลบ (ซ่อน) ทั้งงานไว้แล้ว · พิมพ์ “ลบถาวร” → ปุ่มกดได้ · cn_prd_purge ตรวจซ้ำที่ Server
+   Production ส่งข้อมูลเดิมซ้ำ = ไม่กลับมา · แผนกดส่งใหม่ (เอกสารเปลี่ยน) = ขึ้นเป็นงานใหม่ */
+const PRD_PURGE_TXT = 'ลบถาวร';
+on('prdPurge', (el) => {
+  const oid = el.dataset.oid, x = PRD.rm && PRD.rm.L.find((y) => y.oid === oid);
+  if (!x || S.user.role !== 'admin' || !x.removedAt) return;
+  const n = [x.title && x.title !== oid ? esc(x.title) : ''].filter(Boolean);
+  modal({ title: icon('trash') + ' ลบ ' + esc(oid) + ' ถาวร?', sub: n.join(''),
+    body: notice('danger', '<b>ลบแล้วกู้คืนไม่ได้</b> — งานนี้ทั้งงานจะหายจากไลน์ผลิต: ใบปิดผิว · ใบสั่งตัด · งานสี · งานสั่งทำ · สถานะที่ติ๊กไว้ · การติดตาม 🔔') +
+      '<ul class="prd-rmul" style="margin:10px 0 12px"><li>ไม่ลบใน Production (เอกสารของแผนยังอยู่) · ไม่แจ้งเตือนใคร</li>' +
+      '<li>Production ส่งข้อมูลเดิมซ้ำ = ไม่กลับมา · ถ้าแผนกดส่ง Order นี้ใหม่ (เอกสารเปลี่ยน) จะขึ้นเป็นงานใหม่</li></ul>' +
+      '<label class="small" for="prdPgTxt">พิมพ์ <b>' + PRD_PURGE_TXT + '</b> เพื่อยืนยัน</label><input class="input" id="prdPgTxt" autocomplete="off" data-inp="prdPurgeChk" style="margin-top:6px">',
+    foot: '<button class="btn" data-act="prdRm">' + icon('chevLeft', 'sm') + ' กลับไปรายการที่ลบ</button><button class="btn danger" id="prdPgBtn" data-act="prdPurgeOk" data-oid="' + esc(oid) + '" disabled>' + icon('trash', 'sm') + ' ลบถาวร</button>' });
+  setTimeout(() => { const i = $('#prdPgTxt'); if (i) i.focus(); }, 50);
+});
+on('prdPurgeChk', () => { const b = $('#prdPgBtn'), t = $('#prdPgTxt'); if (b && t) b.disabled = t.value.trim() !== PRD_PURGE_TXT; });
+on('prdPurgeOk', async (el) => {
+  const oid = el.dataset.oid, t = $('#prdPgTxt'), v = t ? t.value.trim() : '';
+  if (v !== PRD_PURGE_TXT) { toast('พิมพ์คำว่า ' + PRD_PURGE_TXT + ' ให้ตรงก่อน', 'err'); if (t) t.focus(); return; }
+  el.disabled = true;
+  try { await rpc('cn_prd_purge', { p_oid: oid, p_confirm: v }); }
+  catch (e) { el.disabled = false; toast(e.message, 'err'); return; }
+  delete PRD.det[oid]; delete PRD.sig[oid]; PRD.rm = null;
+  await refresh(); await prdLqLoad(true);
+  await prdRmOpen();
+  toast('ลบ ' + oid + ' ถาวรแล้ว'); rerender();
+});
 on('prdRmGo', (el) => { closeOverlay(); go('#/prd/o/' + encodeURIComponent(el.dataset.oid)); });
 on('prdTab', (el) => { PRD.tab[el.dataset.oid] = el.dataset.t; rerender(); });
 on('prdReload', async (el) => { const oid = el.dataset.oid; PRD.err[oid] = ''; await refresh(); await prdLoad(oid, true); rerender(); });
