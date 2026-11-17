@@ -1456,7 +1456,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark SPN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.7.1' : 'V7.18.8';
+const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.7.2' : 'V7.18.9';
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark SPN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -3689,7 +3689,7 @@ function PAINTDOC(d) {
     /* V281 (ผู้ใช้ 16/11 15:38 “ส่งเข้าไลน์ไม่ต้องมีแล้ว มันมีส่งจากไลน์แล้ว”): เอาช่อง “ส่งเข้าไลน์” ออก */
     '<tr class="due"><th>กำหนดจบ (งานสี)</th><td><input class="ed due" data-k="due" value="' + E(dueV) + '" placeholder="พิมพ์วันที่ เช่น 23/11/2569" aria-label="กำหนดจบ (งานสี)"' + (d.dueNote ? ' title="' + E(d.dueNote) + '"' : '') + '></td></tr>' +
     (instV ? edr('วันติดตั้ง', 'inst', instV, false, '') : '') +
-    edr('พิมพ์เมื่อ', 'at', dt(Date.now()), false, '') + '</table></div>';
+    '</table></div>';   /* V288 (ผู้ใช้ 17/11 10:25): “พิมพ์เมื่อ” → ตัวเล็กมุมขวาบนของใบ (ไม่ซ้ำในหัวใบ) */
   var kpi = '<div class="kp"><div><span>สี</span><b>' + order.length + '</b></div><div><span>ชิ้นที่ทำสี</span><b>' + fq(tot.pcs) + '</b></div>' +
     '<div><span>ตร.ม. รวม</span><b>' + f2(tot.m2) + '</b></div><div><span>แถวชิ้น</span><b>' + tot.rows + '</b></div></div>';
   var sum = '<h2>สรุปตามสี</h2><table class="t"><thead><tr><th style="width:150px">รหัสสี</th><th>ชื่อสี</th><th class="r" style="width:70px">ชิ้น</th><th class="r" style="width:80px">2 หน้า</th><th class="r" style="width:80px">1 หน้า</th><th class="r" style="width:90px">ตร.ม.</th></tr></thead><tbody>' +
@@ -3719,7 +3719,7 @@ function PAINTDOC(d) {
     '.sec{margin-top:12px}.band{display:flex;align-items:center;gap:6px;background:#0f766e;color:#fff;padding:6px 10px;border-radius:6px 6px 0 0;font-size:13px;break-after:avoid;page-break-after:avoid}.band .mono{font-size:13px;font-weight:800}.band .sp{flex:1}' +
     '.ck{display:inline-block;width:12px;height:12px;border:1.5px solid #334155;border-radius:2px}' +
     '.sign{display:flex;gap:16px;margin-top:22px;break-inside:avoid}.sign div{flex:1;border-top:1px solid #334155;padding-top:4px;text-align:center;font-size:11.5px;color:#334155;margin-top:34px}' +
-    '.nt{font-size:10.5px;color:#64748b;margin-top:8px;line-height:1.5}.empty{padding:30px;text-align:center;color:#64748b;border:1px dashed #cbd5e1;border-radius:8px}' +
+    '.pst{text-align:right;font-size:9px;color:#94a3b8;margin:-2px 0 2px}.nt{font-size:10.5px;color:#64748b;margin-top:8px;line-height:1.5}.empty{padding:30px;text-align:center;color:#64748b;border:1px dashed #cbd5e1;border-radius:8px}' +
     '@media print{.ed{border:none;border-bottom:1px dotted #334155;border-radius:0;background:transparent;padding:0 2px}.ed::placeholder{color:transparent}.bar{display:none}body{padding:0}.band,.kp div,.t th,.sw{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
   var body = !order.length ? '<div class="empty">งานนี้ไม่มีชิ้นที่ทำสี (ไม่มีหน้าบน / ล่างเป็นรหัสสี N00S)</div>'
     : kpi + sum + secs + (n(d.more) ? '<div class="nt">+ อีก ' + fq(n(d.more)) + ' แถวชิ้นที่ทำสีไม่ได้อยู่ในเอกสารนี้ (เกินจำนวนที่ส่ง) — ดูใบสั่งตัดใน Production</div>' : '') +
@@ -3727,8 +3727,10 @@ function PAINTDOC(d) {
       '<div class="sign"><div>ผู้ส่งงาน · ไลน์ผลิต (Pool) <b data-sync="from">' + E(fromV || '__________') + '</b> · วันที่ ____/____/______</div><div>ผู้รับงาน · ไลน์ผลิต (Pool) <b data-sync="to">' + E(toV || '__________') + '</b> · วันที่ ____/____/______</div><div>ผู้ตรวจ (QC) · วันที่ ____/____/______</div></div>';
   /* แท็กหัว / ท้ายเขียนแยก (<\/…) — ไฟล์นี้ฝังอยู่ใน <script> ของหน้าอื่น ห้ามมีข้อความปิดแท็กหน้าเว็บตรง ๆ */
   return '<!DOCTYPE html><ht' + 'ml lang="th"><he' + 'ad><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ใบส่งทำสี ' + E(d.job || '') + '<\/title><style>' + css + '<\/style><\/he' + 'ad><bo' + 'dy>' +
-    '<div class="bar"><button type="button" onclick="window.print()">🖨 พิมพ์ใบส่งทำสี</button><span style="font-size:12px;color:#475569">A4 แนวตั้ง · ' + order.length + ' สี · ' + fq(tot.pcs) + ' ชิ้น · ' + f2(tot.m2) + ' ตร.ม. · แก้ทุกช่องที่หัวใบได้ก่อนพิมพ์ (ไลน์ผลิต (Pool) ส่งจาก / ส่งไป · กำหนดจบ)</span></div>' +
-    head + body + '<scr' + 'ipt>function syn(e){ var k = e.getAttribute("data-k"), v = String(e.value || "").trim(), L = document.querySelectorAll("[data-sync=" + k + "]"); for(var i = 0; i < L.length; i++) L[i].textContent = v || "__________"; }<\/scr' + 'ipt>' + '<\/bo' + 'dy><\/ht' + 'ml>';   /* V280: ลายเซ็นผู้ส่ง / ผู้รับเปลี่ยนตามไลน์ผลิตที่พิมพ์ */
+    '<div class="bar"><button type="button" onclick="window.print()">🖨 พิมพ์ใบส่งทำสี</button>' +
+    '<button type="button" onclick="var on = document.designMode !== \'on\'; document.designMode = on ? \'on\' : \'off\'; this.textContent = on ? \'✓ กำลังแก้ข้อความในใบ (กดอีกครั้งเพื่อหยุด)\' : \'✎ แก้ข้อความในตาราง\';" title="V286: คลิกข้อความในตาราง / ใบแล้วพิมพ์แก้ได้ก่อนพิมพ์ (ใช้กับการพิมพ์ครั้งนี้)">✎ แก้ข้อความในตาราง</button>' +
+    '<span style="font-size:12px;color:#475569">A4 แนวตั้ง · ' + order.length + ' สี · ' + fq(tot.pcs) + ' ชิ้น · ' + f2(tot.m2) + ' ตร.ม. · แก้ทุกช่องที่หัวใบได้ก่อนพิมพ์ (ไลน์ผลิต (Pool) ส่งจาก / ส่งไป · กำหนดจบ)</span></div>' +
+    '<div class="pst">พิมพ์เมื่อ ' + E(dt(Date.now())) + '</div>' + head + body + '<scr' + 'ipt>function syn(e){ var k = e.getAttribute("data-k"), v = String(e.value || "").trim(), L = document.querySelectorAll("[data-sync=" + k + "]"); for(var i = 0; i < L.length; i++) L[i].textContent = v || "__________"; }<\/scr' + 'ipt>' + '<\/bo' + 'dy><\/ht' + 'ml>';   /* V280: ลายเซ็นผู้ส่ง / ผู้รับเปลี่ยนตามไลน์ผลิตที่พิมพ์ */
 }
 /* เปิดใบส่งทำสีในแท็บใหม่ (กดจากปุ่ม — ไม่โดนบล็อกป๊อปอัป) · คืน false เมื่อเปิดไม่ได้ */
 function PAINTDOC_open(d) {
@@ -4041,7 +4043,7 @@ route(/^\/prd\/orders$/, 'prd', () => {
             (u.warn ? '<span class="sr-w">' + esc(u.warn) + '</span>' : '') +
             '<span class="sr-p"' + tipA(spnTip('prog')) + '>' + prdBar(u.cnt) + '<b>' + prdPct(u.cnt, u.st) + '%</b></span><span class="sr-c">' + prdCntTxt(u.cnt) + '</span></span>' +
           '<span class="sr-go" aria-hidden="true">' + icon('chevRight', 'sm') + '</span></a>'; }).join('')
-        : empty(f === 'done' ? 'check' : prdStg(lt).ico, f === 'done' ? 'ยังไม่มีงานที่เสร็จ' : 'ไม่มีงานค้าง', f === 'done' ? '' : 'งานที่แผนกด “📤 ส่ง…เข้าไลน์ผลิต” ใน Production จะขึ้นที่นี่ เรียงตามวันกำหนด')) +
+        : empty(f === 'done' ? 'check' : prdStg(lt).ico, f === 'done' ? 'ยังไม่มีงานที่เสร็จ' : 'ไม่มีงานค้าง', f === 'done' ? '' : 'งานที่แผนกด “📤 ส่งเอกสารเข้า App ไลน์ผลิต” (หรือ “📤 ส่งเฉพาะ… เข้า App ไลน์ผลิต”) ใน Production จะขึ้นที่นี่ เรียงตามวันกำหนด')) +
       '</div><div id="prd-none" class="hidden">' + empty('search', 'ไม่พบงานที่ค้น', 'ลองคำค้นอื่น หรือเลือก “ทั้งหมด”') + '</div>';
   }
   const sub = (r === 'production' && my.length ? 'ส่วนงานของคุณ: ' + my.map((k) => (PRD_STG[k] || { t: k }).t).join(' · ') + ' — ' : '') + (can ? 'แตะงานเพื่อติ๊กสถานะ รับงานแล้ว · กำลังทำ · เสร็จแล้ว (แตะซ้ำ = ยกเลิก)' : 'ดูอย่างเดียว — ติ๊กสถานะได้เฉพาะส่วนงานของบัญชี');
@@ -4275,7 +4277,7 @@ function prdOverview(r, all, tb, sub) {
         '<div class="sbox">' + icon('search', 'sm') + '<input class="input" type="search" id="prd-q" data-inp="prdQ" value="' + esc(PRD.q) + '" placeholder="ค้นเลขงาน / ชื่องาน / Item Id" aria-label="ค้นหางาน"></div>' +
         '<div class="prd-flt"><div class="chips">' + chips + '</div>' + sorts + '</div>' + tick + atChips + '</div>' +
         '<div class="table-wrap"><table class="t resp prd-tbl prd-tbl-all"><thead><tr><th>งาน (Order)</th><th>ตอนนี้อยู่ที่' + tipI(spnTip('ov_at'), 'ตอนนี้อยู่ที่') + '</th><th>สถานะแต่ละส่วน: ' + show.map((k) => PRD_OVT[k]).join(' → ') + tipI(spnTip('ov_st'), 'สถานะแต่ละส่วน') + '</th><th>กำหนด</th><th>อัปเดต</th><th aria-label="ดูเอกสาร"></th></tr></thead><tbody>' +
-          (rows || '<tr><td colspan="6">' + (all.length ? empty('search', 'ไม่มีงานตามที่ติ๊ก', 'กด “ล้างตัวกรอง” หรือเลือก “ทั้งหมด”') : empty('factory', 'ยังไม่มีงานจากแผน', 'งานที่แผนกด “📤 ส่ง…เข้าไลน์ผลิต” ใน Production จะขึ้นที่นี่')) + '</td></tr>') +
+          (rows || '<tr><td colspan="6">' + (all.length ? empty('search', 'ไม่มีงานตามที่ติ๊ก', 'กด “ล้างตัวกรอง” หรือเลือก “ทั้งหมด”') : empty('factory', 'ยังไม่มีงานจากแผน', 'งานที่แผนกด “📤 ส่งเอกสารเข้า App ไลน์ผลิต” ใน Production จะขึ้นที่นี่')) + '</td></tr>') +
           '<tr id="prd-none" class="hidden"><td colspan="6">' + empty('search', 'ไม่พบงานที่ค้น', 'ลองคำค้นอื่น') + '</td></tr></tbody></table></div></div>' };
 }
 Acts.prdOvK = (el) => { const k = el.dataset.k, sh = prdOvShow().filter((x) => x !== k); if (el.checked) sh.push(k);
@@ -4634,7 +4636,7 @@ function prdStageCard(k, oid, x, extra) {
 
 /* ใบปิดผิว (ทีละใบ) */
 function prdLmHtml(oid, docs, r, o) {
-  if (!docs.length) return '<div class="card">' + empty('file', 'ยังไม่มีใบปิดผิวของงานนี้', 'แผนกด “📤 ส่งใบปิดผิวเข้าไลน์ผลิต” ในแท็บเอกสารของ Production แล้วใบจะขึ้นที่นี่') + '</div>';
+  if (!docs.length) return '<div class="card">' + empty('file', 'ยังไม่มีใบปิดผิวของงานนี้', 'แผนกด “📤 ส่งเฉพาะใบปิดผิว เข้า App ไลน์ผลิต” ในแท็บเอกสารใบปิดผิวของ Production (หรือกล่อง “📤 ส่งเอกสารเข้า App ไลน์ผลิต”) แล้วใบจะขึ้นที่นี่') + '</div>';
   const live = docs.filter((d) => !d.cancelled && !d.gone && !d.removedAt), dead = docs.filter((d) => (d.cancelled || d.gone) && !d.removedAt), rmd = docs.filter((d) => d.removedAt), adm = r === 'admin';
   const bulk = '';
   const card = (d) => {
@@ -4666,7 +4668,7 @@ function prdLmHtml(oid, docs, r, o) {
 }
 
 /* ใบสั่งตัด (สถานะงานตัด + ไม้ในใบ + ชิ้นที่ทำสี → พิมพ์ใบส่งทำสีได้) */
-function prdNoCut() { return '<div class="card">' + empty('layers', 'ยังไม่มีงานสีของงานนี้', 'แผนกด “📤 ส่งเฉพาะงานสี เข้า App ไลน์ผลิต” (Production แท็บ 🧪 สารเคมี) หรือกล่อง “📤 ส่งเอกสารเข้าไลน์ผลิต” บนแถบชื่อ Order') + '</div>'; }
+function prdNoCut() { return '<div class="card">' + empty('layers', 'ยังไม่มีงานสีของงานนี้', 'แผนกด “📤 ส่งเฉพาะงานสี เข้า App ไลน์ผลิต” (Production แท็บ 🧪 สารเคมี) หรือกล่อง “📤 ส่งเอกสารเข้า App ไลน์ผลิต” บนแถบชื่อ Order') + '</div>'; }
 function prdEditedAfter(D, k) { const x = (D.stages || {})[k] || {}; return x.gotAt && D.order.cutChgAt && new Date(D.order.cutChgAt) > new Date(x.gotAt) ? ' <span class="badge t-red">แผนส่งงานใหม่หลังรับงาน ' + fmtDT(D.order.cutChgAt) + '</span>' : ''; }
 function prdCutAdm(oid, D) {   /* V7.17.2 Admin: ลบ / กู้คืนใบสั่งตัด (+ งานสี) */
   const o = D.order; if (S.user.role !== 'admin' || !o.cutAt) return '';
@@ -4727,7 +4729,7 @@ const PRD_SECS = { cut: 'ตัดเส้น', glass: 'กระจก', sheet
 function prdMoHtml(oid, D, r) {
   const items = D.items.filter((i) => !i.gone && !i.removedAt && !i.dropAt), gone = D.items.filter((i) => i.gone && !i.removedAt), drops = D.items.filter((i) => !i.gone && !i.removedAt && i.dropAt), rmd = D.items.filter((i) => i.removedAt);
   const o = D.order, adm = r === 'admin', g = (D.stages || {}).mo || null, ist = (g && g.ist) || {};
-  if (!items.length && !gone.length && !rmd.length && !drops.length) return '<div class="card">' + empty('tool', 'ยังไม่ได้ส่งงานสั่งตัด / สั่งทำ', 'แผนกด “📤 ส่งเข้าไลน์ผลิต” ในแท็บ “📋 ใบรายการสั่งทำ” ของ Production') + '</div>';
+  if (!items.length && !gone.length && !rmd.length && !drops.length) return '<div class="card">' + empty('tool', 'ยังไม่ได้ส่งงานสั่งตัด / สั่งทำ', 'แผนกด “📤 ส่งเฉพาะงานสั่งตัด/สั่งทำ เข้า App ไลน์ผลิต” ในแท็บ “📋 สั่งตัด/สั่งทำ” ของ Production (หรือกล่อง “📤 ส่งเอกสารเข้า App ไลน์ผลิต”)') + '</div>';
   const card = g ? prdStageCard('mo', oid, g) : '';
   /* V1.3: แยกตามแผนก (แท็บใน SPN) — รายการเก่าที่ยังไม่แยกแผนก = แยกตามส่วนแบบเดิม */
   const grp = []; const gm = {};
