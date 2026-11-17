@@ -1456,7 +1456,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark SPN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.4' : 'V7.18.4';
+const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.6' : 'V7.18.6';
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark SPN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -2028,7 +2028,11 @@ function dpEnhance(inp) {
   inp.addEventListener('input', sync); inp.addEventListener('change', sync);
   txt.addEventListener('input', (e) => {
     const v = txt.value;
-    if (/^\d+$/.test(v) && !(e.inputType && e.inputType.indexOf('delete') === 0)) { const d = v.slice(0, 8); txt.value = d.length > 4 ? d.slice(0, 2) + '/' + d.slice(2, 4) + '/' + d.slice(4) : d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d; }
+    if (!(e.inputType && e.inputType.indexOf('delete') === 0)) {   /* V7.18.6: พิมพ์ตัวเลขติดกันทีละหลัก (12112026) ใส่ / ให้ครบ — เดิมใส่ / แรกแล้วหลักถัดไปไม่จัดให้ */
+      let m2;
+      if (/^\d{3,8}$/.test(v)) { const d = v.slice(0, 8); txt.value = d.length > 4 ? d.slice(0, 2) + '/' + d.slice(2, 4) + '/' + d.slice(4) : d.slice(0, 2) + '/' + d.slice(2); }
+      else if ((m2 = /^(\d{2})\/(\d{3,6})$/.exec(v))) txt.value = m2[1] + '/' + m2[2].slice(0, 2) + '/' + m2[2].slice(2);
+    }
     if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(txt.value)) commit(true); else txt.classList.remove('bad');
   });
   txt.addEventListener('change', () => commit(false));
@@ -3102,7 +3106,7 @@ on('importGo', async () => {
             แถบ “ติดตั้งแอปลงหน้าจอ” ทุกหน้าบนมือถือ · กระดิ่งมุมขวาบน = เปิด / ปิดแจ้งเตือน + เสียง + ส่งทดสอบ ในแอปเลย */
 const PUSH = { reg: null, sub: null, perm: 'default', inst: null, installed: false, busy: false, linked: '', tick: 0, ready: false, sound: true, info: null, infoAt: 0, infoBusy: false };
 /* V7.18: แจ้งเตือนแยกแอป — SPN = ฝ่ายผลิต + จัดซื้อ (งานสั่งทำ) · CN = บทบาทอื่น (ฝ่ายผลิตย้ายไป SPN · เครื่องที่สมัครไว้เดิมยังได้รับจนกว่าจะติดตั้ง SPN) */
-const PUSH_ROLES = APP_KIND === 'spn' ? { production: 1 } : { contractor: 1, installer: 1, purchasing: 1, sale: 1, admin: 1 };   /* V7.17: + ฝ่ายผลิต (ไลน์ผลิต) · V7.17.1 คลังไม่มีหัวข้อไลน์ผลิตแล้ว (ใบเบิกเอาออก) */   /* V7.16.5: + จัดซื้อ / Sale (เลือกหัวข้อได้) */   /* V7.16: Admin รับแจ้งเตือนทุกขั้นตอน (เปิดที่ ตั้งค่าระบบ) */
+const PUSH_ROLES = APP_KIND === 'spn' ? { production: 1, admin: 1 } : { contractor: 1, installer: 1, purchasing: 1, sale: 1, admin: 1 };   /* V7.17: + ฝ่ายผลิต (ไลน์ผลิต) · V7.17.1 คลังไม่มีหัวข้อไลน์ผลิตแล้ว (ใบเบิกเอาออก) */   /* V7.16.5: + จัดซื้อ / Sale (เลือกหัวข้อได้) */   /* V7.16: Admin รับแจ้งเตือนทุกขั้นตอน (เปิดที่ ตั้งค่าระบบ) */
 function pwaTop() { try { return !FRAMED && window.top === window && window.isSecureContext && 'serviceWorker' in navigator; } catch (e) { return false; } }
 function pushCapable() { return pwaTop() && 'PushManager' in window && 'Notification' in window; }
 function pwaStandalone() { try { return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } }
@@ -3177,6 +3181,7 @@ const PUSH_WHAT = {
   admin: 'ทุกขั้นตอนของทุกฝ่าย: Sale ยืนยัน Order · จัดซื้อส่งงาน · ผู้รับเหมาเสนอราคา / ได้งาน / เข้าหน้างาน / ส่งใบส่งมอบ · บัญชีตรวจ / จ่ายเงิน · ช่างโรงงานจัดทีม / เริ่ม / เสร็จ — บอกด้วยว่าแจ้งถึงใคร',
   production: 'แผนส่งใบปิดผิว / ใบสั่งตัด / งานสี / ใบรายการสั่งทำใหม่ · เพื่อนร่วมไลน์ติ๊กสถานะ (เลือกได้ว่าสถานะไหน)'   /* V7.18 */
 };
+if (APP_KIND === 'spn') PUSH_WHAT.admin = 'งานไลน์ผลิตทุกส่วน: ใบปิดผิว · ตัด · งานสี · งานสั่งตัด / สั่งทำ (แยกแผนก) — งานใหม่ + สถานะที่ติ๊ก (เลือกได้) · ปิดทั้งหมดได้ที่ CN → ตั้งค่าระบบ → แจ้ง Admin ทุกขั้นตอน';   /* SPN V1.6 */
 function pushCardHtml() {
   const u = S.user;
   if (!u || !PUSH_ROLES[u.role] || !pwaTop() || !PUSH.ready) return '';
@@ -3224,6 +3229,7 @@ const PUSH_TOPICS_ALL = {
     ['f_mo', 'งานสั่งตัด / สั่งทำใหม่ (แยกแผนก)', 'แผนส่งงานสั่งตัด / สั่งทำเข้าไลน์ผลิต — บอกชื่อแผนก · รอแผนกรับงาน'],
     ['f_mo_got', 'สั่งตัด / สั่งทำ: รับงานแล้ว', 'แผนกติ๊ก “รับงานแล้ว” (แจ้งต่อแผนก · ค่าเริ่มต้นปิด)'], ['f_mo_doing', 'สั่งตัด / สั่งทำ: กำลังทำ', 'แผนกติ๊ก “กำลังทำ” (ค่าเริ่มต้นปิด)'], ['f_mo_done', 'สั่งตัด / สั่งทำ: เสร็จแล้ว', 'แผนกทำครบทุกรายการของแผนกนั้น']]   /* V7.18 · SPN: 4 สถานี × (ใหม่ · รับงานแล้ว · กำลังทำ · เสร็จแล้ว) = 16 หัวข้อ (ตรงกับ cn_push_topics ใน SQL 19) */
 };
+PUSH_TOPICS_ALL.admin = PUSH_TOPICS_ALL.production;   /* SPN V1.6 (ผู้ใช้ 16/11 18:03 “ทำให้คล้าย CN”): Admin เลือกหัวข้อไลน์ผลิตในแอป SPN · ใน CN ไม่มีหัวข้อ (กรองตามแอป) = ได้ทุกขั้นตอนเหมือนเดิม */
 /* V7.18: หัวข้อไลน์ผลิต (f_* · p_mo) อยู่ในแอป SPN · ที่เหลืออยู่ใน CN — ตรงกับ cn_push_take ที่ส่งตามแอป */
 const pushSpnKind = (k) => /^f_/.test(k) || k === 'p_mo';
 const PUSH_TOPICS = (() => { const o = {}; Object.keys(PUSH_TOPICS_ALL).forEach((r) => { const L = PUSH_TOPICS_ALL[r].filter((x) => (APP_KIND === 'spn') === pushSpnKind(x[0])); if (L.length) o[r] = L; }); return o; })();
@@ -3668,6 +3674,9 @@ function PAINTDOC(d) {
   var nm = function (c) { var i = info[c] || {}; return (i.short ? '<b>' + E(i.short) + '</b> ' : '') + E(i.name || ''); };
   var edr = function (lbl, k, v, mono, ph) { return '<tr><th>' + E(lbl) + '</th><td><input class="ed' + (mono ? ' mono' : '') + '" data-k="' + k + '" value="' + E(v) + '"' + (ph ? ' placeholder="' + E(ph) + '"' : '') + ' aria-label="' + E(lbl) + '" oninput="syn(this)"></td></tr>'; };
   var fromV = String(d.from || ''), toV = String(d.to == null || d.to === '' ? 'SP303' : d.to);   /* V280: ไลน์ผลิต (Pool) ส่งจาก / ส่งไป */
+  /* V282 / SPN V1.5 (ผู้ใช้ 16/11 16:01–16:10): กำหนดจบ (ก่อนวันติดตั้ง N วัน ไม่นับอาทิตย์ · แก้ได้) · วันติดตั้งออกเฉพาะเมื่อเปิด “แสดงวันติดตั้งในเอกสาร” */
+  var dD = function (v) { v = String(v || ''); var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v); return m ? m[3] + '/' + m[2] + '/' + (+m[1] + 543) : v; };
+  var dueV = dD(d.due), instV = d.showInstall && d.install ? dD(d.install) : '';
   var head = '<div class="hd"><div><div class="tt">ใบส่งทำสี</div><div class="st">Paint Work Order · คัดเฉพาะชิ้นที่ทำสี (รหัสสี N00S)</div></div>' +
     '<table class="box">' +   /* V280 (ผู้ใช้ 13:55 “ทำให้แก้ได้ทั้งหมด”): ทุกช่องหัวใบแก้ / พิมพ์ได้ก่อนพิมพ์ */
     edr('งาน (Order)', 'job', d.job || '', true, '') +
@@ -3676,7 +3685,9 @@ function PAINTDOC(d) {
     edr('อ้างอิง', 'ref', d.ref || '', false, '') +
     edr('ส่งจาก ไลน์ผลิต (Pool)', 'from', fromV, false, 'พิมพ์ไลน์ผลิตที่ส่ง') +
     edr('ส่งไป ไลน์ผลิต (Pool)', 'to', toV, false, '') +
-    edr('ส่งเข้าไลน์', 'sent', d.sentAt ? dt(d.sentAt) + (d.sentBy ? ' · ' + d.sentBy : '') : '', false, '—') +
+    /* V281 (ผู้ใช้ 16/11 15:38 “ส่งเข้าไลน์ไม่ต้องมีแล้ว มันมีส่งจากไลน์แล้ว”): เอาช่อง “ส่งเข้าไลน์” ออก */
+    '<tr class="due"><th>กำหนดจบ (งานสี)</th><td><input class="ed due" data-k="due" value="' + E(dueV) + '" placeholder="พิมพ์วันที่ เช่น 23/11/2569" aria-label="กำหนดจบ (งานสี)"' + (d.dueNote ? ' title="' + E(d.dueNote) + '"' : '') + '></td></tr>' +
+    (instV ? edr('วันติดตั้ง', 'inst', instV, false, '') : '') +
     edr('พิมพ์เมื่อ', 'at', dt(Date.now()), false, '') + '</table></div>';
   var kpi = '<div class="kp"><div><span>สี</span><b>' + order.length + '</b></div><div><span>ชิ้นที่ทำสี</span><b>' + fq(tot.pcs) + '</b></div>' +
     '<div><span>ตร.ม. รวม</span><b>' + f2(tot.m2) + '</b></div><div><span>แถวชิ้น</span><b>' + tot.rows + '</b></div></div>';
@@ -3697,6 +3708,7 @@ function PAINTDOC(d) {
     '.bar{display:flex;gap:8px;align-items:center;margin-bottom:12px;padding:8px 10px;background:#f1f5f9;border-radius:8px}.bar button{font:inherit;font-weight:700;padding:6px 14px;border-radius:6px;border:1px solid #0f766e;background:#0f766e;color:#fff;cursor:pointer}' +
     '.hd{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:3px solid #0f766e;padding-bottom:10px;margin-bottom:10px}' +
     '.tt{font-size:26px;font-weight:800;color:#0f766e;letter-spacing:.5px}.st{font-size:12px;color:#475569;margin-top:2px}' +
+    '.box tr.due th{color:#b91c1c;font-size:13px}.ed.due{font-size:15px;font-weight:800;color:#b91c1c;border:2px solid #b91c1c}.ed.due::placeholder{font-size:11px;font-weight:400}' +
     '.ed{font:inherit;font-weight:700;color:#111827;border:1px solid #94a3b8;border-radius:4px;padding:1px 6px;width:230px;background:#fffbeb}.ed.mono{font-family:Menlo,Consolas,monospace;font-size:11px}'+'.box td{padding:1px 0}.ed:focus{outline:2px solid #0f766e;outline-offset:1px}' +
     '.box{border-collapse:collapse;font-size:11.5px;min-width:300px}.box th{text-align:left;color:#475569;font-weight:600;padding:2px 10px 2px 0;white-space:nowrap}.box td{padding:2px 0;font-weight:600}' +
     '.kp{display:flex;gap:8px;margin:0 0 12px}.kp div{flex:1;border:1.5px solid #0f766e;border-radius:8px;padding:6px 10px;background:#f0fdfa}.kp span{display:block;font-size:11px;color:#475569}.kp b{font-size:20px;color:#0f766e}' +
@@ -3714,7 +3726,7 @@ function PAINTDOC(d) {
       '<div class="sign"><div>ผู้ส่งงาน · ไลน์ผลิต (Pool) <b data-sync="from">' + E(fromV || '__________') + '</b> · วันที่ ____/____/______</div><div>ผู้รับงาน · ไลน์ผลิต (Pool) <b data-sync="to">' + E(toV || '__________') + '</b> · วันที่ ____/____/______</div><div>ผู้ตรวจ (QC) · วันที่ ____/____/______</div></div>';
   /* แท็กหัว / ท้ายเขียนแยก (<\/…) — ไฟล์นี้ฝังอยู่ใน <script> ของหน้าอื่น ห้ามมีข้อความปิดแท็กหน้าเว็บตรง ๆ */
   return '<!DOCTYPE html><ht' + 'ml lang="th"><he' + 'ad><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ใบส่งทำสี ' + E(d.job || '') + '<\/title><style>' + css + '<\/style><\/he' + 'ad><bo' + 'dy>' +
-    '<div class="bar"><button type="button" onclick="window.print()">🖨 พิมพ์ใบส่งทำสี</button><span style="font-size:12px;color:#475569">A4 แนวตั้ง · ' + order.length + ' สี · ' + fq(tot.pcs) + ' ชิ้น · ' + f2(tot.m2) + ' ตร.ม. · แก้ทุกช่องที่หัวใบได้ก่อนพิมพ์ (ไลน์ผลิต (Pool) ส่งจาก / ส่งไป)</span></div>' +
+    '<div class="bar"><button type="button" onclick="window.print()">🖨 พิมพ์ใบส่งทำสี</button><span style="font-size:12px;color:#475569">A4 แนวตั้ง · ' + order.length + ' สี · ' + fq(tot.pcs) + ' ชิ้น · ' + f2(tot.m2) + ' ตร.ม. · แก้ทุกช่องที่หัวใบได้ก่อนพิมพ์ (ไลน์ผลิต (Pool) ส่งจาก / ส่งไป · กำหนดจบ)</span></div>' +
     head + body + '<scr' + 'ipt>function syn(e){ var k = e.getAttribute("data-k"), v = String(e.value || "").trim(), L = document.querySelectorAll("[data-sync=" + k + "]"); for(var i = 0; i < L.length; i++) L[i].textContent = v || "__________"; }<\/scr' + 'ipt>' + '<\/bo' + 'dy><\/ht' + 'ml>';   /* V280: ลายเซ็นผู้ส่ง / ผู้รับเปลี่ยนตามไลน์ผลิตที่พิมพ์ */
 }
 /* เปิดใบส่งทำสีในแท็บใหม่ (กดจากปุ่ม — ไม่โดนบล็อกป๊อปอัป) · คืน false เมื่อเปิดไม่ได้ */
@@ -3742,6 +3754,11 @@ function prdClean(x) {   /* ส่งเฉพาะช่องที่กำ�
     parts: arr(x.cut.parts, 1500).map((p) => pick(p, ['cab', 'name', 'bc', 'w', 'l', 't', 'q', 'mat', 'top', 'bot', 'm2'])),
     mats: arr(x.cut.mats, 120).map((m) => pick(m, ['code', 'rows', 'pcs', 'paint'])) });
   if (x.mo && typeof x.mo === 'object') out.mo = Object.assign(pick(x.mo, ['at', 'by']), { items: arr(x.mo.items, 600).map((i) => pick(i, ['sec', 'code', 'name', 'spec', 'qty', 'unit', 'cab', 'dep', 'depName', 'no'])) });   /* V1.3: แผนก · V1.4: เลขที่เอกสารของแผนก */
+  if (x.due && typeof x.due === 'object') {   /* SPN V1.5 (Production V282): วันติดตั้ง + กำหนดจบ (งานสี / ต่อแผนก) */
+    const one = (v) => (v && typeof v === 'object' ? pick(v, ['d', 'n', 'ov']) : null), ds = {};
+    Object.keys(x.due.deps || {}).slice(0, 30).forEach((k) => { const v = one(x.due.deps[k]); if (v && /^[a-z0-9]{1,24}$/.test(k)) ds[k] = v; });
+    out.due = Object.assign(pick(x.due, ['install', 'show']), { deps: ds }, one(x.due.paint) ? { paint: one(x.due.paint) } : {});
+  }
   return out;
 }
 async function prdSync(force) {
@@ -3791,6 +3808,11 @@ const PRD = { det: {}, sig: {}, loading: {}, err: {}, q: '', f: {}, so: {}, lt: 
 function prdList() { return (DB && Array.isArray(DB.prd)) ? DB.prd : []; }
 const prdSum = (k, L) => (L || prdList()).reduce((n, b) => n + (+b[k] || 0), 0);
 function prdD(v) { return v ? fmtDate(v) : '—'; }
+/* V1.5 (Production V282): กำหนดจบ = วันติดตั้ง ถอยหลัง n วันทำงาน (ไม่นับอาทิตย์) · แก้เองใน Production (ov) = ใช้วันนั้น · วันติดตั้งตาม SPN (Admin แก้ / Production / CN) */
+function prdCalcDue(iso, n) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || '')); if (!m) return ''; const d = new Date(+m[1] > 2400 ? +m[1] - 543 : +m[1], +m[2] - 1, +m[3]); let k = 0; n = Math.max(0, Math.min(120, +n || 0));
+  while (k < n) { d.setDate(d.getDate() - 1); if (d.getDay() !== 0) k++; } if (d.getDay() === 0) d.setDate(d.getDate() - 1);
+  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function prdDueOf(b, key) { const P = (b && b.pdue) || {}, x = key === 'paint' ? P.paint : (P.deps || {})[key]; if (!x) return ''; if (x.ov && x.d) return x.d; return b.install ? prdCalcDue(b.install, x.n) : (x.d || ''); }
 function prdIso(s) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || '')); if (!m) return ''; const y = +m[1] > 2400 ? +m[1] - 543 : +m[1]; return fmtDate(y + '-' + m[2] + '-' + m[3]); }
 function prdDueKey(s) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || '')); if (!m) return '9999-99-99'; return (+m[1] > 2400 ? +m[1] - 543 : +m[1]) + '-' + m[2] + '-' + m[3]; }
 function prdLate(s) { const k = prdDueKey(s); if (k === '9999-99-99') return false; const t = new Date(); const today = t.getFullYear() + '-' + ('0' + (t.getMonth() + 1)).slice(-2) + '-' + ('0' + t.getDate()).slice(-2); return k < today; }
@@ -3939,11 +3961,13 @@ function prdUnits(k) {
       meta: 'ไม้ ' + (+b.cutMats || 0) + ' รหัส · ' + prdQty(b.cutAll) + ' ชิ้น' + (pd ? ' · มีชิ้นทำสี ' + prdQty(b.cutPcs) + ' ชิ้น' : ' · ไม่มีงานสี'),
       warn: pd && st !== 'done' ? 'มีชิ้นทำสี — ตัดเสร็จแล้วส่งแผนกสี' : '' });
     if (k === 'paint') { const cs = prdStOf(b, 'cut'), lc = !b.cutPO;   /* V1.3: ส่งเฉพาะงานสี = ไม่มีสถานะงานตัดให้เตือน */
-      Object.assign(u, { due: b.paintDue || '', dueL: 'เข้าแผนกสี', meta: (+b.cutNColors || 0) + ' สี · ' + prdQty(b.cutPcs) + ' ชิ้น · รวม ' + prdM2(b.cutM2) + ' ตร.ม.',
+      const pdu = prdDueOf(b, 'paint');   /* V1.5: กำหนดจบงานสี (Production) · ไม่มี = เข้าแผนกสี (เดิม) */
+      Object.assign(u, { due: pdu || b.paintDue || '', dueL: pdu ? 'กำหนดจบ' : 'เข้าแผนกสี', meta: (+b.cutNColors || 0) + ' สี · ' + prdQty(b.cutPcs) + ' ชิ้น · รวม ' + prdM2(b.cutM2) + ' ตร.ม.',
         warn: lc && cs !== 'done' && st !== 'done' ? 'งานตัด: ' + PRD_STG.cut.st[cs][0] + ' (' + prdPct(b.cutCnt, cs) + '%) — ชิ้นทำสียังมาไม่ครบ' : '' }); }
     if (k === 'mo') Object.assign(u, { due: b.install || '', dueL: 'วันติดตั้ง', meta: 'ใบรายการสั่งทำ (ยังไม่แยกแผนก) · ' + cnt.n + ' รายการ' });
     if (prdIsDep(k)) { const dn = ((b.moDeps || {})[prdDepId(k)] || {}).no || '';   /* V1.4: เลขที่เอกสารของแผนก */
-      Object.assign(u, { no: dn || b.oid, docNo: dn, due: b.install || '', dueL: 'วันติดตั้ง', meta: prdStg(k).t + ' · ' + cnt.n + ' รายการ', pq: dn ? u.pq + ' ' + dn.toUpperCase() : u.pq }); }
+      const ddu = prdDueOf(b, prdDepId(k));   /* V1.5: กำหนดจบของแผนก · ไม่มี = วันติดตั้ง (เดิม) */
+      Object.assign(u, { no: dn || b.oid, docNo: dn, due: ddu || b.install || '', dueL: ddu ? 'กำหนดจบ' : 'วันติดตั้ง', meta: prdStg(k).t + ' · ' + cnt.n + ' รายการ', pq: dn ? u.pq + ' ' + dn.toUpperCase() : u.pq }); }
     return u;
   });
 }
@@ -4024,7 +4048,8 @@ function prdWork(k, ref, D) {
       items: mk(keys, c.mats || [], (m) => ({ a: m.code, b: prdQty(m.rows) + ' แถว' + (+m.paint ? ' · ทำสี ' + prdQty(m.paint) + ' ชิ้น' : ''), c: prdQty(m.pcs) + ' ชิ้น' }), ist(g.ist)),
       warn: pd && g.st !== 'done' ? 'มีชิ้นทำสี — ตัดเสร็จแล้วส่งแผนกสี' : '' });
     if (k === 'paint') { const cg = (D.stages || {}).cut || {}, cs = cg.st || 'sent';
-      Object.assign(W, { due: b.paintDue || '', dueL: 'เข้าแผนกสี', meta: (c.colors || []).length + ' สี · ' + prdQty(c.pcs) + ' ชิ้น · รวม ' + prdM2(c.total) + ' ตร.ม.',
+      const pdw = prdDueOf(b, 'paint');
+      Object.assign(W, { due: pdw || b.paintDue || '', dueL: pdw ? 'กำหนดจบ' : 'เข้าแผนกสี', meta: (c.colors || []).length + ' สี · ' + prdQty(c.pcs) + ' ชิ้น · รวม ' + prdM2(c.total) + ' ตร.ม.',
         items: mk(keys, c.colors || [], (y) => ({ a: y.code + (y.short ? ' · ' + y.short : ''), b: (y.name || '') + ' · ' + prdQty(y.pcs) + ' ชิ้น', c: prdM2(y.m2) + ' ตร.ม.', sw: y.code }), ist(g.ist)),
         warn: cs !== 'done' && g.st !== 'done' ? 'งานตัด: ' + PRD_STG.cut.st[cs][0] + ' (' + prdPct(b.cutCnt, cs) + '%) — ชิ้นทำสียังมาไม่ครบ' : '' }); }
     if (k === 'mo' || prdIsDep(k)) {   /* V1.3: แผนก = เฉพาะรายการของแผนกนั้น · mo = รายการที่ยังไม่แยกแผนก */
@@ -4033,7 +4058,8 @@ function prdWork(k, ref, D) {
       if (!live.length) return null;
       const sec = { cut: 'รหัสสั่งตัด', glass: 'กระจก', sheet: 'งานตัดแผ่น / อื่น ๆ', other: 'สั่งทำอื่น ๆ', bom: 'ไส้ใน AX (เบิก)' };
       const dno = (live.find((i) => i.no) || {}).no || '';   /* V1.4: เลขที่เอกสารของแผนก (RM / SP-… จาก Production) */
-      Object.assign(W, { no: dno || W.no, docNo: dno, due: b.install || '', dueL: 'วันติดตั้ง', meta: (k === 'mo' ? 'ใบรายการสั่งทำ' : prdStg(k).t) + ' · ' + live.length + ' รายการ · แผนส่ง ' + fmtDT(o.moAt),
+      const ddw = dep ? prdDueOf(b, dep) : '';   /* V1.5 */
+      Object.assign(W, { no: dno || W.no, docNo: dno, due: ddw || b.install || '', dueL: ddw ? 'กำหนดจบ' : 'วันติดตั้ง', meta: (k === 'mo' ? 'ใบรายการสั่งทำ' : prdStg(k).t) + ' · ' + live.length + ' รายการ · แผนส่ง ' + fmtDT(o.moAt),
         st: prdStFromCnt(live.reduce((c, i) => { const t = (ist(g.ist)[i.key] || {}).st; c.n++; if (t && c[t] != null) c[t]++; return c; }, { n: 0, got: 0, doing: 0, done: 0 })),
         items: keys.filter((x) => byKey[x]).map((x) => { const i = byKey[x];
           return { key: x, s: ist(g.ist)[x], a: i.code, b: (i.name || '') + (i.spec ? ' · ' + i.spec : '') + (i.cab ? ' · ตู้ ' + i.cab : '') + ' (' + (sec[i.sec] || i.sec) + ')', c: prdQty(i.qty) + ' ' + (i.unit || 'EA'), rm: true,
@@ -4363,7 +4389,7 @@ on('prdUndo', async (el) => {
 });
 /* ---------- หน้างาน: เอกสาร ---------- */
 function prdBrief(oid) { return prdList().find((b) => b.oid === oid) || null; }
-function prdSigOf(oid) { const b = prdBrief(oid); return b ? [b.at, b.lmAt, b.cutAt, b.moAt, b.lm, b.lmSent, b.lmGot, b.lmDoing, b.lmDone, b.cutSt, b.paintSt, b.moSt, b.cutM2, b.cutAll, b.mo, JSON.stringify([b.cutCnt, b.paintCnt, b.moCnt])].join('|') : ''; }
+function prdSigOf(oid) { const b = prdBrief(oid); return b ? [b.at, b.lmAt, b.cutAt, b.moAt, b.lm, b.lmSent, b.lmGot, b.lmDoing, b.lmDone, b.cutSt, b.paintSt, b.moSt, b.cutM2, b.cutAll, b.mo, JSON.stringify([b.cutCnt, b.paintCnt, b.moCnt, b.install || '', b.pdue || null])].join('|') : ''; }
 async function prdLoad(oid, force) {
   if (PRD.loading[oid]) return;
   const sig = prdSigOf(oid);
@@ -4638,7 +4664,9 @@ function prdCutHtml(oid, D) {
 /* ใบส่งทำสี (คัดเฉพาะชิ้นที่มี N00S · ฟอร์มเดียวกับในใบสั่งตัดของ Production) */
 function prdPaintData(D) {
   const c = D.cut || {}, o = D.order;
-  return { job: o.oid, title: o.title, iid: o.iid, ref: c.paintOnly ? 'งานสีจากแผน' : 'ใบสั่งตัด + งานสี จากแผน', sentAt: o.cutAt, sentBy: o.cutBy, colors: c.colors || [], parts: c.parts || [], more: c.more || 0 };
+  const b = prdBrief(o.oid) || {}, P = o.due || b.pdue || {};   /* V1.5: กำหนดจบงานสี · วันติดตั้งออกเฉพาะเมื่อ Production เปิด “แสดงวันติดตั้งในเอกสาร” */
+  return { job: o.oid, title: o.title, iid: o.iid, ref: c.paintOnly ? 'งานสีจากแผน' : 'ใบสั่งตัด + งานสี จากแผน', sentAt: o.cutAt, sentBy: o.cutBy, colors: c.colors || [], parts: c.parts || [], more: c.more || 0,
+    due: prdDueOf(Object.assign({}, b, { pdue: P }), 'paint'), install: b.install || '', showInstall: !!P.show };
 }
 on('prdPaintPrint', (el) => { const D = PRD.det[el.dataset.oid]; if (!D) return; if (!PAINTDOC_open(prdPaintData(D))) toast('เปิดแท็บใหม่ไม่ได้ — อนุญาตป๊อปอัปของเว็บนี้ก่อน', 'err'); });
 function prdPaintHtml(oid, D) {
@@ -4728,7 +4756,7 @@ function spnTip(k) {
     tab_cut: 'ใบสั่งตัดไม้ที่แผนส่งมาก่อน V1.3 (งานเก่า) — ตอนนี้แผนไม่ส่งใบสั่งตัดไม้แล้ว\nแตะงาน แล้วติ๊กทีละรหัสไม้ หรือทั้งใบก็ได้',
     tab_paint: 'งานทำสี (สีที่ต้องทำ × ตร.ม.)\nแตะงาน แล้วติ๊กทีละสี หรือทั้งใบ · ดูวันที่ชิ้นงานต้องเข้าแผนกสีที่กล่องวันทางซ้าย',
     tab_mo: 'รายการสั่งทำที่แผนส่งมาก่อนแยกแผนก (งานเก่า)\nแตะงาน แล้วติ๊กทีละรายการ · รายการที่ไม่ได้ทำเองกด X',
-    tab_dep: 'งานสั่งตัด / สั่งทำของแผนกนี้ — แผนตั้งว่ารหัสไหนเข้าแผนกไหนที่ Production (⚙ ตั้งค่า)\nตัวหนาหัวงาน = เลขที่เอกสารของแผนก (เช่น RM-691116-001 สโตร์ · SP-691116-002 สั่งทำ) ตรงกับใบที่แผนพิมพ์ · ยังไม่มีเลข = เลข Order\nแตะงาน แล้วติ๊กทีละรายการ หรือทั้งใบ · รายการที่ไม่ได้ทำเองกด X\nAdmin ลากสลับลำดับแท็บได้ (⇄ จัดลำดับแท็บ)',
+    tab_dep: 'งานสั่งตัด / สั่งทำของแผนกนี้ — แผนตั้งว่ารหัสไหนเข้าแผนกไหนที่ Production (⚙ ตั้งค่า)\nตัวหนาหัวงาน = เลขที่เอกสารของแผนก (เช่น RM-691116-001 สโตร์ · SP-691116-002 สั่งทำ) ตรงกับใบที่แผนพิมพ์ · ยังไม่มีเลข = เลข Order\nกำหนด = กำหนดจบของแผนก (แผนใส่วันติดตั้งที่ Production · ต้องจบก่อนติดตั้งกี่วันตั้งที่ Production · ไม่นับวันอาทิตย์) · ยังไม่มี = วันติดตั้ง\nแตะงาน แล้วติ๊กทีละรายการ หรือทั้งใบ · รายการที่ไม่ได้ทำเองกด X\nAdmin ลากสลับลำดับแท็บได้ (⇄ จัดลำดับแท็บ)',
     f_todo: 'งานที่ยังติ๊กไม่เสร็จครบ — งานที่ต้องทำอยู่',
     f_done: 'งานที่ติ๊ก “เสร็จแล้ว” ครบทุกรายการ',
     f_done_lm: 'ใบปิดผิวที่เสร็จแล้วใน 14 วันล่าสุด',
