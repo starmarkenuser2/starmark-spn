@@ -1640,6 +1640,40 @@ span.prd-wdok{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;bo
 .prd-rem>summary .xs{font-weight:500}.prd-rem .card-b{padding:10px 16px 14px}
 .spn-next~.spn-tgs .spn-tg{min-height:66px;gap:2px}.spn-next~.spn-tgs .spn-tg .bx{width:26px;height:26px}.spn-next~.spn-tgs .spn-tg b{font-size:16.5px}   /* มีปุ่มใหญ่แล้ว — ปุ่ม 3 ขั้นเตี้ยลง (จอมือถือไม่ถูกบังมาก) */
 @media (max-width:760px){.prd-cpx{margin-left:0}.prd-wd-a{padding-left:12px;padding-right:12px}.spn-next{font-size:18px}}
+/* ===== SPN V1.8.6 (ผู้ใช้ 19/11 10:42–10:50): LOT ติด Order · แตะช่องสถานะเปิดเอกสาร · ช่องหน้ารายการ = สถานะ · ปุ่มเลือกแยก · ป้ายรอโชว์รายการ ===== */
+.prd-lot{display:inline-flex;align-items:center;gap:4px;padding:1px 9px;border-radius:999px;background:#E0F2FE;color:#075985;font-size:12.5px;font-weight:600;line-height:1.6;white-space:nowrap;vertical-align:middle}
+.prd-lot b{font-weight:800;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.sub .prd-lot{margin-top:3px}
+.prd-pipe .pp[data-act]{cursor:pointer}.prd-pipe .pp[data-act]:hover{filter:brightness(.97);box-shadow:0 0 0 2px #93C5FD}
+.prd-pipe .pp[data-act]:focus-visible{outline:3px solid #6FA3E8;outline-offset:1px}
+.prd-docb{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:10px;border:1.5px solid #93C5FD;background:#EFF6FF;color:#1D4ED8;font-weight:700;font-size:13.5px;white-space:nowrap}
+.prd-tbl tr.prd-row:hover td.prd-go{text-decoration:none}.prd-tbl tr.prd-row:hover .prd-docb{background:#DBEAFE}
+.si-st{flex:none;width:30px;height:30px;border-radius:8px;border:2.5px solid #9AA6B4;background:#fff;display:flex;align-items:center;justify-content:center;color:#fff;margin-top:1px}
+.si-st .ico{width:18px;height:18px}
+.si-st.s-got{background:var(--s-got);border-color:var(--s-got)}.si-st.s-doing{background:var(--s-doing);border-color:var(--s-doing)}.si-st.s-done{background:var(--s-done);border-color:var(--s-done)}
+.si-rt{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:10px;margin-left:auto}
+.si-pk{position:relative;flex:none;display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:5px 13px 5px 9px;border-radius:999px;border:2px solid #CBD5E1;background:#fff;color:#475569;font-size:13.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.si-pk input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer;z-index:1}
+.si-pk .pk-o{width:20px;height:20px;border-radius:50%;border:2px solid #94A3B8;background:#fff;display:flex;align-items:center;justify-content:center;color:#fff}
+.si-pk .pk-o .ico{width:13px;height:13px}
+.si-pk.on{border-color:#2563EB;background:#2563EB;color:#fff}.si-pk.on .pk-o{border-color:#fff;background:#fff;color:#2563EB}
+.si-pk:focus-within{outline:3px solid #6FA3E8;outline-offset:2px}
+.spn-item.sel{background:#E6EFFC!important;box-shadow:inset 0 0 0 2px #93C5FD}
+.spn-ih .si-ih-l{display:flex;flex-direction:column;gap:2px;min-width:0}
+.spn-ih .si-ih-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.spn-ih .si-hint{font-size:12.5px;color:var(--text-2)}
+.prd-hlist{margin:0 0 14px;padding:10px 12px;border:1.5px solid var(--s-hold,#E9C98C);border-radius:10px;background:var(--s-hold-bg,#FFF8EA)}
+.prd-hlist ul{margin:6px 0 0;padding:0;list-style:none;max-height:210px;overflow:auto}
+.prd-hlist li{padding:5px 0;border-top:1px dashed #E9D5A8;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}.prd-hlist li:first-child{border-top:0}
+.prd-hlist li b.mono{font-size:13.5px}
+.prd-icut{margin:6px 0 2px;padding:6px 8px 4px;border:1px solid #E2E8F0;border-radius:8px;background:#FBFCFE;max-width:900px}
+.prd-icut .ich{font-size:13px;color:#334155;margin-bottom:2px;display:flex;align-items:center;flex-wrap:wrap;gap:2px 6px}.prd-icut .ich b{color:#0F172A}
+.prd-icut .prd-cpr{margin:4px 0}.prd-icut .prd-cpb{height:26px}.prd-icut .prd-sg.me{box-shadow:inset 0 0 0 2px rgba(15,23,42,.35)}
+.prd-icut .prd-cpr .cpt{flex-basis:170px;font-size:12.5px}
+.prd-jobbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 4px;padding:10px 12px;border:1.5px solid #BFDBFE;border-radius:12px;background:#F5F9FF}
+.prd-jobh{display:inline-flex;align-items:center;gap:6px;margin-right:4px;color:#1E3A8A}
+.prd-jobb{border-color:#93C5FD;background:#fff;color:#1D4ED8;font-weight:600}.prd-jobb:hover{background:#EFF6FF}
+@media (max-width:640px){.si-pk{padding:5px 10px 5px 7px;font-size:13px}.si-st{width:28px;height:28px}}
 </style>
 </head>
 <body>
@@ -1785,7 +1819,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark SPN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.8.5' : 'V7.18.12';
+const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.8.6' : 'V7.18.12';
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark SPN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -4134,6 +4168,7 @@ function prdClean(x) {   /* ส่งเฉพาะช่องที่กำ�
     Object.keys(x.due.deps || {}).slice(0, 30).forEach((k) => { const v = one(x.due.deps[k]); if (v && /^[a-z0-9]{1,24}$/.test(k)) ds[k] = v; });
     out.due = Object.assign(pick(x.due, ['install', 'show', 'sun']), { deps: ds }, one(x.due.paint) ? { paint: one(x.due.paint) } : {}, one(x.due.lm) ? { lm: one(x.due.lm) } : {});   /* V1.7.3: + ปิดผิว (lm) · นับวันอาทิตย์ (sun) */
   }
+  if (typeof x.lot === 'string') out.lot = x.lot.replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 40);   /* SPN V1.8.6 (Production V309): LOT ของ Order ที่แผนพิมพ์เอง · ว่าง = ล้าง */
   if (x.none && typeof x.none === 'object') {   /* SPN V1.7 (Production V287): แผนกดแจ้ง “Order นี้ไม่มีงาน…” — เวลาที่กด (ms) ต่อประเภท */
     const nn = {}; ['lm', 'paint', 'mo'].forEach((k) => { const v = Number(x.none[k]); if (isFinite(v) && v > 0) nn[k] = Math.floor(v); });
     if (Object.keys(nn).length) out.none = nn;
@@ -4164,6 +4199,11 @@ async function prdSync(force) {
       if (nr.length && Date.now() > (PRDS.noneOff || 0)) {
         try { await rpc('cn_prd_none', { p_rows: nr }); }
         catch (e) { if (e.code === 'session') throw e; if (e.code === 'PGRST202' || e.status === 404 || /cn_prd_none/.test(e.message || '')) PRDS.noneOff = Date.now() + 600000; }   /* ยังไม่ได้รัน SQL V7.18.7 — ส่งเอกสารต่อได้ (แจ้งไม่มีงานยังไม่ทำงาน) */
+      }
+      const lr = rows.filter((x) => typeof x.lot === 'string').map((x) => ({ oid: x.oid, lot: x.lot }));   /* SPN V1.8.6: LOT */
+      if (lr.length && Date.now() > (PRDS.lotOff || 0)) {
+        try { await rpc('cn_prd_lot', { p_rows: lr }); }
+        catch (e) { if (e.code === 'session') throw e; if (e.code === 'PGRST202' || e.status === 404 || /cn_prd_lot/.test(e.message || '')) PRDS.lotOff = Date.now() + 600000; }   /* ยังไม่ได้รัน SQL SPN V1.8.6 — ส่งเอกสารต่อได้ (LOT ยังไม่ขึ้น) */
       }
       if (!(r && r.more)) break;
     }
@@ -4217,7 +4257,8 @@ function prdLeft(s, open) {   /* อีก N วัน / เลยมา N ว�
 function prdPaintDays() { return PRD.stn && PRD.stn.paintDays != null ? PRD.stn.paintDays : 21; }
 function prdQty(n) { const v = Math.round((+n || 0) * 100) / 100; return v.toLocaleString('th-TH', { maximumFractionDigits: 2 }); }
 function prdM2(n) { return (Math.round((+n || 0) * 100) / 100).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-const prdQ = (b) => [b.oid, b.title, b.iid].join(' ').toUpperCase();
+const prdQ = (b) => [b.oid, b.title, b.iid, b.lot || ''].join(' ').toUpperCase();   /* V1.8.6: + LOT */
+function prdLotH(lot) { return lot ? '<span class="prd-lot" title="LOT ที่แผนใส่ในใบสั่งตัด / สั่งทำ (Production)">LOT <b>' + esc(lot) + '</b></span>' : ''; }
 /* SPN V1.7.1 (ผู้ใช้ 17/11 09:53 “เลข Order ในแอปให้ดึงจาก Item Id Set — เงื่อนไขเดียวกับเอกสารต่าง ๆ”): เลข Order ที่โชว์ = Item Id Set · ไม่มี = เลข Order เดิม
    เลข Order เดิม (ของ Production) ตัวเล็กข้าง ๆ เหมือนหัวเอกสาร Production V286 · ลิงก์ / ค้นหา / ข้อมูลยังใช้เลข Order เดิม */
 const prdOno = (iid, oid) => String(iid || '').trim() || String(oid || '');
@@ -4374,12 +4415,12 @@ async function prdLqLoad(force) {
 
 /* ---------- งาน (หน่วยที่ติ๊ก) ของแต่ละสถานี: ใบปิดผิว 1 ใบ · ใบสั่งตัด / งานสี / งานสั่งทำ 1 งาน ---------- */
 function prdUnits(k) {
-  const L = prdList(), name = (oid, t) => t && t !== oid ? t : '';
+  const L = prdList(), name = (oid, t) => t && t !== oid ? t : '', LOTS = {}; L.forEach((b) => { if (b.lot) LOTS[b.oid] = b.lot; });   /* V1.8.6 */
   if (k === 'lm') {
     if (!PRD.lq.open) return null;
     return PRD.lq.open.concat(PRD.lq.done || []).map((d) => { const h = d.head || {};
       return { k, ref: d.id, oid: d.oid, no: d.no, job: d.oid, iid: d.iid || '', title: name(d.oid, d.title), due: prdLmDue(d, d.adm === true), dueL: 'กำหนดเสร็จ', cnt: d.cnt || prdCnt0, st: d.st, adm: d.adm === true,
-        meta: (h.lot ? 'LOT ' + h.lot + ' · ' : '') + d.lines.length + ' รายการ · แผนส่ง ' + fmtDT(d.issuedAt), note: d.note || '',
+        meta: (h.lot || LOTS[d.oid] ? 'LOT ' + (h.lot || LOTS[d.oid]) + ' · ' : '') + d.lines.length + ' รายการ · แผนส่ง ' + fmtDT(d.issuedAt), note: d.note || '',
         warn: d.st !== 'sent' && d.gotAt && d.at && new Date(d.at) > new Date(d.gotAt) ? 'แผนแก้ใบหลังรับงาน ' + fmtDT(d.at) : '', pq: [d.no, d.oid, d.title, d.iid, h.lot].join(' ').toUpperCase() }; });
   }
   return L.filter((b) => prdIn(k, b)).map((b) => {
@@ -4396,6 +4437,7 @@ function prdUnits(k) {
     if (prdIsDep(k)) { const dn = ((b.moDeps || {})[prdDepId(k)] || {}).no || '';   /* V1.4: เลขที่เอกสารของแผนก */
       const ddu = prdDueOf(b, prdDepId(k));   /* V1.5: กำหนดจบของแผนก · ไม่มี = วันติดตั้ง (เดิม) */
       Object.assign(u, { no: dn || prdOno(b.iid, b.oid), docNo: dn, due: ddu || b.install || '', dueL: ddu ? 'กำหนดจบ' : 'วันติดตั้ง', meta: prdStg(k).t + ' · ' + cnt.n + ' รายการ', pq: dn ? u.pq + ' ' + dn.toUpperCase() : u.pq }); }
+    if (b.lot) { u.meta = 'LOT ' + b.lot + ' · ' + (u.meta || ''); u.pq += ' ' + String(b.lot).toUpperCase(); }   /* V1.8.6 */
     return u;
   });
 }
@@ -4552,12 +4594,12 @@ function prdWdDoc(D, dep) {
     '.nt{font-size:10.5px;color:#64748b;margin-top:6px}' +
     '@media print{.bar{display:none}body{padding:0}.sg,.lf,.sw,.tg,.ck,h2,.t th{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
   /* แท็กหัว / ท้ายเขียนแยก (<\/…) — ไฟล์นี้ฝังอยู่ในหน้าอื่น ห้ามมีข้อความปิดแท็กหน้าเว็บตรง ๆ */
-  return '<!DOCTYPE html><ht' + 'ml lang="th"><he' + 'ad><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ใบเบิก + แผนตัด ' + E(prdDepName(dep)) + ' ' + E(prdOno(o.iid, oid)) + '<\/title><style>' + css + '<\/style><\/he' + 'ad><bo' + 'dy>' +
+  return '<!DOCTYPE html><ht' + 'ml lang="th"><he' + 'ad><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ใบสั่งตัด / สั่งทำ ' + E(prdDepName(dep)) + ' ' + E(prdOno(o.iid, oid)) + '<\/title><style>' + css + '<\/style><\/he' + 'ad><bo' + 'dy>' +
     '<div class="bar"><button type="button" onclick="window.print()">🖨 พิมพ์</button><span style="font-size:12.5px;color:#334155">A4 แนวตั้ง · ☐ ไว้ติ๊กด้วยปากกา (ช่องเขียว = ติ๊กในแอปแล้ว) · ไม่มีราคา</span></div>' +
     '<div class="pst">พิมพ์จาก Starmark SPN เมื่อ ' + E(fmtDT(Date.now())) + '</div>' +
-    '<div class="hd"><div><div class="ttl">ใบเบิก + แผนตัด — ' + E(prdDepName(dep)) + '</div><div class="sub">Order <b class="mono">' + E(prdOno(o.iid, oid)) + '</b>' + (o.title ? ' · ' + E(o.title) : '') + (dno ? ' · เลขที่ <b class="mono">' + E(dno) + '</b>' : '') + '</div>' +
+    '<div class="hd"><div><div class="ttl">ใบสั่งตัด / สั่งทำ — ' + E(prdDepName(dep)) + '</div><div class="sub">' + (t1 || blk ? 'ใบเบิก + แผนตัด + รายการที่ต้องทำ' : 'รายการที่ต้องทำ') + '</div><div class="sub">Order <b class="mono">' + E(prdOno(o.iid, oid)) + '</b>' + (o.lot ? ' · LOT <b class="mono">' + E(o.lot) + '</b>' : '') + (o.title ? ' · ' + E(o.title) : '') + (dno ? ' · เลขที่ <b class="mono">' + E(dno) + '</b>' : '') + '</div>' +
       (pg.wd ? '<div class="sub">✓ เบิกของครบแล้ว ' + E(fmtDT(pg.wd.at)) + (pg.wd.by ? ' · ' + E(pg.wd.by) : '') + '</div>' : '') + '</div>' +
-      (due ? '<div class="kp">' + E(W.dueL || 'กำหนด') + '<b>' + E(due) + '</b></div>' : '') + '</div>' +
+      (due || dno ? '<div class="kp">' + (dno ? 'เลขที่<b class="mono">' + E(dno) + '</b>' : '') + (due ? E(W.dueL || 'กำหนด') + '<b>' + E(due) + '</b>' : '') + '</div>' : '') + '</div>' +
     (t1 ? '<h2>1 · รายการเบิก — วัตถุดิบที่ต้องใช้ (ยอดรวม)</h2><table class="t"><thead><tr><th>รหัส</th><th>รายละเอียด</th><th class="r">ยาว (มม.)</th><th class="r">ต้องเบิก</th><th class="c">ได้แล้ว</th></tr></thead><tbody>' + t1 + '</tbody></table>' : '') +
     (blk ? '<h2>2 · แผนตัดเส้นยาว</h2>' + blk : '') +
     (t3 ? '<h2>' + (t1 || blk ? '3' : '1') + ' · ' + E(prdMoTtl2(dep)) + ' (' + W.items.length + ' รายการ)</h2><table class="t"><thead><tr><th>รหัส</th><th>รายการ</th><th class="r">จำนวน</th><th class="c">เสร็จ</th></tr></thead><tbody>' + t3 + '</tbody></table>' : '') +
@@ -4565,6 +4607,58 @@ function prdWdDoc(D, dep) {
     '<div class="sign"><div>ผู้เบิก · วันที่ ____/____/______</div><div>ผู้จ่าย (คลัง) · วันที่ ____/____/______</div><div>หัวหน้าแผนก · วันที่ ____/____/______</div></div>' +
     '<\/bo' + 'dy><\/ht' + 'ml>';
 }
+/* SPN V1.8.6 (ผู้ใช้ 19/11 11:14 “เพิ่มปุ่มกดดูเอกสาร งานปิดผิว งานสั่งตัดสโตร์ งานสั่งทำเหล็ก อลู เผื่อเค้าทำใบงานหาย”)
+   ดู / พิมพ์ใบงานซ้ำจาก SPN: หน้างาน (เอกสารทั้งงาน) มีแถบ 🖨 ใบงาน ทุกใบ · หน้าติ๊กมีปุ่ม “ดู / พิมพ์ใบงาน” ของใบนั้น · เปิดแท็บใหม่ (ไม่มีราคา · ข้อมูลล่าสุดที่แผนส่ง) */
+function prdJobList(D) {
+  const o = D.order, L = [];
+  prdDocTabs(D).forEach((t) => { const k = t[0];
+    if (k === 'lm') (D.docs || []).filter((d) => !d.cancelled && !d.gone && !d.removedAt).forEach((d) => L.push({ k, ref: d.id, t: 'ใบปิดผิว', no: d.no }));
+    else if (k === 'paint') { if (D.cut && Array.isArray(D.cut.colors) && D.cut.colors.length && !o.cutRemovedAt) L.push({ k, ref: o.oid, t: 'ใบส่งทำสี', no: '' }); }
+    else if (k === 'mo' || prdIsDep(k)) { const dep = k === 'mo' ? '' : prdDepId(k), live = (D.items || []).filter((i) => !i.gone && !i.removedAt && !i.dropAt && (i.dep || '') === dep);
+      if (live.length) L.push({ k, ref: o.oid, t: k === 'mo' ? 'ใบรายการสั่งทำ' : prdStg(k).tab, no: (live.find((i) => i.no) || {}).no || '' }); } });
+  return L;
+}
+function prdJobBar(oid, D) {
+  const L = prdJobList(D); if (!L.length) return '';
+  return '<div class="prd-jobbar"><span class="prd-jobh">' + icon('print', 'sm') + ' <b>ใบงาน</b> <span class="xs muted">ดู / พิมพ์ซ้ำ (เผื่อใบหาย)</span></span>' +
+    L.map((x) => '<button type="button" class="btn sm prd-jobb" data-act="prdJobPrint" data-oid="' + esc(oid) + '" data-k="' + esc(x.k) + '" data-ref="' + esc(x.ref) + '">' + icon('file', 'sm') + ' ' + esc(x.t) + (x.no ? ' <b class="mono">' + esc(x.no) + '</b>' : '') + '</button>').join('') + '</div>';
+}
+function prdJobDoc(D, k, ref) {   /* ใบปิดผิว / ใบรายการสั่งทำ (ไม่แยกแผนก) — แผนก = prdWdDoc (มีรายการเบิก + แผนตัด) */
+  const o = D.order, oid = o.oid, E = esc, d = k === 'lm' ? (D.docs || []).find((x) => x.id === ref) : null; if (k === 'lm' && !d) return '';
+  const W = prdWork(k, k === 'lm' ? ref : oid, D); if (!W) return '';
+  const h = (d && d.head) || {}, lot = k === 'lm' ? (h.lot || o.lot || '') : (o.lot || ''), lines = d ? (d.lines || []) : [], hasLoc = lines.some((l) => l.loc);
+  const rows = d ? lines.map((l, ix) => '<tr><td class="r">' + (ix + 1) + '</td><td class="mono b">' + E(l.code) + '</td><td>' + E(l.name || '') + '</td><td class="r nw"><b>' + prdQty(l.qty) + '</b> ' + E(l.unit || 'แผ่น') + '</td>' + (hasLoc ? '<td>' + E(l.loc || '') + '</td>' : '') + '<td class="c"><span class="ck"></span></td></tr>').join('')
+    : W.items.map((i, ix) => '<tr><td class="r">' + (ix + 1) + '</td><td class="mono b">' + E(i.a) + '</td><td>' + E(i.b) + '</td><td class="r nw"><b>' + E(i.c) + '</b></td><td class="c"><span class="ck"></span></td></tr>').join('');
+  const ttl = k === 'lm' ? 'ใบปิดผิว' : 'ใบรายการสั่งทำ', no = d ? d.no : (W.docNo || ''), due = W.due ? prdIso(W.due) : '';
+  const css = '*{box-sizing:border-box}body{font-family:"Sarabun","Noto Sans Thai",Tahoma,sans-serif;color:#0F172A;margin:0;padding:14px 18px;font-size:13px}' +
+    '.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 10px;margin:-14px -18px 12px;background:#EFF6FF;border-bottom:1px solid #BFDBFE}.bar button{font:inherit;font-size:15px;font-weight:700;padding:8px 16px;border-radius:8px;border:2px solid #2563EB;background:#2563EB;color:#fff;cursor:pointer}' +
+    '.pst{text-align:right;font-size:9.5px;color:#94a3b8}.hd{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:2px solid #0F172A;padding-bottom:8px;margin-bottom:10px}' +
+    '.ttl{font-size:22px;font-weight:800}.sub{font-size:13px;color:#334155;margin-top:3px}.kp{text-align:right;font-size:12px;color:#334155}.kp b{display:block;font-size:17px;color:#0F172A}' +
+    'table{width:100%;border-collapse:collapse}.t th,.t td{border:1px solid #CBD5E1;padding:6px 7px;text-align:left;vertical-align:top}.t th{background:#F8FAFC;font-size:12px}' +
+    '.r{text-align:right}.c{text-align:center;width:40px}.nw{white-space:nowrap}.mono{font-family:Consolas,"Courier New",monospace}.b{font-weight:700}' +
+    '.ck{display:inline-block;width:15px;height:15px;border:1.6px solid #334155;border-radius:3px;vertical-align:-2px}.nt{font-size:11px;color:#64748b;margin-top:8px}' +
+    '.sign{display:flex;gap:16px;margin-top:26px;break-inside:avoid}.sign div{flex:1;border-top:1px solid #334155;padding-top:4px;text-align:center;font-size:11.5px;color:#334155;margin-top:32px}' +
+    '@media print{.bar{display:none}body{padding:0}.t th{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
+  /* แท็กหัว / ท้ายเขียนแยก (<\/…) — ไฟล์นี้ฝังอยู่ในหน้าอื่น ห้ามมีข้อความปิดแท็กหน้าเว็บตรง ๆ */
+  return '<!DOCTYPE html><ht' + 'ml lang="th"><he' + 'ad><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + E(ttl + ' ' + (no || '') + ' ' + prdOno(o.iid, oid)) + '<\/title><style>' + css + '<\/style><\/he' + 'ad><bo' + 'dy>' +
+    '<div class="bar"><button type="button" onclick="window.print()">🖨 พิมพ์</button><span style="font-size:12.5px;color:#334155">สำเนาใบงานจาก Starmark SPN · A4 แนวตั้ง · ไม่มีราคา</span></div>' +
+    '<div class="pst">สำเนา — พิมพ์จาก Starmark SPN เมื่อ ' + E(fmtDT(Date.now())) + '</div>' +
+    '<div class="hd"><div><div class="ttl">' + E(ttl) + '</div><div class="sub">Order <b class="mono">' + E(prdOno(o.iid, oid)) + '</b>' + (lot ? ' · LOT <b class="mono">' + E(lot) + '</b>' : '') + (o.title && o.title !== oid ? ' · ' + E(o.title) : '') + '</div>' +
+      (d ? '<div class="sub">แผนส่ง ' + E(fmtDT(d.issuedAt)) + (h.project ? ' · ' + E(h.project) : '') + '</div>' : '') + (h.note ? '<div class="sub">หมายเหตุ: ' + E(h.note) + '</div>' : '') + '</div>' +
+      (no || due ? '<div class="kp">' + (no ? 'เลขที่<b class="mono">' + E(no) + '</b>' : '') + (due ? E(W.dueL || 'กำหนด') + '<b>' + E(due) + '</b>' : '') + '</div>' : '') + '</div>' +
+    '<table class="t"><thead><tr><th class="r" style="width:36px">#</th><th>รหัส</th><th>รายการ</th><th class="r">จำนวน</th>' + (hasLoc ? '<th>ที่เก็บ</th>' : '') + '<th class="c">เสร็จ</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div class="nt">ข้อมูลจากแผน (Production) ล่าสุดที่ส่งเข้าไลน์ผลิต · ' + W.items.length + ' รายการ</div>' +
+    '<div class="sign"><div>ผู้ส่งงาน · วันที่ ____/____/______</div><div>ผู้รับงาน · วันที่ ____/____/______</div><div>หัวหน้าแผนก · วันที่ ____/____/______</div></div>' +
+    '<\/bo' + 'dy><\/ht' + 'ml>';
+}
+on('prdJobPrint', (el) => {
+  const oid = el.dataset.oid, k = el.dataset.k, ref = el.dataset.ref || oid, D = PRD.det[oid];
+  if (!D) { toast('กำลังโหลดเอกสาร — ลองกดอีกครั้ง', 'err'); prdLoad(oid); return; }
+  if (k === 'paint') { if (!PAINTDOC_open(prdPaintData(D))) toast('เปิดแท็บใหม่ไม่ได้ — อนุญาตป๊อปอัปของเว็บนี้ก่อน', 'err'); return; }
+  const h = prdIsDep(k) ? prdWdDoc(D, prdDepId(k)) : prdJobDoc(D, k, ref);
+  if (!h) { toast('ไม่พบใบงานนี้ (แผนอาจยกเลิก / Admin ลบแล้ว)', 'err'); return; }
+  if (!prdOpenDoc(h)) toast('เปิดแท็บใหม่ไม่ได้ — อนุญาตป๊อปอัปของเว็บนี้ก่อน', 'err');
+});
 on('prdWdPrint', (el) => { const D = PRD.det[el.dataset.oid]; if (!D) return; const h = prdWdDoc(D, el.dataset.dep); if (!h) { toast('ไม่มีข้อมูลให้พิมพ์', 'err'); return; }
   if (!prdOpenDoc(h)) toast('เปิดแท็บใหม่ไม่ได้ — อนุญาตป๊อปอัปของเว็บนี้ก่อน', 'err'); });
 /* หน้าภาพรวม: เศษที่เก็บไว้ใช้ (ทุกงาน) */
@@ -4710,38 +4804,43 @@ route(/^\/prd\/w\/(lm|cut|paint|mo|d\.[a-z0-9]{1,24})\/(.+)$/, 'prd', (m) => {
       '<span class="bx">' + icon('check', 'sm') + '</span><b>' + prdStg(k).st[PRD_ORD[s]][0] + '</b><span class="sub">' + (on ? 'ติ๊กแล้ว' : nOn ? nOn + '/' + T.length : 'ยังไม่ติ๊ก') + '</span></button>'; }).join('');
   const allSel = W.items.length > 0 && sel.size === W.items.length;
   const items = W.items.map((i) => { const on = sel.has(i.key), s = i.s || null;
-    return '<div class="spn-item st-' + (i.st || 'sent') + (i.hold ? ' hold' : '') + (on ? ' sel' : '') + '"><label class="si-l">' + (can ? '<input type="checkbox" data-chg="prdPickOne" data-w="' + esc(wk) + '" data-key="' + esc(i.key) + '"' + (on ? ' checked' : '') + ' aria-label="เลือก ' + esc(i.a) + '">' : '') +
-      '<span class="si-b">' + (i.sw ? prdSw(i.sw) : '') + '<b class="mono">' + esc(i.a) + '</b><span class="si-d">' + esc(i.b) + '</span>' + (i.mh || '') + prdChgH(i, can && dep5 ? dep5 : '', oid) + (i.note ? '<span class="prd-anote small">' + icon('edit', 'xs') + ' ' + esc(i.note) + '</span>' : '') +
+    const stx = prdStg(k).st[i.st || 'sent'] ? prdStg(k).st[i.st || 'sent'][0] : '';   /* V1.8.6: ช่องหน้ารายการ = สถานะจริง (ติ๊กตามขั้น สีเดียวกับปุ่มติ๊ก) */
+    return '<div class="spn-item st-' + (i.st || 'sent') + (i.hold ? ' hold' : '') + (on ? ' sel' : '') + '"><label class="si-l">' + '<span class="si-st s-' + (i.st || 'sent') + '" title="สถานะ: ' + esc(stx) + '" aria-hidden="true">' + (i.st && i.st !== 'sent' ? icon('check', 'sm') : '') + '</span>' +
+      '<span class="si-b">' + (i.sw ? prdSw(i.sw) : '') + '<b class="mono">' + esc(i.a) + '</b><span class="si-d">' + esc(i.b) + '</span>' + (i.mh || '') + (W.wd ? prdItemCut(i.a, W.wd) : '') + prdChgH(i, can && dep5 ? dep5 : '', oid) + (i.note ? '<span class="prd-anote small">' + icon('edit', 'xs') + ' ' + esc(i.note) + '</span>' : '') +
         '<span class="si-s">' + prdBadge(k, i.st) + prdHoldPill(i.hold) + (s && s.at ? '<span class="xs muted">' + fmtDT(s.at) + (s.by ? ' · ' + esc(s.by) : '') + '</span>' : '') + '</span>' + (prdHoldTxt(i.hold) ? '<span class="prd-holdn xs">' + esc(prdHoldTxt(i.hold)) + '</span>' : '') + '</span>' +
-      '<span class="si-q">' + esc(i.c) + (i.was != null ? '<span class="sub prd-was">Admin แก้ · เดิม ' + prdQty(i.was) + '</span>' : '') + '</span></label>' +
+      '<span class="si-rt"><span class="si-q">' + esc(i.c) + (i.was != null ? '<span class="sub prd-was">Admin แก้ · เดิม ' + prdQty(i.was) + '</span>' : '') + '</span>' +
+      (can ? '<span class="si-pk' + (on ? ' on' : '') + '"><input type="checkbox" data-chg="prdPickOne" data-w="' + esc(wk) + '" data-key="' + esc(i.key) + '"' + (on ? ' checked' : '') + ' aria-label="เลือก ' + esc(i.a) + '"><span class="pk-o">' + (on ? icon('check', 'xs') : '') + '</span>' + (on ? 'เลือกแล้ว' : 'เลือก') + '</span>' : '') + '</span></label>' +
       (i.rm && can ? '<button type="button" class="btn sm spn-x" data-act="prdDropAsk" data-k="' + esc(k) + '" data-oid="' + esc(oid) + '" data-key="' + esc(i.key) + '" aria-label="ลบ ' + esc(i.a) + ' (Support ไม่ได้ทำเอง)"' + tipA(spnTip('drop')) + '>' + icon('x', 'sm') + '</button>' : '') + '</div>'; }).join('');
   const drop = W.dropped && W.dropped.length ? '<div class="card spn-drop"><div class="card-b"><b>ลบออกแล้ว ' + W.dropped.length + ' รายการ (Support ไม่ได้ทำเอง)</b>' +
     W.dropped.map((i) => '<div class="spn-dr"><span><b class="mono">' + esc(i.code) + '</b> ' + esc(i.name || '') + ' · ' + prdQty(i.qty) + ' ' + esc(i.unit || 'EA') + '<span class="xs muted"> — ลบโดย ' + esc(i.dropBy || '') + ' ' + fmtDT(i.dropAt) + '</span></span>' +
       (S.user.role === 'admin' ? '<button class="btn sm" data-act="prdDropUndo" data-oid="' + esc(oid) + '" data-key="' + esc(i.key) + '">' + icon('undo', 'sm') + ' กู้คืน</button>' : '') + '</div>').join('') +
     (S.user.role === 'admin' ? '' : '<div class="xs muted" style="margin-top:6px">กดผิด → ติดต่อ Admin ให้กู้คืน</div>') + '</div></div>' : '';
   const head = '<div class="card spn-wh st-' + (W.st || 'sent') + '"><div class="card-b">' +
-    '<div class="spn-wt"><div><b class="mono">' + esc(W.no) + '</b> ' + prdBadge(k, W.st) + (W.off ? ' <span class="badge t-gray">ยกเลิก / ไม่อยู่ในรอบล่าสุด</span>' : '') + '<div class="small">' + (k === 'lm' || W.docNo ? prdOnoH(D.order.iid, oid) + (W.title && W.title !== oid ? ' · ' + esc(W.title) : '') : esc(W.title !== oid ? W.title : '') + (D.order.iid && D.order.iid !== oid ? (W.title && W.title !== oid ? ' · ' : '') + '<span class="xs muted mono prd-oid0">' + esc(oid) + '</span>' : '')) + '</div><div class="xs muted">' + esc(W.meta) + '</div></div>' +
-      '<span class="spn-wa">' + folBtn(oid) + '<a class="btn sm" href="#/prd/o/' + encodeURIComponent(oid) + '" data-act="prdGoDoc" data-oid="' + esc(oid) + '" data-t="' + k + '"' + tipA(spnTip('doc')) + '>' + icon('file', 'sm') + ' เอกสารทั้งงาน</a></span></div>' +
+    '<div class="spn-wt"><div><b class="mono">' + esc(W.no) + '</b> ' + prdBadge(k, W.st) + (W.off ? ' <span class="badge t-gray">ยกเลิก / ไม่อยู่ในรอบล่าสุด</span>' : '') + '<div class="small">' + (D.order.lot && k !== 'lm' ? prdLotH(D.order.lot) + ' ' : '') + (k === 'lm' || W.docNo ? prdOnoH(D.order.iid, oid) + (W.title && W.title !== oid ? ' · ' + esc(W.title) : '') : esc(W.title !== oid ? W.title : '') + (D.order.iid && D.order.iid !== oid ? (W.title && W.title !== oid ? ' · ' : '') + '<span class="xs muted mono prd-oid0">' + esc(oid) + '</span>' : '')) + '</div><div class="xs muted">' + esc(W.meta) + '</div></div>' +
+      '<span class="spn-wa">' + folBtn(oid) + (k !== 'cut' ? '<button type="button" class="btn sm prd-jobb" data-act="prdJobPrint" data-oid="' + esc(oid) + '" data-k="' + esc(k) + '" data-ref="' + esc(ref) + '"' + tipA('เปิดใบงานนี้ในแท็บใหม่ — ดู / พิมพ์ซ้ำได้ (เผื่อใบกระดาษหาย)') + '>' + icon('print', 'sm') + ' ดู / พิมพ์ใบงาน</button>' : '') + '<a class="btn sm" href="#/prd/o/' + encodeURIComponent(oid) + '" data-act="prdGoDoc" data-oid="' + esc(oid) + '" data-t="' + k + '"' + tipA(spnTip('doc')) + '>' + icon('file', 'sm') + ' เอกสารทั้งงาน</a></span></div>' +
     '<div class="spn-wd">' + prdDueBox(u, W.st === 'done') + '<div class="spn-wp"><div class="spn-wp-h"><span>ความคืบหน้า · เสร็จ <b class="n">' + W.cnt.done + '/' + W.cnt.n + '</b> รายการ' + tipI(spnTip('prog'), 'ความคืบหน้า') + '</span><b>' + prdPct(W.cnt, W.st) + '%</b></div>' + prdBar(W.cnt, true, nHold) +
       '<div class="spn-lg"><span><i class="b-done"></i>เสร็จ <b>' + W.cnt.done + '</b></span><span><i class="b-doing"></i>กำลังทำ <b>' + W.cnt.doing + '</b></span><span><i class="b-got"></i>รับงาน <b>' + W.cnt.got + '</b></span><span><i class="b-none"></i>ยังไม่รับ <b>' + (W.cnt.n - W.cnt.done - W.cnt.doing - W.cnt.got) + '</b></span>' + (nHold ? '<span class="lg-hold"><i class="b-hold"></i>⏸ รอ <b>' + nHold + '</b></span>' : '') + '</div></div></div>' +
     (W.warn ? '<div class="sr-w">' + esc(W.warn) + '</div>' : '') + (W.note ? '<div class="prd-anote small">' + icon('edit', 'xs') + ' หมายเหตุ: ' + esc(W.note) + '</div>' : '') + prdHoldBanner(W.items.map((i) => i.hold)) + prdChgBan(nChg, nNew) + '</div></div>';
-  const list = '<div class="card spn-items"><div class="spn-ih">' + (can ? '<label class="si-all"' + tipA(spnTip('all')) + '><input type="checkbox" data-chg="prdPickAll" data-w="' + esc(wk) + '"' + (allSel ? ' checked' : '') + '> ' + prdStg(k).items + ' · เลือกทั้งหมด</label>' : '<b>' + prdStg(k).items + '</b>') +
-    '<span class="xs muted">' + (sel.size ? 'เลือก ' + sel.size + '/' + W.items.length : W.items.length + ' รายการ' + (can ? ' · ไม่เลือก = ทั้งใบ' : '')) + '</span></div>' + items + '</div>';
+  const list = '<div class="card spn-items"><div class="spn-ih"><div class="si-ih-l"><b>' + prdStg(k).items + ' (' + W.items.length + ' รายการ)</b>' +   /* V1.8.6: เลือก = ปุ่มด้านขวา (ไม่ใช่ช่องสถานะ) */
+      (can ? '<span class="si-hint">' + (sel.size ? 'เลือกไว้ ' + sel.size + ' รายการ — ปุ่มติ๊ก / ติดป้ายรอ ด้านล่างทำเฉพาะที่เลือก' : 'ช่องหน้ารายการ = สถานะ · อยากทำบางรายการ แตะ “เลือก” · ไม่เลือก = ทำทั้งใบ') + '</span>' : '') + '</div>' +
+    (can ? '<div class="si-ih-r">' + (sel.size ? '<button type="button" class="btn sm" data-act="prdPickClr" data-w="' + esc(wk) + '">' + icon('x', 'sm') + ' ล้างที่เลือก</button>' : '') +
+      '<label class="si-pk' + (allSel ? ' on' : '') + '"' + tipA(spnTip('all')) + '><input type="checkbox" data-chg="prdPickAll" data-w="' + esc(wk) + '"' + (allSel ? ' checked' : '') + '><span class="pk-o">' + (allSel ? icon('check', 'xs') : '') + '</span>เลือกทั้งหมด</label></div>' : '') + '</div>' + items + '</div>';
   const bar = can ? '<div class="spn-act" role="group" aria-label="ติ๊กสถานะ">' + (msg ? '<div class="spn-msg ' + msg.kind + '" role="status">' + esc(msg.t) + '</div>' : '') +
       prdNextBtn(k, ref, oid, T) +   /* V1.8.5: ปุ่มใหญ่ ขั้นต่อไป */
       '<div class="spn-act-h"><b>' + (sel.size ? 'ติ๊กให้ ' + sel.size + ' รายการที่เลือก' : 'ติ๊กให้ทั้งใบ (' + W.items.length + ' รายการ)') + '</b><span>แตะติ๊ก · แตะซ้ำยกเลิก' + tipI(spnTip('act'), 'วิธีติ๊ก') + '</span></div><div class="spn-tgs">' + steps + '</div>' +
-      '<div class="spn-hrow">' + (T.some((i) => i.st !== 'done') ? '<button type="button" class="btn spn-hbtn" data-act="prdHoldAsk" data-k="' + k + '" data-ref="' + esc(ref) + '" data-oid="' + esc(oid) + '"' + tipA('ติดป้ายรอ (รอวัตถุดิบ ฯลฯ) ให้' + (sel.size ? 'รายการที่เลือก' : 'ทุกรายการที่ยังไม่เสร็จ') + ' — คนอื่นเห็นในภาพรวม + แจ้งเตือน') + '>' + icon('pause', 'sm') + ' ติดป้ายรอ…</button>' : '') +
-        (T.some((i) => i.hold) ? '<button type="button" class="btn spn-hbtn go" data-act="prdHoldOff" data-k="' + k + '" data-ref="' + esc(ref) + '" data-oid="' + esc(oid) + '">' + icon('play', 'sm') + ' ของมาแล้ว ทำต่อ</button>' : '') + '</div></div>'
+      '<div class="spn-hrow">' + (T.some((i) => i.st !== 'done') ? '<button type="button" class="btn spn-hbtn" data-act="prdHoldAsk" data-k="' + k + '" data-ref="' + esc(ref) + '" data-oid="' + esc(oid) + '"' + tipA('ติดป้ายรอ (รอวัตถุดิบ ฯลฯ) ให้' + (sel.size ? 'รายการที่เลือก' : 'ทุกรายการที่ยังไม่เสร็จ') + ' — คนอื่นเห็นในภาพรวม + แจ้งเตือน') + '>' + icon('pause', 'sm') + ' ติดป้ายรอ · ' + (sel.size ? T.filter((i) => i.st !== 'done').length + ' รายการที่เลือก' : 'ทั้งใบ') + '…</button>' : '') +
+        (T.some((i) => i.hold) ? '<button type="button" class="btn spn-hbtn go" data-act="prdHoldOff" data-k="' + k + '" data-ref="' + esc(ref) + '" data-oid="' + esc(oid) + '">' + icon('play', 'sm') + ' ของมาแล้ว ทำต่อ · ' + (sel.size ? T.filter((i) => i.hold).length + ' รายการที่เลือก' : 'ทั้งใบ') + '</button>' : '') + '</div></div>'
     : '<div class="card"><div class="card-b small muted">' + icon('lock', 'sm') + ' ' + (W.off ? 'ใบนี้ยกเลิก / ไม่อยู่ในรอบที่แผนส่งล่าสุด — ติ๊กไม่ได้' : (prdMyRo() ? 'บัญชีนี้ติดตามอย่างเดียว — ดูได้ แต่ติ๊กสถานะ / ติดป้ายรอไม่ได้' : 'ดูอย่างเดียว — งาน' + prdStg(k).t + 'ไม่ใช่ส่วนงานของบัญชีนี้ (Admin ตั้งได้ที่หน้าบัญชีผู้ใช้)')) + '</div></div>';
   const wdBox = W.wd ? '<details class="card prd-wdc" data-prdtg="' + esc('wdo|' + wk) + '"' + (PRD['wdo|' + wk] ? ' open' : '') + '><summary>' + icon('layers', 'sm') + ' <b>รายการเบิก — วัตถุดิบที่ต้องใช้</b><span class="xs muted">' + esc(prdWdSum(W.wd)) + (W.wd.mc > 1 ? ' · ใบรวม ' + W.wd.mc + ' Order' : '') + ' · กดดู</span>' + prdWdTag(PG5, W.wd) + icon('chevRight', 'sm chev') + '</summary>' +
     prdWdHtml(W.wd, W.wdNo, dep5 ? { oid, dep: dep5, pg: PG5, can: can && !!dep5 } : null) + '</details>' : '';   /* V1.8.1 · V1.8.5: ติ๊กตัด / เบิกครบ / เศษ / พิมพ์ · จำว่ากางไว้ */
   return { nav: '#/prd/orders', html: pageHead(esc(prdStg(k).doc) + ' · ' + '<span class="mono">' + esc(W.no) + '</span>', '', back) + head + wdBox + list + drop + bar };
 });
 on('prdLtGo', (el) => { PRD.lt = el.dataset.t; go('#/prd/orders'); });
-Acts.prdPickOne = (el) => { const s = prdPick(el.dataset.w); if (el.checked) s.add(el.dataset.key); else s.delete(el.dataset.key); rerender(); };
+Acts.prdPickOne = (el) => { const s = prdPick(el.dataset.w); if (el.checked) s.add(el.dataset.key); else s.delete(el.dataset.key); delete PRD.msg[el.dataset.w]; rerender(); };   /* V1.8.6: ข้อความผลกดครั้งก่อนหาย (ไม่สับสนว่าทำกับรายการไหน) */
+on('prdPickClr', (el) => { prdPick(el.dataset.w).clear(); delete PRD.msg[el.dataset.w]; rerender(); });   /* V1.8.6 */
 Acts.prdPickAll = (el) => {
   const wk = el.dataset.w, s = prdPick(wk), i = wk.indexOf('|'), k = wk.slice(0, i), ref = wk.slice(i + 1), oid = k === 'lm' ? prdLmOid(ref) : ref, D = PRD.det[oid], W = D && prdWork(k, ref, D);
-  s.clear(); if (el.checked && W) W.items.forEach((x) => s.add(x.key)); rerender();
+  s.clear(); if (el.checked && W) W.items.forEach((x) => s.add(x.key)); delete PRD.msg[wk]; rerender();
 };
 on('prdTick', async (el) => {
   const k = el.dataset.k, ref = el.dataset.ref, oid = el.dataset.oid, s = +el.dataset.s, wk = k + '|' + ref, D = PRD.det[oid], W = D && prdWork(k, ref, D); if (!W) return;
@@ -4763,13 +4862,21 @@ function prdHoldT(el, on) {
   const T = (sel.size ? W.items.filter((i) => sel.has(i.key)) : W.items).filter((i) => i.st !== 'done' && (on || HM[i.key]));
   return { k, ref, oid, wk, W, HM, sel, T };
 }
+function prdHoldList(X) {   /* V1.8.6 (ผู้ใช้ 10:47 “เลือกรายการแล้วไม่ขึ้นรายการที่เลือก”) — รายการที่จะติดป้าย */
+  const skip = X.sel.size ? W0(X).filter((i) => X.sel.has(i.key) && i.st === 'done').length : 0, M = 12;
+  return '<div class="prd-hlist"><div class="small"><b>รายการที่จะติดป้าย ' + X.T.length + ' รายการ</b>' + (X.sel.size ? ' <span class="muted">(ที่เลือก' + (skip ? ' · ข้ามที่เสร็จแล้ว ' + skip : '') + ')</span>' : ' <span class="muted">(ทุกรายการที่ยังไม่เสร็จในใบนี้)</span>') + '</div><ul>' +
+    X.T.slice(0, M).map((i) => '<li><b class="mono">' + esc(i.a) + '</b><span class="small">' + esc(i.b || '') + '</span><span class="small muted">· ' + esc(i.c || '') + '</span>' + (X.HM[i.key] ? '<span class="prd-hold">' + icon('pause', 'xs') + ' ติดอยู่แล้ว — ทับของเดิม</span>' : '') + '</li>').join('') +
+    (X.T.length > M ? '<li class="small muted">… อีก ' + (X.T.length - M) + ' รายการ</li>' : '') + '</ul>' +
+    (X.sel.size ? '' : '<div class="xs muted" style="margin-top:6px">อยากติดเฉพาะบางรายการ → กดยกเลิก แล้วแตะ “เลือก” ที่รายการนั้นก่อน</div>') + '</div>';
+}
+function W0(X) { return (X.W && X.W.items) || []; }
 on('prdHoldAsk', (el) => {
   const X = prdHoldT(el, true); if (!X) return;
   if (!X.T.length) { toast('รายการที่เลือกเสร็จแล้วทั้งหมด — ติดป้ายรอไม่ได้', 'err'); return; }
   const h0 = X.T.map((i) => X.HM[i.key]).find(Boolean) || {};
   PRD.hold = { k: X.k, ref: X.ref, oid: X.oid, keys: X.T.map((i) => i.key) };
   modal({ title: icon('pause') + ' ติดป้ายรอ · ' + X.T.length + ' รายการ' + (X.sel.size ? 'ที่เลือก' : ' (ที่ยังไม่เสร็จ)'), sub: esc(prdStg(X.k).t + ' · ' + X.W.no),
-    body: '<div id="phf"><div class="small muted">เหตุผล</div><div class="prd-hr" role="radiogroup" aria-label="เหตุผล">' +
+    body: prdHoldList(X) + '<div id="phf"><div class="small muted">เหตุผล</div><div class="prd-hr" role="radiogroup" aria-label="เหตุผล">' +
         Object.keys(PRD_HOLD_R).map((r) => '<label class="prd-hc"><input type="radio" name="hr" value="' + r + '"' + ((h0.r || 'mat') === r ? ' checked' : '') + '> ' + PRD_HOLD_R[r] + '</label>').join('') + '</div>' +
       '<div class="field" style="margin-top:12px"><label for="ph-note">หมายเหตุ <span class="xs muted">(ไม่เกิน 120 ตัวอักษร · เหตุผล “อื่น ๆ” ต้องใส่)</span></label><input class="input" id="ph-note" name="note" maxlength="120" value="' + esc(h0.note || '') + '" placeholder="เช่น รอโปรไฟล์ 6063 จากซัพ"></div>' +
       '<div class="field" style="margin-top:10px"><label for="ph-due">คาดว่าของเข้า <span class="xs muted">(ไม่บังคับ)</span></label><input class="input" type="date" id="ph-due" name="due" value="' + esc(h0.due || '') + '"></div>' +
@@ -4895,7 +5002,7 @@ function prdPipe(b, show) {   /* V1.8.0: ต่อแผนก + ป้ายร
   const dt = (k) => !x[k] || x[k] === 'na' ? prdNa(b, k).s || '' : k === 'lm' ? 'เสร็จ ' + (+b.lmDone || 0) + '/' + b.lm + ' ใบ' : prdPct(cn(k), x[k]) + '% · ' + (k === 'paint' ? prdM2(b.cutM2) + ' ตร.ม.' : k === 'cut' ? prdQty(b.cutAll) + ' ชิ้น' : (+cn(k).n || 0) + ' รายการ');
   const pc = (k) => !x[k] || x[k] === 'na' ? -1 : k === 'lm' ? (+b.lm > 0 ? Math.round(Math.min(1, (+b.lmDone || 0) / +b.lm) * 100) : x[k] === 'done' ? 100 : 0) : prdPct(cn(k), x[k]);
   return '<div class="prd-pipe" style="grid-template-columns:repeat(' + show.length + ',minmax(112px,1fr))">' + show.map((k) => { const v = x[k] || 'na', h = v !== 'done' && v !== 'na' ? prdHoldOf(b, k) : null, p = pc(k);
-    return '<span class="pp pp-' + PRD_DOT[v][1] + (v === 'na' ? (prdNa(b, k).no ? ' pp-no' : ' pp-wait') : '') + (h ? ' pp-hold' : '') + '" title="' + esc(prdOvT(k) + ': ' + st(k) + (dt(k) ? ' · ' + dt(k) : '') + (h ? ' · ⏸ ' + (PRD_HOLD_R[h.r] || 'รอ') + ' ' + h.n + ' รายการ' + (h.note ? ' — ' + h.note : '') + (h.due ? ' · คาดเข้า ' + prdIso(h.due) : '') : '')) + '">' + (v === 'done' ? '<i>' + icon('check', 'xs') + '</i>' : '') +
+    return '<span class="pp pp-' + PRD_DOT[v][1] + (v === 'na' ? (prdNa(b, k).no ? ' pp-no' : ' pp-wait') : '') + (h ? ' pp-hold' : '') + '"' + (v === 'na' ? '' : ' data-act="prdGoDoc" data-oid="' + esc(b.oid) + '" data-t="' + esc(k) + '" role="button" tabindex="0"') + ' title="' + esc((v === 'na' ? '' : 'แตะ = เปิดเอกสาร ') + prdOvT(k) + ': ' + st(k) + (dt(k) ? ' · ' + dt(k) : '') + (h ? ' · ⏸ ' + (PRD_HOLD_R[h.r] || 'รอ') + ' ' + h.n + ' รายการ' + (h.note ? ' — ' + h.note : '') + (h.due ? ' · คาดเข้า ' + prdIso(h.due) : '') : '')) + '">' + (v === 'done' ? '<i>' + icon('check', 'xs') + '</i>' : '') +
       '<b class="pp-k">' + esc(prdOvT(k)) + '</b><span class="ps">' + (v === 'na' ? icon(prdNa(b, k).no ? 'x' : 'clock', 'xs') + ' ' : '') + esc(st(k)) + '</span>' + (dt(k) ? '<span class="pd">' + esc(dt(k)) + '</span>' : '') +
       (p >= 0 ? '<span class="pp-bar" aria-hidden="true"><s style="width:' + p + '%"></s></span>' : '') + (h ? '<span class="pp-hd">' + icon('pause', 'xs') + ' รอ ' + h.n + '</span>' : '') + '</span>'; }).join('') + '</div>';
 }
@@ -4932,20 +5039,20 @@ function prdOverview(r, all, tb, sub) {
   const rows = L.map((b) => {
     const now = prdNowAt(b), d = prdOvDue(b), open = !prdAllDone(b);
     return '<tr class="prd-row" data-act="prdOpen" data-oid="' + esc(b.oid) + '" data-t="' + (now.k === 'wait' || now.k === 'done' ? 'lm' : now.k) + '" data-pq="' + esc(prdQ(b)) + '" tabindex="0"><td class="main"><a href="#/prd/o/' + encodeURIComponent(b.oid) + '" class="mono strong">' + esc(prdOno(b.iid, b.oid)) + '</a>' + folMark(b.oid) +
-        (b.title && b.title !== b.oid ? '<div class="sub">' + esc(b.title) + (b.adm ? ' ' + prdAdmTag() : '') + '</div>' : b.adm ? '<div class="sub">' + prdAdmTag() + '</div>' : '') + (b.iid && b.iid !== b.oid ? '<div class="sub mono prd-oid0">' + esc(b.oid) + '</div>' : '') + '</td>' +
+        (b.title && b.title !== b.oid ? '<div class="sub">' + esc(b.title) + (b.adm ? ' ' + prdAdmTag() : '') + '</div>' : b.adm ? '<div class="sub">' + prdAdmTag() + '</div>' : '') + (b.iid && b.iid !== b.oid ? '<div class="sub mono prd-oid0">' + esc(b.oid) + '</div>' : '') + (b.lot ? '<div class="sub">' + prdLotH(b.lot) + '</div>' : '') + '</td>' +
       '<td data-l="ตอนนี้อยู่ที่"><span class="prd-now pn-' + now.cls + '">' + esc(now.t) + '</span></td>' +
       '<td data-l="สถานะแต่ละส่วน" class="prd-pipe-td">' + prdPipe(b, show) + '</td>' +
       '<td data-l="กำหนด" class="small prd-nw"><div>' + (d ? (d === b.paintDue ? '<div class="sub">ต้องเข้าแผนกสี</div>' : '') + '<b class="' + (open && prdLate(d) ? 'prd-late' : '') + '">' + prdIso(d) + '</b>' + prdLeft(d, open) : '—') + (b.install ? '<div class="sub">ติดตั้ง ' + prdIso(b.install) + '</div>' : '') + '</div></td>' +
-      '<td data-l="อัปเดต" class="small prd-nw">' + fmtDT(lastOf(b)) + '</td><td class="prd-go">ดูเอกสาร ' + icon('chevRight', 'sm') + '</td></tr>';
+      '<td data-l="อัปเดต" class="small prd-nw">' + fmtDT(lastOf(b)) + '</td><td class="prd-go"><span class="prd-docb">' + icon('file', 'sm') + ' เปิดเอกสาร</span></td></tr>';   /* V1.8.6: ปุ่มชัด (ผู้ใช้ “หาปุ่มเปิดเอกสารไม่เจอ”) */
   }).join('');
   if (r === 'admin') setTimeout(() => prdRmLoad(), 0);
   const nRm = PRD.rm ? PRD.rm.L.reduce((n, x) => n + prdRmCount(x), 0) : 0;
   const rmBtn = r === 'admin' ? '<button class="btn sm" data-act="prdRm" title="รายการที่ Admin ลบ (ซ่อน) — กู้คืนได้">' + icon('trash', 'sm') + ' รายการที่ลบ' + (nRm ? ' <span class="badge t-red">' + nRm + '</span>' : '') + '</button>' : '';
   return { nav: '#/prd/orders', after: () => prdQApply(),
-    html: pageHead('ภาพรวมทุกงาน', 'ทุกงานในไลน์ผลิต — ติ๊กเลือกสถานี / สถานะที่อยากดู · กดแถวเพื่อดูเอกสาร', rmBtn + (SNB_FRAMED ? '<button class="btn sm" data-act="prdSyncNow">' + icon('refresh', 'sm') + ' ดึงจาก Production</button>' : '')) +
+    html: pageHead('ภาพรวมทุกงาน', 'ทุกงานในไลน์ผลิต — ติ๊กเลือกสถานี / สถานะที่อยากดู · แตะช่องสถานะ = เปิดเอกสารส่วนนั้น · 📄 เปิดเอกสาร = ทุกใบของงาน', rmBtn + (SNB_FRAMED ? '<button class="btn sm" data-act="prdSyncNow">' + icon('refresh', 'sm') + ' ดึงจาก Production</button>' : '')) +
       prdSyncNote() + prdChaseBar(all) +
       '<div class="card" style="margin-top:12px"><div class="card-b">' +
-        '<div class="sbox">' + icon('search', 'sm') + '<input class="input" type="search" id="prd-q" data-inp="prdQ" value="' + esc(PRD.q) + '" placeholder="ค้นเลขงาน / ชื่องาน / Item Id" aria-label="ค้นหางาน"></div>' +
+        '<div class="sbox">' + icon('search', 'sm') + '<input class="input" type="search" id="prd-q" data-inp="prdQ" value="' + esc(PRD.q) + '" placeholder="ค้นเลขงาน / ชื่องาน / Item Id / LOT" aria-label="ค้นหางาน"></div>' +
         '<div class="prd-flt"><div class="chips">' + chips + '</div>' + sorts + '</div>' + tick + atChips + '</div>' +
         '<div class="table-wrap"><table class="t resp prd-tbl prd-tbl-all"><thead><tr><th>งาน (Order)</th><th>ตอนนี้อยู่ที่' + tipI(spnTip('ov_at'), 'ตอนนี้อยู่ที่') + '</th><th class="prd-pipe-th">สถานะแต่ละส่วน' + tipI(spnTip('ov_st'), 'สถานะแต่ละส่วน') + '<div class="prd-pipe-h" style="grid-template-columns:repeat(' + show.length + ',minmax(112px,1fr))">' + show.map((k, j) => '<span>' + (j ? '<em>→</em>' : '') + esc(prdOvT(k)) + '</span>').join('') + '</div></th><th>กำหนด</th><th>อัปเดต</th><th aria-label="ดูเอกสาร"></th></tr></thead><tbody>' +
           (rows || '<tr><td colspan="6">' + (all.length ? empty('search', 'ไม่มีงานตามที่ติ๊ก', 'กด “ล้างตัวกรอง” หรือเลือก “ทั้งหมด”') : empty('factory', 'ยังไม่มีงานจากแผน', 'งานที่แผนกด “📤 ส่งเอกสารเข้า App ไลน์ผลิต” ใน Production จะขึ้นที่นี่')) + '</td></tr>') +
@@ -5235,9 +5342,9 @@ route(/^\/prd\/o\/(.+)$/, 'prd', (m) => {
   const hasDep = D.items.some((i) => i.dep && !i.gone && !i.removedAt);   /* V1.8.0: แท็บแผนก = เฉพาะรายการของแผนกนั้น · สั่งทำ (ไม่แยกแผนก) = รายการที่ยังไม่ระบุแผนก */
   const body = !tabsL.length ? '<div class="card">' + empty('layers', 'งานนี้ไม่มีรายการของส่วนงานคุณ', 'ดูสถานะทุกส่วนงานได้ที่กล่องด้านบน') + '</div>'
     : (tab === 'lm' ? prdLmHtml(oid, D.docs, r, o) : tab === 'cut' ? prdCutHtml(oid, D) : tab === 'paint' ? prdPaintHtml(oid, D) : prdIsDep(tab) ? prdMoHtml(oid, D, r, prdDepId(tab)) : prdMoHtml(oid, D, r, hasDep ? '' : undefined));
-  return { nav: '#/prd/orders', html: pageHead(prdOnoH(o.iid, oid), esc(o.title && o.title !== oid ? o.title : '') + (r === 'admin' && o.adm && o.adm.title ? ' ' + prdAdmTag('ชื่อจาก Production: ' + o.titleOrig) : ''),
+  return { nav: '#/prd/orders', html: pageHead(prdOnoH(o.iid, oid), (o.lot ? prdLotH(o.lot) + ' ' : '') + esc(o.title && o.title !== oid ? o.title : '') + (r === 'admin' && o.adm && o.adm.title ? ' ' + prdAdmTag('ชื่อจาก Production: ' + o.titleOrig) : ''),
       folBtn(oid) + back + '<button class="btn sm" data-act="prdReload" data-oid="' + esc(oid) + '" aria-label="โหลดใหม่">' + icon('refresh', 'sm') + '</button>', 'ไลน์ผลิต') +
-    head + prdRoNote() + (r === 'admin' ? prdAdmBar(oid, D, b) : '') + '<div class="prd-tabs">' + tabs + '</div>' + body };
+    head + prdRoNote() + (r === 'admin' ? prdAdmBar(oid, D, b) : '') + prdJobBar(oid, D) + '<div class="prd-tabs">' + tabs + '</div>' + body };
 });
 
 function prdCntK(x) {   /* นับรายการจากสถานะรายการ (ist) + รหัสรายการ (keys) ที่ Server ส่งมา */
@@ -5530,6 +5637,26 @@ function prdUseTbl(L, col) {
   R.sort((a, b) => b.mm - a.mm);
   return '<div class="prd-cbh">✂ ชิ้นที่ต้องตัดจากเส้นนี้ ' + L.length + ' รายการ' + (ok ? ' · รวม ' + prdQty(n) + ' ชิ้น' : '') + '</div><table class="prd-ut">' + R.map((x) => x.h).join('') + '</table>';
 }
+/* V1.8.6: ภาพตัดของรายการเดียว — เส้นยาวที่มีชิ้นนี้ (ชิ้นนี้สีเต็ม · ชิ้นอื่นจาง) จากแผนตัดในรายการเบิกของแผนก · ทุกสถานะ */
+function prdItemCut(code, wd) {
+  if (!wd || !Array.isArray(wd.bars) || !code) return '';
+  const C = String(code).trim().toUpperCase(), out = [];
+  wd.bars.forEach((b) => {
+    const L = +b.len || 0; if (!L || !Array.isArray(b.plan) || !b.plan.length) return;
+    let mm = 0, qn = 0; (b.use || []).forEach((t) => { const m = /^(.*?) — ([\d.,]+) มม\.(?: × ([\d.,]+))?/.exec(String(t)); if (m && m[1].trim().toUpperCase() === C) { mm = +m[2].replace(/,/g, '') || 0; qn = +String(m[3] || '').replace(/,/g, '') || 0; } });
+    if (!(mm > 0)) return;
+    const col = prdCol([].concat(...(b.use || []).map(prdUseMm))), me = col[mm] || PRD_CP[0];
+    const hit = prdPlanG(b.plan).filter((g) => prdCuts(g.t).indexOf(mm) >= 0); if (!hit.length) return;
+    const nb = hit.reduce((n, g) => n + g.n, 0), np = hit.reduce((n, g) => n + g.n * prdCuts(g.t).filter((x) => x === mm).length, 0);
+    const bar = (g) => { const lf = +String(g.l).replace(/,/g, '') || 0, lw = lf > 0 ? lf / L * 100 : 0;
+      return '<span class="prd-cpb">' + prdCuts(g.t).map((x) => { const w = x / L * 100, on = x === mm, c = on ? me : ['#EEF2F6', '#94A3B8']; return '<span class="prd-sg' + (on ? ' me' : '') + '" style="width:' + w.toFixed(2) + '%;background:' + c[0] + ';color:' + c[1] + '">' + (w >= 6 ? String(x) : '') + '</span>'; }).join('') +
+        '<span class="prd-lf">' + (lw >= 12 ? 'เศษ ' + esc(g.l) : '') + '</span></span>'; };
+    out.push('<div class="prd-icut"><div class="ich">' + prdCsw(col, mm) + '✂ ตัด <b>' + prdQty(mm) + ' มม.</b>' + (qn ? ' × <b>' + prdQty(qn) + '</b> ชิ้น' : '') + ' จากเส้น <span class="mono">' + esc(b.c) + '</span> (' + prdQty(L) + ' มม.) · อยู่ใน ' + nb + ' เส้น' + (np && qn && np !== qn ? ' (' + np + ' ชิ้น)' : '') + '</div>' +
+      hit.slice(0, 4).map((g) => '<div class="prd-cpr"><span class="cpn"><b>' + g.n + '</b> เส้น</span>' + bar(g) + '<span class="cpt">' + esc(g.t) + (g.l !== '' ? ' · <b>เศษ ' + esc(g.l) + '</b>' : '') + '</span></div>').join('') +
+      (hit.length > 4 ? '<div class="xs muted">… อีก ' + (hit.length - 4) + ' แบบ (ดูแผนตัดเต็มในข้อ 1)</div>' : '') + '</div>');
+  });
+  return out.join('');
+}
 function prdPlanTbl(P, q, len, col, Y) {   /* V1.8.5: Y = { c, nm, X:{ oid, dep, pg, can } } → ติ๊กตัดแล้ว / เก็บเศษ */
   P = Array.isArray(P) ? P : []; if (!P.length) return '';
   col = col || {}; const G = [], M = {}, L = +len || 0;
@@ -5579,7 +5706,7 @@ function prdMoHtml(oid, D, r, only) {   /* V1.8.0: only = รหัสแผน�
       '<div class="table-wrap"><table class="t resp prd-lines prd-mo-t"><thead><tr><th>รหัส</th><th>รายการ</th><th class="r">จำนวน</th><th>ตู้</th><th>สถานะ</th>' + (adm ? '<th class="prd-admth">Admin</th>' : '') + '</tr></thead><tbody>' +
         L.map((i, ix) => { const s = ist[i.key] || {};
           return '<tr class="st-' + (s.st || 'sent') + '"><td class="main mono strong">' + esc(i.code) + '</td><td data-l="รายการ"><div>' + esc(i.name || '') + (i.spec || G.dep ? '<div class="sub">' + (G.dep ? (PRD_SECS[i.sec] || i.sec) + (i.spec ? ' · ' : '') : '') + esc(i.spec || '') + '</div>' : '') +
-            prdMatH(i) + prdChgH(XL[ix], cdep, oid) + ((i.adm || {}).note ? '<div class="prd-anote small">' + icon('edit', 'xs') + ' ' + esc(i.adm.note) + '</div>' : '') + '</div></td>' +
+            prdMatH(i) + (wd ? prdItemCut(i.code, wd) : '') + prdChgH(XL[ix], cdep, oid) + ((i.adm || {}).note ? '<div class="prd-anote small">' + icon('edit', 'xs') + ' ' + esc(i.adm.note) + '</div>' : '') + '</div></td>' +
           '<td data-l="จำนวน" class="r"><span><b>' + prdQty(i.qty) + '</b> ' + esc(i.unit || 'EA') + ((i.adm || {}).qty != null ? '<span class="sub prd-was">Admin แก้ · เดิม ' + prdQty(i.qtyOrig) + '</span>' : '') + '</span></td><td data-l="ตู้" class="small">' + esc(i.cab || '—') + '</td>' +
           '<td data-l="สถานะ"><div>' + prdBadge('mo', s.st || 'sent') + (s.st !== 'done' ? prdHoldPill(HM[i.key]) : '') + (s.at ? '<div class="sub">' + fmtDT(s.at) + ' · ' + esc(s.by || '') + '</div>' : '') + (s.st !== 'done' && prdHoldTxt(HM[i.key]) ? '<div class="prd-holdn xs">' + esc(prdHoldTxt(HM[i.key])) + '</div>' : '') + '</div></td>' +
           (adm ? '<td data-l="Admin" class="prd-admc">' + prdMoAdmBtns(oid, i) + '</td>' : '') + '</tr>'; }).join('') +
