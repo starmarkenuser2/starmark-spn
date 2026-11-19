@@ -1336,6 +1336,310 @@ h1 .tip-i{width:24px;height:24px;margin-left:8px;transform:translateY(-2px)}
 .prd-seg.prd-dtn{flex-wrap:wrap;max-width:none}.prd-seg.prd-dtn button{flex:1 1 30%}
 .prd-hcap{margin-bottom:6px}
 .pu-st{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 12px}
+/* ===== SPN V1.8.1: รายการเบิก + วัตถุดิบที่ใช้ (ดูอย่างเดียว · Production V302) ===== */
+.prd-wd{border-bottom:1px solid var(--line);background:var(--surface-2)}
+.prd-wd-h,.prd-wd-h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;padding:10px 18px 6px}
+.prd-wd-h b,.prd-wd-h2 b{font-size:14.5px;display:inline-flex;align-items:center;gap:6px}
+.prd-wd-h2{padding-top:12px}
+.prd-wd .t{background:transparent}
+.prd-wdt{display:inline-block;margin-left:4px;padding:0 8px;border-radius:999px;font-size:11.5px;font-weight:600;vertical-align:1px;white-space:nowrap}
+.prd-wdt.bar{background:var(--blue-bg);color:var(--blue)}.prd-wdt.raw{background:var(--green-bg);color:var(--green)}
+.prd-mat{display:block;margin-top:3px;font-size:12.5px;color:var(--text-2);line-height:1.5}
+.prd-mat b{color:var(--text,inherit);font-weight:700}
+.prd-plan{margin-top:3px}.prd-plan summary{cursor:pointer;color:var(--blue);font-size:12.5px}.prd-plan div{font-size:12px;color:var(--text-2);line-height:1.45}
+.prd-wdc{padding:0;overflow:hidden}.prd-wdc>summary{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 16px;cursor:pointer;list-style:none;font-size:14.5px}
+.prd-wdc>summary::-webkit-details-marker{display:none}.prd-wdc>summary .chev{margin-left:auto;transition:transform .15s}.prd-wdc[open]>summary .chev{transform:rotate(90deg)}
+.prd-wdc[open]>summary{border-bottom:1px solid var(--line)}.prd-wdc .prd-wd{border-bottom:0}.prd-wdc .prd-wd-h{display:none}
+@media (max-width:760px){.prd-wd .t.resp td .sub,.prd-mo-t td .prd-mat{text-align:left}.prd-wd-h,.prd-wd-h2{padding-left:12px;padding-right:12px}}
+/* ===== SPN V1.8.2: สีตามสถานะ — ผู้ใช้ 18/11 18:56 “ให้คนทำงานเห็นแล้วเข้าใจเลย · แต่ละสเตตัสเปลี่ยนเป็นสีเลย · ตอนนี้ดูจืดไป” =====
+   ยังไม่รับงาน = เทาเข้ม · รับงานแล้ว = น้ำเงิน · กำลังทำ = ม่วง · เสร็จแล้ว = เขียว · ⏸ รอ = เหลืองส้ม · เลยกำหนด = แดง (สีเดียวกับปุ่มติ๊ก) */
+:root{--s-sent:#56657A;--s-sent-bg:#EDF1F5;--s-got:#1E5BA8;--s-got-bg:#E3EDFA;--s-doing:#6A4BC4;--s-doing-bg:#EEE8FB;--s-done:#1F8A4C;--s-done-bg:#E0F3E7;--s-hold:#F2B01E;--s-hold-ink:#4A2D00;--s-hold-bg:#FFF3D6}
+.badge.spn-st{color:#fff;font-weight:700;gap:4px;padding:0 10px 0 8px;letter-spacing:.1px}
+.badge.spn-st .ico{width:13px;height:13px;stroke-width:2.6}
+.badge.spn-st::before{display:none}
+.prd-tick.pt-sent{border-left:5px solid var(--s-sent)}.prd-tick.pt-got{border-left:5px solid var(--s-got)}.prd-tick.pt-doing{border-left:5px solid var(--s-doing)}.prd-tick.pt-done{border-left:5px solid var(--s-done)}
+.prd-tick.pt-sent.on{background:var(--s-sent-bg)}.prd-tick.pt-got.on{background:var(--s-got-bg)}.prd-tick.pt-doing.on{background:var(--s-doing-bg)}.prd-tick.pt-done.on{background:var(--s-done-bg)}
+.badge.s-sent{background:var(--s-sent)}.badge.s-got{background:var(--s-got)}.badge.s-doing{background:var(--s-doing)}.badge.s-done{background:var(--s-done)}
+.prd-hold{background:var(--s-hold);color:var(--s-hold-ink);font-weight:700}
+.prd-holdn{color:#8A5300;font-weight:600}
+/* แถบความคืบหน้า + คำอธิบายสี */
+.spn-bar{background:#E2E7EE}
+.spn-bar .b-done,.spn-lg .b-done{background:var(--s-done)}
+.spn-bar .b-doing,.spn-lg .b-doing{background:repeating-linear-gradient(135deg,#6A4BC4 0 6px,#7F63D3 6px 12px)}
+.spn-bar .b-got,.spn-lg .b-got{background:#4C84D3}
+.spn-lg .b-none{background:#C3CCD7}
+.spn-bar .b-hold,.spn-lg .b-hold{background:repeating-linear-gradient(135deg,#F2B01E 0 5px,#F7CC66 5px 10px)}
+/* การ์ดงานในรายการสถานี: แถบสีซ้ายตามสถานะ */
+a.spn-row{border-left-width:7px}
+a.spn-row.st-sent{border-left-color:var(--s-sent)}
+a.spn-row.st-got{border-left-color:var(--s-got);background:linear-gradient(90deg,var(--s-got-bg),#fff 42%)}
+a.spn-row.st-doing{border-left-color:var(--s-doing);background:linear-gradient(90deg,var(--s-doing-bg),#fff 42%)}
+a.spn-row.st-done{border-left-color:var(--s-done);background:linear-gradient(90deg,var(--s-done-bg),#fff 42%)}
+a.spn-row.st-hold{border-top:3px solid var(--s-hold)}
+a.spn-row .sr-p b{font-size:15px}
+a.spn-row.st-got .sr-p b{color:var(--s-got)}a.spn-row.st-doing .sr-p b{color:var(--s-doing)}a.spn-row.st-done .sr-p b{color:var(--s-done)}
+/* หน้าติ๊ก: หัวใบ + รายการ + ปุ่มติ๊ก */
+.spn-wh{border-top:6px solid var(--s-sent)}
+.spn-wh.st-got{border-top-color:var(--s-got)}.spn-wh.st-doing{border-top-color:var(--s-doing)}.spn-wh.st-done{border-top-color:var(--s-done)}
+.spn-wh.st-sent .spn-wp-h>b,.prd-stage.st-sent .spn-wp-h>b{color:var(--s-sent)}.prd-stage.st-got .spn-wp-h>b{color:var(--s-got)}.prd-stage.st-doing .spn-wp-h>b{color:var(--s-doing)}
+.prd-stage{border-top:5px solid var(--s-sent)}.prd-stage.st-got{border-top-color:var(--s-got)}.prd-stage.st-doing{border-top-color:var(--s-doing)}.prd-stage.st-done{border-top-color:var(--s-done)}
+.spn-wh.st-got .spn-wp-h>b{color:var(--s-got)}.spn-wh.st-doing .spn-wp-h>b{color:var(--s-doing)}
+.spn-item{border-left:6px solid #C9D2DD}
+.spn-item.st-got{border-left-color:var(--s-got);background:#F6F9FE}
+.spn-item.st-doing{border-left-color:var(--s-doing);background:#F9F7FE}
+.spn-item.st-done{border-left-color:var(--s-done);background:#F4FBF6}
+.spn-item.st-done .si-b b.mono,.spn-item.st-done .si-q{color:#1D6A40}
+.spn-item.hold{box-shadow:inset 0 3px 0 var(--s-hold)}
+.spn-item.sel{background:#E6EFFC!important}
+.spn-tg.s1:not(.on){border-color:#8FB1E0;color:var(--s-got)}.spn-tg.s1:not(.on) .bx{border-color:var(--s-got)}
+.spn-tg.s2:not(.on){border-color:#B4A3E6;color:var(--s-doing)}.spn-tg.s2:not(.on) .bx{border-color:var(--s-doing)}
+.spn-tg.s3:not(.on){border-color:#93CBA8;color:var(--s-done)}.spn-tg.s3:not(.on) .bx{border-color:var(--s-done)}
+.spn-hbtn{border-color:var(--s-hold);background:var(--s-hold-bg);color:var(--s-hold-ink);font-weight:600}
+/* แท็บแผนก (ตารางรายการ) — แถบสีหน้ารหัส */
+.prd-mo-t tr.st-sent td:first-child{box-shadow:inset 5px 0 0 #C9D2DD}
+.prd-mo-t tr.st-got td:first-child{box-shadow:inset 5px 0 0 var(--s-got)}
+.prd-mo-t tr.st-doing td:first-child{box-shadow:inset 5px 0 0 var(--s-doing)}
+.prd-mo-t tr.st-done td:first-child{box-shadow:inset 5px 0 0 var(--s-done)}.prd-mo-t tr.st-done td{background:#F7FCF8}
+.prd-mo-t td:first-child{padding-left:16px}
+/* ภาพรวมทุกงาน: ช่องสถานะต่อส่วน */
+.prd-pipe .pp{border-width:0 0 0 5px;border-style:solid}
+.prd-pipe .pp-na{border-left-color:#DDE3EA}
+.prd-pipe .pp-sent{background:var(--s-sent-bg);border-left-color:var(--s-sent)}.prd-pipe .pp-sent .ps{color:var(--s-sent)}
+.prd-pipe .pp-got{background:var(--s-got-bg);border-left-color:var(--s-got)}.prd-pipe .pp-got .ps{color:var(--s-got)}
+.prd-pipe .pp-doing{background:var(--s-doing-bg);border-left-color:var(--s-doing)}.prd-pipe .pp-doing .ps{color:var(--s-doing)}
+.prd-pipe .pp-done{background:var(--s-done-bg);border-left-color:var(--s-done)}.prd-pipe .pp-done .ps{color:var(--s-done)}.prd-pipe .pp-done i{background:var(--s-done)}
+.prd-pipe .pp.pp-hold{box-shadow:inset 0 0 0 2px var(--s-hold)}.prd-pipe .pp.pp-hold i{background:var(--s-hold);color:var(--s-hold-ink)}
+.prd-now{color:#fff!important}.pn-sent{background:var(--s-sent)}.pn-got{background:var(--s-got)}.pn-doing{background:var(--s-doing)}.pn-done{background:var(--s-done)}.prd-now.pn-hold{background:var(--s-hold);color:var(--s-hold-ink)!important}
+/* ===== อ่านง่าย (ผู้ใช้ 19:11 “ขอเน้นเด่น ๆ ใช้งานง่าย ใครมองก็ทำงานได้เลย · คนทำงานส่วนใหญ่อายุ 30 ขึ้นไป”): ตัวใหญ่ขึ้น · ปุ่มใหญ่ขึ้น · ตัวหนังสือเข้มขึ้น ===== */
+:root{--text-2:#334155;--text-3:#556275}
+.badge.spn-st{height:30px;font-size:14.5px;padding:0 12px 0 10px;gap:5px}.badge.spn-st .ico{width:15px;height:15px}
+.prd-hold{height:28px;font-size:14px;padding:0 11px}
+.prd-holdn{font-size:14px}
+.spn-tabs button{font-size:16.5px;min-height:56px}.spn-tabs button .n{font-size:13.5px;line-height:22px;min-width:26px}
+.fchip{font-size:15px}
+a.spn-row{padding:14px;gap:14px}
+.sr-h b{font-size:18px}.sr-j{font-size:16px}.sr-m,.sr-c{font-size:14px;color:#3E4A5C}
+a.spn-row .sr-p b{font-size:19px;min-width:52px}
+.spn-bar{height:14px}.spn-bar.big{height:20px}
+.spn-due{width:96px}.spn-due .dl{font-size:13px}.spn-due b{font-size:30px}.spn-due .dm{font-size:14px}.spn-due .dleft{font-size:14px}
+.spn-wp-h{font-size:15.5px}.spn-wp-h>b{font-size:30px}
+.spn-lg{font-size:14.5px;gap:6px 16px}.spn-lg i{width:13px;height:13px}
+.spn-wt b.mono{font-size:18px}
+.si-all{font-size:16px;min-height:52px}
+.si-l{padding:15px 16px;gap:14px;min-height:60px}
+.spn-items input[type=checkbox],.si-all input[type=checkbox]{width:28px;height:28px}
+.si-b{gap:5px}.si-b b.mono{font-size:17px}
+.si-d{font-size:15.5px;color:#2B3647;line-height:1.45}
+.si-s{gap:10px}.si-s .xs{font-size:13px}
+.si-q{font-size:19px}
+.prd-mat{font-size:14px;color:#2B3647}
+.spn-act-h b{font-size:16px}.spn-act-h span{font-size:14px}
+.spn-tg{min-height:96px;gap:5px;border-width:3px}.spn-tg b{font-size:19px}.spn-tg .sub{font-size:14px}.spn-tg .bx{width:34px;height:34px;border-width:3px}
+.spn-hbtn{min-height:54px;font-size:16.5px}
+.spn-x{min-width:48px;min-height:48px}
+.prd-holdb{font-size:15px}
+.prd-mo-t td,.prd-wd-t td{font-size:15px}.prd-mo-t td.main,.prd-wd-t td.main{font-size:16px}.prd-mo-t .sub,.prd-wd-t .sub{font-size:13.5px}
+.prd-wd-h b,.prd-wd-h2 b{font-size:16.5px}
+.prd-seg button{font-size:16px;padding:12px 8px}
+.prd-pipe .pp{padding:8px 10px}.prd-pipe .pp b{font-size:14px}.prd-pipe .pp .ps{font-size:15px}.prd-pipe .pp .pd{font-size:13px;color:#3E4A5C}
+.prd-now{font-size:15px;padding:5px 12px}
+.prd-tick{font-size:14.5px}
+@media (max-width:760px){.spn-due{width:80px}.spn-due b{font-size:26px}.spn-tg{min-height:88px}.spn-tg b{font-size:17px}.sr-h b{font-size:17px}}
+/* ===== SPN V1.8.3: ภาพรวมทุกงาน แบบตารางจอง — ผู้ใช้ 18/11 19:36 “ภาพรวมที่คล้าย ๆ booking สียังไม่สวย ปรับให้ดูเด่นกว่านี้” → 20:22 “โทนสียังดูมืดไป อยากได้แบบสว่างสดใส” → 20:23 “โทนสีสว่างประมาณภาพแผนตัด (พาสเทล) ชอบแบบนี้” = พื้นพาสเทล + ตัวหนังสือเข้มโทนเดียวกัน + ขอบสี
+   ช่องสถานะ = บล็อกสีทึบ ตัวขาว (ยังไม่รับงาน เทาเข้ม · รับงานแล้ว น้ำเงิน · กำลังทำ ม่วง · เสร็จแล้ว เขียว) + แถบ % · ไม่มีงาน = ช่องลายจาง · ⏸ รอ = กรอบเหลือง + ป้ายมุม
+   ชื่อแผนกย้ายไปหัวคอลัมน์ (จอใหญ่) · มือถือยังโชว์ชื่อแผนกในช่อง ===== */
+.prd-pipe{gap:8px}
+.prd-pipe .pp{border:2px solid #94A3B8;border-radius:10px;padding:8px 10px 9px;gap:2px;min-height:80px;color:#1E293B;box-shadow:0 1px 2px rgba(15,23,42,.08);text-align:left}
+.prd-pipe .pp .pp-k{display:none}
+.prd-pipe .pp .ps{font-size:15px;font-weight:800;line-height:1.22;color:#1E293B!important}
+.prd-pipe .pp-done .ps{padding-right:20px}
+.prd-pipe .pp .pd{font-size:12.5px;font-weight:600;line-height:1.3;color:#334155!important}
+.prd-pipe .pp-bar{display:block;height:7px;border-radius:4px;background:rgba(255,255,255,.8);box-shadow:inset 0 0 0 1px rgba(15,23,42,.08);margin-top:auto;overflow:hidden}
+.prd-pipe .pp .pd+.pp-bar,.prd-pipe .pp .ps+.pp-bar{margin-top:auto}
+.prd-pipe .pp-bar s{display:block;height:100%;background:#64748B;border-radius:4px;text-decoration:none}
+.prd-pipe .pp-sent{background:#E2E8F0;border-color:#94A3B8}.prd-pipe .pp-sent .ps{color:#334155!important}
+.prd-pipe .pp-got{background:#BFDBFE;border-color:#3B82F6}.prd-pipe .pp-got .ps{color:#1E3A8A!important}.prd-pipe .pp-got .pp-bar s{background:#2563EB}
+.prd-pipe .pp-doing{background:#DDD6FE;border-color:#8B5CF6}.prd-pipe .pp-doing .ps{color:#4C1D95!important}.prd-pipe .pp-doing .pp-bar s{background:#7C3AED}
+.prd-pipe .pp-done{background:#BBF7D0;border-color:#22C55E}.prd-pipe .pp-done .ps{color:#14532D!important}.prd-pipe .pp-done .pp-bar s{background:#16A34A}
+.prd-pipe .pp i{top:8px;right:8px;width:18px;height:18px}
+.prd-pipe .pp-done i{background:#16A34A;color:#fff}
+.prd-pipe .pp-na{background:repeating-linear-gradient(135deg,#FAFBFC 0 8px,#F1F4F7 8px 16px);border:2px dashed #D5DCE4;box-shadow:none;opacity:1}
+.prd-pipe .pp-na .ps{color:#7C8899!important;font-weight:600;font-size:14px;white-space:normal}
+.prd-pipe .pp.pp-hold{border-color:#F59E0B;box-shadow:0 0 0 2px #F59E0B,0 3px 8px rgba(245,158,11,.35)}
+.prd-pipe .pp-hd{position:absolute;top:-11px;right:-6px;display:inline-flex;align-items:center;gap:3px;background:#FDE68A;color:#78350F;border:2px solid #F59E0B;font-size:12.5px;font-weight:800;padding:1px 8px;border-radius:999px;box-shadow:0 1px 3px rgba(0,0,0,.15);white-space:nowrap}
+.prd-pipe .pp-hd .ico{width:12px;height:12px}
+.prd-tbl-all td.prd-pipe-td{padding-top:16px}
+.prd-pipe-h{display:grid;gap:8px;margin-top:6px}
+.prd-tbl-all .prd-now{border:2px solid #94A3B8}.prd-tbl-all .prd-now.pn-sent{background:#E2E8F0;color:#334155!important;border-color:#94A3B8}.prd-tbl-all .prd-now.pn-got{background:#BFDBFE;color:#1E3A8A!important;border-color:#3B82F6}.prd-tbl-all .prd-now.pn-doing{background:#DDD6FE;color:#4C1D95!important;border-color:#8B5CF6}.prd-tbl-all .prd-now.pn-done{background:#BBF7D0;color:#14532D!important;border-color:#22C55E}.prd-tbl-all .prd-now.pn-hold{background:#FDE68A;color:#78350F!important;border-color:#F59E0B}.prd-tbl-all .prd-now.pn-wait{background:#F1F5F9;color:#475569!important;border-color:#CBD5E1}
+.prd-pipe-h span{font-size:13.5px;font-weight:800;color:#26344A;line-height:1.25;white-space:normal}
+.prd-pipe-h em{font-style:normal;font-weight:400;color:#9AA6B6;margin-right:3px}
+.prd-tbl-all th.prd-pipe-th{white-space:normal;vertical-align:bottom}
+@media (min-width:761px){.prd-tbl-all .prd-pipe-td{min-width:600px}.prd-tbl-all th,.prd-tbl-all td{padding-left:10px;padding-right:10px}.prd-tbl-all td .prd-now{white-space:normal;max-width:150px;line-height:1.3;border-radius:12px;font-size:14px;padding:6px 10px}.prd-tbl-all td[data-l="อัปเดต"]{white-space:normal;min-width:84px}}
+/* ตัวติ๊กกรองสถานะ: ช่องที่มีงาน = สีของสถานะ · ติ๊กแล้ว = สีทึบ */
+.prd-tick.pt-sent:not(.zero){background:var(--s-sent-bg);color:var(--s-sent);border-color:#C9D2DC}
+.prd-tick.pt-got:not(.zero){background:var(--s-got-bg);color:var(--s-got);border-color:#B9CFEE}
+.prd-tick.pt-doing:not(.zero){background:var(--s-doing-bg);color:var(--s-doing);border-color:#D3C7F3}
+.prd-tick.pt-done:not(.zero){background:var(--s-done-bg);color:var(--s-done);border-color:#B7E0C6}
+.prd-tick:not(.zero) .n{opacity:1;font-weight:800}
+.prd-tick.on.pt-sent{background:#E2E8F0;color:#1E293B;border-color:#64748B;box-shadow:inset 0 0 0 1px #64748B}
+.prd-tick.on.pt-got{background:#BFDBFE;color:#1E3A8A;border-color:#2563EB;box-shadow:inset 0 0 0 1px #2563EB}
+.prd-tick.on.pt-doing{background:#DDD6FE;color:#4C1D95;border-color:#7C3AED;box-shadow:inset 0 0 0 1px #7C3AED}
+.prd-tick.on.pt-done{background:#BBF7D0;color:#14532D;border-color:#16A34A;box-shadow:inset 0 0 0 1px #16A34A}
+.prd-tick.on.pt-sent input{accent-color:#475569}.prd-tick.on.pt-got input{accent-color:#2563EB}.prd-tick.on.pt-doing input{accent-color:#7C3AED}.prd-tick.on.pt-done input{accent-color:#16A34A}
+.prd-ut{border-collapse:collapse;margin:6px 0 2px;font-size:14px;color:var(--text)}
+.t .prd-ut th{background:#EEF2FF;color:#3730A3;font-size:13.5px;font-weight:800;padding:4px 10px;border:0;border-bottom:2px solid #6366F1;text-align:left;white-space:normal}
+.t .prd-ut.up th{background:#ECFDF5;color:#065F46;border-bottom-color:#059669;font-weight:600}
+.t .prd-ut td{padding:4px 12px 4px 10px;border:0;border-bottom:1px dotted #CBD5E1;font-size:14.5px;line-height:1.35;vertical-align:top;text-align:left;color:#1E293B}
+.t .prd-ut td.r{text-align:right;white-space:nowrap}
+.t .prd-ut tr:nth-child(odd) td{background:#F8FAFC}
+.prd-ut td b{font-weight:800}
+.prd-plan summary{font-size:14px;font-weight:700;color:#047857}
+.prd-cbh{font-size:14.5px;font-weight:800;color:#1E3A8A;margin:8px 0 2px}
+.t .prd-ut td.nw{white-space:nowrap}.prd-ut b.cc{font-weight:700}
+.prd-cpr{display:flex;align-items:center;gap:8px;margin:5px 0;max-width:900px}
+.prd-cpr .cpn{flex:0 0 58px;text-align:right;font-size:14px;white-space:nowrap}.prd-cpr .cpn b{font-size:18px}
+.prd-cpb{flex:1 1 auto;display:flex;height:30px;border:2px solid #1F2937;border-radius:4px;overflow:hidden;background:#fff;min-width:0}
+.prd-cpb .prd-sg{flex:none;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:800;border-right:2px solid #1F2937;overflow:hidden;white-space:nowrap}
+.prd-cpb .prd-lf{flex:1 1 auto;display:flex;align-items:center;justify-content:center;font-size:12px;color:#334155;white-space:nowrap;background:repeating-linear-gradient(135deg,#F8FAFC 0 5px,#CBD5E1 5px 6px)}
+.prd-cpr .cpt{flex:0 0 190px;font-size:13px;color:#1F2937;line-height:1.3}
+@media (max-width:760px){.prd-cpr{flex-wrap:wrap;gap:4px 8px}.prd-cpr .cpn{flex-basis:auto;text-align:left}.prd-cpr .cpt{flex:1 1 100%;font-size:12.5px}.prd-cpb{flex:1 1 100%;order:3;height:28px}.prd-cpb .prd-sg{font-size:12px}}
+@media (max-width:760px){.t.resp .prd-ut tr{display:table-row;padding:0;border:0}.t.resp .prd-ut td{display:table-cell;padding:3px 5px;font-size:13.5px;border:0;border-bottom:1px dotted #CBD5E1;text-align:left}.prd-ut{max-width:100%}.t.resp .prd-ut td.r{text-align:right}.t.resp .prd-ut td::before{display:none;content:none}.t.resp .prd-ut td[colspan]{display:table-cell}}
+@media (max-width:760px){.prd-pipe .pp .pp-k{display:block;font-size:13px;font-weight:700;color:#475569;line-height:1.25;padding-right:18px}.prd-pipe .pp-na .pp-k{color:#5D6B7D}.prd-pipe .pp{min-height:0}.prd-pipe .pp .ps{white-space:normal}.prd-tbl-all td.prd-pipe-td{padding-top:12px}}
+/* ===== SPN V1.8.4 (ผู้ใช้ 19/11 04:04 “พวกสีโทนมืด ผมไม่เอานะ ปรับให้ด้วย” · “ถ้างานนั้น ๆ ไม่มีงานสั่งตัด สั่งทำ หรืองานสี ช่วยระบุให้ชัดเจนกว่านี้”)
+   ทั้งแอปโทนสว่าง: เมนูข้าง / หัวมือถือขาว · แท็บ / ชิปที่เลือก / ป้ายสถานะ / ปุ่มติ๊ก / แถบความคืบหน้า = พาสเทลสว่าง + ขอบสี (ชุดเดียวกับภาพแผนตัด)
+   ไม่มีงาน = กล่องขาว ✕ ตัวหนาชัด · ยังไม่ส่ง = ลายจางขอบประ ⏱ ===== */
+:root{--action:#2563EB;--action-2:#1D4ED8;--action-bg:#DBEAFE;--blue:#2563EB;--blue-bg:#DBEAFE;--green:#16A34A;--s-sent:#64748B;--s-got:#2563EB;--s-doing:#7C3AED;--s-done:#16A34A;--s-sent-bg:#F1F5F9;--s-got-bg:#DBEAFE;--s-doing-bg:#EDE9FE;--s-done-bg:#DCFCE7}
+/* เมนูข้าง (จอใหญ่) */
+.side{background:#FFFFFF;color:#334155;border-right:1px solid #E2E8F0}
+.side .brand{border-bottom-color:#E2E8F0}.side .brand b{color:#0F172A}.side .brand span{color:#64748B}
+.side .brand .nx-back,.side .brand .nx-home{border:1px solid #CBD5E1;background:#F8FAFC;color:#334155}
+.side .brand .nx-back:hover:not(:disabled),.side .brand .nx-home:hover{background:#E2E8F0;color:#0F172A}
+.side .brand .nx-adm,.mtop .nx-adm.mt{border:1px solid #FCD34D;background:#FEF3C7;color:#92400E}
+.side .brand .nx-adm:hover,.mtop .nx-adm.mt:hover{background:#FDE68A;color:#78350F}
+.side .who{background:#F1F5F9;border:1px solid #E2E8F0}.side .who .nm{color:#0F172A}
+.nav .sec{color:#64748B}
+.nav a{color:#334155;font-weight:500}.nav a:hover{background:#F1F5F9;color:#0F172A}
+.nav a.on{background:#DBEAFE;color:#1E3A8A;font-weight:700;box-shadow:inset 4px 0 0 #3B82F6}
+.nav a .cnt{background:#E2E8F0;color:#334155}.nav a .cnt.warn{background:#FDE68A;color:#78350F}
+.side .foot{color:#64748B;border-top-color:#E2E8F0}.side .foot button{color:#475569}.side .foot .nx-nav{border-bottom-color:#E2E8F0}
+.pbell{background:#F1F5F9;color:#334155;border:1px solid #CBD5E1}.pbell i{box-shadow:0 0 0 2px #fff}.pbell.on i{background:#22C55E}
+/* หัวจอมือถือ */
+.mtop{background:#FFFFFF;color:#0F172A;border-bottom:1px solid #E2E8F0;box-shadow:0 1px 4px rgba(15,23,42,.06)}
+.mtop button{color:#0F172A}
+.mtop .nx-home.mt,.mtop .nx-back.mt{border:1px solid #CBD5E1;background:#F8FAFC;color:#334155}
+/* แท็บ / ปุ่มเลือก / ชิป ที่เลือกอยู่ */
+.seg button.on{background:#DBEAFE;color:#1E3A8A;box-shadow:inset 0 0 0 2px #3B82F6;font-weight:700}
+.seg button.on .n{background:#fff;color:#1E3A8A}
+.fchip.on{background:#DBEAFE;border-color:#3B82F6;color:#1E3A8A;box-shadow:inset 0 0 0 1px #3B82F6;font-weight:700}
+.fchip.on .n{color:#1E3A8A;opacity:1}
+.sec-t .n{background:#DBEAFE;color:#1E3A8A}
+.spn-tabs{background:#E8EEF6;box-shadow:inset 0 0 0 1px #D5DEEA}
+.spn-tabs button{color:#334155}
+.spn-tabs button.on{background:#FFFFFF;color:#1E3A8A;box-shadow:inset 0 -4px 0 #3B82F6,0 1px 3px rgba(15,23,42,.12)}
+.r-admin{background:#EDE9FE;color:#5B21B6}
+.instbar{background:#DBEAFE;color:#1E3A8A;box-shadow:inset 0 0 0 1px #93C5FD}
+.toast{background:#FFFFFF;color:#0F172A;box-shadow:0 10px 30px rgba(15,23,42,.18),inset 4px 0 0 #3B82F6}
+#tipbox{background:#FFFFFF;color:#0F172A;box-shadow:0 6px 20px rgba(15,23,42,.18);border:1px solid #CBD5E1}
+.wh-step .ws-n{background:#DBEAFE;color:#1E3A8A}
+.slv-h{background:#FFFFFF;color:#0F172A;border-bottom:1px solid #E2E8F0}
+/* ป้ายสถานะ (เดิมสีทึบ) → พาสเทล + ขอบ */
+.badge.spn-st.s-sent{background:#E2E8F0;color:#334155;box-shadow:inset 0 0 0 2px #94A3B8}
+.badge.spn-st.s-got{background:#DBEAFE;color:#1E3A8A;box-shadow:inset 0 0 0 2px #3B82F6}
+.badge.spn-st.s-doing{background:#EDE9FE;color:#4C1D95;box-shadow:inset 0 0 0 2px #8B5CF6}
+.badge.spn-st.s-done{background:#DCFCE7;color:#14532D;box-shadow:inset 0 0 0 2px #22C55E}
+.prd-hold{background:#FEF3C7;color:#78350F;box-shadow:inset 0 0 0 2px #F59E0B}
+.prd-now.pn-sent{background:#E2E8F0;color:#334155!important;box-shadow:inset 0 0 0 2px #94A3B8}
+.prd-now.pn-got{background:#DBEAFE;color:#1E3A8A!important;box-shadow:inset 0 0 0 2px #3B82F6}
+.prd-now.pn-doing{background:#EDE9FE;color:#4C1D95!important;box-shadow:inset 0 0 0 2px #8B5CF6}
+.prd-now.pn-done{background:#DCFCE7;color:#14532D!important;box-shadow:inset 0 0 0 2px #22C55E}
+.prd-now.pn-hold{background:#FEF3C7;color:#78350F!important;box-shadow:inset 0 0 0 2px #F59E0B}
+.prd-tbl-all .prd-now{border:0}
+/* ปุ่มติ๊ก รับงานแล้ว / กำลังทำ / เสร็จแล้ว */
+.spn-tg.on{color:#0F172A}.spn-tg.on .sub{color:#334155;opacity:1}
+.spn-tg.s1.on{background:#DBEAFE;border-color:#2563EB;color:#1E3A8A}.spn-tg.s1.on .bx{background:#2563EB;border-color:#2563EB;color:#fff}
+.spn-tg.s2.on{background:#EDE9FE;border-color:#7C3AED;color:#4C1D95}.spn-tg.s2.on .bx{background:#7C3AED;border-color:#7C3AED;color:#fff}
+.spn-tg.s3.on{background:#DCFCE7;border-color:#16A34A;color:#14532D}.spn-tg.s3.on .bx{background:#16A34A;border-color:#16A34A;color:#fff}
+.spn-tg.s1:not(.on){border-color:#93C5FD}.spn-tg.s2:not(.on){border-color:#C4B5FD}.spn-tg.s3:not(.on){border-color:#86EFAC}
+/* แถบความคืบหน้า */
+.spn-bar{background:#E2E8F0}
+.spn-bar .b-done,.spn-lg .b-done{background:#22C55E}
+.spn-bar .b-doing,.spn-lg .b-doing{background:repeating-linear-gradient(135deg,#8B5CF6 0 6px,#A78BFA 6px 12px)}
+.spn-bar .b-got,.spn-lg .b-got{background:#60A5FA}
+.spn-lg .b-none{background:#CBD5E1}
+.spn-bar .b-hold,.spn-lg .b-hold{background:repeating-linear-gradient(135deg,#F59E0B 0 5px,#FCD34D 5px 10px)}
+/* การ์ดงาน / หัวใบ: แถบสีซ้าย-บนสว่างขึ้น */
+a.spn-row.st-sent{border-left-color:#94A3B8}a.spn-row.st-got{border-left-color:#3B82F6}a.spn-row.st-doing{border-left-color:#8B5CF6}a.spn-row.st-done{border-left-color:#22C55E}
+.spn-wh{border-top-color:#94A3B8}.spn-wh.st-got{border-top-color:#3B82F6}.spn-wh.st-doing{border-top-color:#8B5CF6}.spn-wh.st-done{border-top-color:#22C55E}
+/* ไม่มีงาน (ชัด) / ยังไม่ส่ง */
+.prd-pipe .pp-na.pp-no{background:#FFFFFF;border:2px solid #CBD5E1;box-shadow:none}
+.prd-pipe .pp-na.pp-no .ps{color:#334155!important;font-weight:800;font-size:14.5px}
+.prd-pipe .pp-na.pp-no .ps .ico{color:#64748B}
+.prd-pipe .pp-na.pp-no .pd{color:#64748B!important;font-weight:500}
+.prd-pipe .pp-na.pp-wait .ps{color:#64748B!important;font-weight:600;font-size:13.5px}
+.prd-pipe .pp-na .ps .ico{width:13px;height:13px;vertical-align:-2px}
+.prd-nachip{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:14px;font-weight:700;line-height:1.3}
+.prd-nachip .ico{width:14px;height:14px;flex:none}
+.prd-nachip small{font-weight:500;font-size:12.5px;opacity:.85}
+.prd-nachip.no{background:#FFFFFF;color:#334155;box-shadow:inset 0 0 0 2px #CBD5E1}
+.prd-nachip.wait{background:repeating-linear-gradient(135deg,#FAFBFC 0 8px,#F1F4F7 8px 16px);color:#64748B;box-shadow:inset 0 0 0 2px #E2E8F0;border:0;font-weight:600}
+.prd-nodep{margin-top:6px}
+.prd-nonec{display:flex;gap:14px;align-items:center;padding:22px 20px;border-radius:12px;background:#F8FAFC;box-shadow:inset 0 0 0 2px #CBD5E1;color:#334155}
+.prd-nonec > .ico{width:30px;height:30px;flex:none;color:#64748B;background:#E2E8F0;border-radius:50%;padding:6px}
+.prd-nonec b{font-size:17px;color:#0F172A}
+.prd-csw{display:inline-block;width:15px;height:15px;border:2px solid;border-radius:3px;vertical-align:-3px;margin-right:7px}
+.shell{background:linear-gradient(to right,#FFFFFF 244px,var(--paper) 244px)}
+@container app (max-width:860px){.shell{background:var(--paper)}}
+.role.r-admin{background:#EDE9FE;color:#5B21B6;box-shadow:inset 0 0 0 1.5px #A78BFA}.role.r-sale{background:#DBEAFE;color:#1E3A8A;box-shadow:inset 0 0 0 1.5px #60A5FA}
+.role.r-purchasing{background:#CCFBF1;color:#134E4A;box-shadow:inset 0 0 0 1.5px #2DD4BF}.role.r-contractor{background:#FFEDD5;color:#9A3412;box-shadow:inset 0 0 0 1.5px #FB923C}
+.role.r-accounting{background:#FEF3C7;color:#78350F;box-shadow:inset 0 0 0 1.5px #FBBF24}.role.r-installer{background:#EDE9FE;color:#4C1D95;box-shadow:inset 0 0 0 1.5px #A78BFA}
+.role.r-warehouse{background:#E0F2FE;color:#075985;box-shadow:inset 0 0 0 1.5px #38BDF8}.role.r-production{background:#FFEDD5;color:#9A3412;box-shadow:inset 0 0 0 1.5px #FB923C}
+/* ===== SPN V1.8.5 (ผู้ใช้ 19/11 05:28 “ทำมาทั้งหมดได้เลย” — ให้คนทำงานไม่งง ทำงานง่าย) =====
+   ปุ่มใหญ่ขั้นต่อไป · กลุ่มวันกำหนด · ติ๊กตัดแล้วต่อแบบ · เบิกของครบ · ป้ายแผนแก้ / เพิ่มหลังรับงาน · เศษเก็บไว้ใช้ · หน้าเข้าสู่ระบบสว่าง */
+.login-wrap{background:linear-gradient(160deg,#EFF6FF 0%,#F5F3FF 48%,#ECFDF5 100%)}
+.login{border:1px solid #E2E8F0;box-shadow:0 18px 48px rgba(37,99,235,.13),0 2px 6px rgba(15,23,42,.06)}
+.spn-next{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 10px;width:100%;min-height:64px;padding:8px 14px;border-radius:14px;border:3px solid #2563EB;background:#2563EB;color:#fff;font:inherit;font-size:19px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.25)}
+.spn-next .ico{width:22px;height:22px}.spn-next .sub{font-size:14px;font-weight:600;opacity:.95}
+.spn-next.s2{background:#7C3AED;border-color:#7C3AED;box-shadow:0 4px 14px rgba(124,58,237,.25)}
+.spn-next.s3{background:#16A34A;border-color:#16A34A;box-shadow:0 4px 14px rgba(22,163,74,.25)}
+.spn-next.fin{background:#DCFCE7;border-color:#86EFAC;color:#14532D;box-shadow:none;cursor:default;font-size:17px;min-height:52px}
+.spn-next:focus-visible{outline:3px solid #93C5FD;outline-offset:2px}.spn-next.busy{opacity:.7}
+.prd-dg{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;font-weight:800;font-size:15.5px;margin-top:4px}
+.prd-dg:first-child{margin-top:0}.prd-dg .ico{width:18px;height:18px;flex:none}
+.prd-dg .n{margin-left:auto;font-size:13px;font-weight:700;background:rgba(255,255,255,.85);border-radius:999px;padding:2px 10px}
+.prd-dg.g-late{background:#FEE2E2;color:#991B1B;box-shadow:inset 4px 0 0 #EF4444}.prd-dg.g-soon{background:#FFEDD5;color:#9A3412;box-shadow:inset 4px 0 0 #F97316}
+.prd-dg.g-week{background:#FEF9C3;color:#854D0E;box-shadow:inset 4px 0 0 #EAB308}.prd-dg.g-far{background:#E0F2FE;color:#075985;box-shadow:inset 4px 0 0 #38BDF8}
+.prd-dg.g-none{background:#F1F5F9;color:#475569;box-shadow:inset 4px 0 0 #94A3B8}
+.prd-chg{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin-top:5px;padding:4px 10px;border-radius:8px;background:#FEF3C7;color:#92400E;font-size:13.5px;font-weight:700;box-shadow:inset 0 0 0 1.5px #FCD34D;line-height:1.35}
+.prd-chg .ico{width:14px;height:14px;flex:none}.prd-chg .btn{min-height:30px;padding:2px 12px;font-size:13px;background:#fff}
+.prd-new{display:inline-flex;align-items:center;gap:4px;margin-top:5px;padding:3px 10px;border-radius:999px;background:#DBEAFE;color:#1E40AF;font-size:13px;font-weight:800;box-shadow:inset 0 0 0 1.5px #93C5FD}
+.si-b .prd-chg,.si-b .prd-new{align-self:flex-start}
+.prd-chgbn{display:flex;gap:8px;align-items:flex-start;margin-top:10px;padding:9px 12px;border-radius:10px;background:#FEF3C7;color:#92400E;font-size:14px;box-shadow:inset 0 0 0 1.5px #FCD34D}
+.prd-chgbn .ico{flex:none;margin-top:2px}
+.prd-cpx{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:2px 0 10px 66px}
+.prd-plan .prd-cpx{font-size:14px;color:var(--ink-text)}
+.prd-cpk{display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:4px 14px;border-radius:10px;border:2px solid #93C5FD;background:#fff;color:#1E3A8A;font:inherit;font-size:14.5px;font-weight:700;cursor:pointer}
+.prd-cpk .bx{width:20px;height:20px;border:2px solid #60A5FA;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:transparent;flex:none}
+.prd-cpk .bx .ico{width:14px;height:14px}
+.prd-cpk.part{background:#EFF6FF}.prd-cpk.full{background:#DCFCE7;border-color:#22C55E;color:#14532D;cursor:default}.prd-cpk.full .bx{background:#16A34A;border-color:#16A34A;color:#fff}
+.prd-cpk:disabled{opacity:1}
+.prd-cpm{min-height:42px;padding:2px 12px;border-radius:10px;border:2px solid #CBD5E1;background:#fff;color:#475569;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.prd-cpa{min-height:42px;padding:2px 12px;border-radius:10px;border:2px solid #86EFAC;background:#F0FDF4;color:#166534;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.prd-rmk{display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:4px 12px;border-radius:10px;border:2px dashed #34D399;background:#fff;color:#065F46;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.prd-rmk.on{border-style:solid;background:#D1FAE5}.prd-rmk.used{border:2px solid #CBD5E1;background:#F1F5F9;color:#64748B;cursor:default}
+.prd-cpdn{font-weight:800;color:#15803D}
+.prd-cpr.done .prd-cpb{opacity:.5}.prd-cpr.done .cpn b{color:#15803D}
+.prd-wd-a{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 18px 10px}.prd-wd-a .sp{flex:1}
+.btn.prd-wdok{min-height:46px;font-size:15px;font-weight:800;border:2px solid #FDBA74;background:#FFF7ED;color:#9A3412}
+.btn.prd-wdok.on{border-color:#22C55E;background:#DCFCE7;color:#14532D}
+span.prd-wdok{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:10px;font-weight:800;background:#DCFCE7;color:#14532D}
+.prd-wdtag{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:999px;background:#DCFCE7;color:#14532D;font-size:13px;font-weight:700;box-shadow:inset 0 0 0 1.5px #86EFAC}
+.prd-wdtag.part{background:#EFF6FF;color:#1E40AF;box-shadow:inset 0 0 0 1.5px #93C5FD}.prd-wdtag .ico{width:12px;height:12px}
+.prd-rem{padding:0;overflow:hidden;margin-top:12px}
+.prd-rem>summary{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;padding:12px 16px;cursor:pointer;list-style:none;font-size:15.5px;font-weight:800;color:#065F46;background:#ECFDF5}
+.prd-rem>summary::-webkit-details-marker{display:none}.prd-rem>summary .chev{margin-left:auto;transition:transform .15s}.prd-rem[open]>summary .chev{transform:rotate(90deg)}
+.prd-rem>summary .xs{font-weight:500}.prd-rem .card-b{padding:10px 16px 14px}
+.spn-next~.spn-tgs .spn-tg{min-height:66px;gap:2px}.spn-next~.spn-tgs .spn-tg .bx{width:26px;height:26px}.spn-next~.spn-tgs .spn-tg b{font-size:16.5px}   /* มีปุ่มใหญ่แล้ว — ปุ่ม 3 ขั้นเตี้ยลง (จอมือถือไม่ถูกบังมาก) */
+@media (max-width:760px){.prd-cpx{margin-left:0}.prd-wd-a{padding-left:12px;padding-right:12px}.spn-next{font-size:18px}}
 </style>
 </head>
 <body>
@@ -1481,7 +1785,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark SPN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.8.0' : 'V7.18.11';
+const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.8.5' : 'V7.18.12';
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark SPN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -1502,14 +1806,14 @@ const TYPES = [
 ];
 const TYPE_BY = Object.fromEntries(TYPES.map((t) => [t.k, t]));
 const ROLES = {
-  admin: { label: 'Admin', cls: 'r-admin', color: '#14233B', home: '#/admin/home' },
-  sale: { label: 'Sale', cls: 'r-sale', color: '#1E5BA8', home: '#/sale/orders' },
-  purchasing: { label: 'จัดซื้อ', cls: 'r-purchasing', color: '#0E7466', home: '#/pur/bids' },   /* V7.17: หน้าแรก = งานรอผู้รับเหมาเสนอราคา (หัวหน้าช่างเลือกช่องทางแทน) */   /* V7.12: หน้าแรก = Order รอจัดซื้อเลือกช่องทาง */
-  contractor: { label: 'ผู้รับเหมา', cls: 'r-contractor', color: '#C25A0F', home: '#/con/open' },
-  accounting: { label: 'บัญชี', cls: 'r-accounting', color: '#8A6420', home: '#/acc/review' },          /* V7.12: ตรวจใบส่งมอบ + วันชำระเงิน + บันทึกจ่าย */
-  installer: { label: 'หัวหน้าช่างติดตั้ง', cls: 'r-installer', color: '#6A4BC4', home: '#/ins/queue' }, /* V7.12: จัดทีมช่างติดตั้งโรงงาน */
-  warehouse: { label: 'คลังสินค้า', cls: 'r-warehouse', color: '#2F5D7C', home: '#/wh/receive' },        /* V7.13: ยิงรับเข้า / จ่ายออก / โลเคชั่น */
-  production: { label: 'ฝ่ายผลิต', cls: 'r-production', color: '#7A3E12', home: '#/prd/orders' },      /* V7.17: ไลน์ผลิตดูเอกสาร (ใบปิดผิว · ใบเบิก) + สถานะ · กด “ผลิตรับแล้ว” */
+  admin: { label: 'Admin', cls: 'r-admin', color: '#6366F1', home: '#/admin/home' },
+  sale: { label: 'Sale', cls: 'r-sale', color: '#2563EB', home: '#/sale/orders' },
+  purchasing: { label: 'จัดซื้อ', cls: 'r-purchasing', color: '#0D9488', home: '#/pur/bids' },   /* V7.17: หน้าแรก = งานรอผู้รับเหมาเสนอราคา (หัวหน้าช่างเลือกช่องทางแทน) */   /* V7.12: หน้าแรก = Order รอจัดซื้อเลือกช่องทาง */
+  contractor: { label: 'ผู้รับเหมา', cls: 'r-contractor', color: '#EA580C', home: '#/con/open' },
+  accounting: { label: 'บัญชี', cls: 'r-accounting', color: '#B45309', home: '#/acc/review' },          /* V7.12: ตรวจใบส่งมอบ + วันชำระเงิน + บันทึกจ่าย */
+  installer: { label: 'หัวหน้าช่างติดตั้ง', cls: 'r-installer', color: '#7C3AED', home: '#/ins/queue' }, /* V7.12: จัดทีมช่างติดตั้งโรงงาน */
+  warehouse: { label: 'คลังสินค้า', cls: 'r-warehouse', color: '#0284C7', home: '#/wh/receive' },        /* V7.13: ยิงรับเข้า / จ่ายออก / โลเคชั่น */
+  production: { label: 'ฝ่ายผลิต', cls: 'r-production', color: '#EA580C', home: '#/prd/orders' },      /* V7.17: ไลน์ผลิตดูเอกสาร (ใบปิดผิว · ใบเบิก) + สถานะ · กด “ผลิตรับแล้ว” */
 };
 /* V7.12: ช่องทางติดตั้งที่จัดซื้อเลือกหลัง Sale ยืนยัน */
 const CHANNELS = { contractor: 'ผู้รับเหมาติดตั้ง', inhouse: 'ช่างติดตั้งโรงงาน' };
@@ -2326,6 +2630,9 @@ on('viewCid', (el) => { S.viewCid = el.value; saveS(); rerender(); });
 const ROUTES = [];
 function route(re, area, fn) { ROUTES.push({ re, area, fn }); }
 function rerender() { render({ keep: true }); }
+/* SPN V1.8.5: เปิดลิงก์งานตรง (สแกน QR บนใบพิมพ์ Production) ตอนยังไม่ล็อกอิน → ล็อกอินแล้วไปหน้านั้นต่อ (จำไว้ในแท็บนี้เท่านั้น) */
+function spnNextHash() { let h = ''; try { h = sessionStorage.getItem('spn_next') || ''; sessionStorage.removeItem('spn_next'); } catch (e) { h = ''; }
+  return /^#\/prd\/(orders|all|o\/|w\/)/.test(h) && h.length < 600 && !/[<>"'\s]/.test(h) ? h : ''; }
 function curPath() { return (location.hash || '').replace(/^#/, '').split('?')[0]; }
 /* หน้าที่กำลังกรอกข้อมูลอยู่ — ไม่รีเฟรชทับ */
 function isEditing() { const p = curPath(); return /^\/sale\/(new|edit\/)/.test(p) || /^\/(admin|pur|sale)\/draw\//.test(p) || p === '/admin/settings' || p === '/register' || (p.indexOf('/con/job/') === 0 && typeof HF !== 'undefined' && HF.files.length > 0) ||
@@ -2353,12 +2660,12 @@ function render(opts) {
   if (FRAMED) snbSumSoon(); /* V7.8: สรุปตัวเลขงานให้การ์ดหน้าเลือกโปรแกรม */
   const path = curPath();
   if (!AUTH.s) {
-    if (path !== '/login' && path !== '/register') { go('#/login'); return; }
+    if (path !== '/login' && path !== '/register') { if (/^\/prd\//.test(path)) { try { sessionStorage.setItem('spn_next', location.hash); } catch (e) { /* โหมดส่วนตัว — ไปหน้าแรกแทน */ } } go('#/login'); return; }
   } else if (!DB) {
     app.innerHTML = loadingPage(S.bootErr); if (!S.bootErr) boot(); return;
   }
   if (DB) S.user = DB.me;
-  if (S.user && (path === '' || path === '/' || path === '/login' || path === '/register')) { go(ROLES[S.user.role].home); return; }
+  if (S.user && (path === '' || path === '/' || path === '/login' || path === '/register')) { go(spnNextHash() || ROLES[S.user.role].home); return; }
   const m = ROUTES.map((r) => ({ r, x: r.re.exec(path) })).find((z) => z.x);
   if (!m) { go(S.user ? ROLES[S.user.role].home : '#/login'); return; }
   if (m.r.area && !S.user) { go('#/login'); return; }
@@ -3794,6 +4101,21 @@ function PAINTDOC_open(d) {
    ===================================================================== */
 const PRDS = { busy: false, at: 0, sigs: null, sigsAt: 0, last: null, off: 0, depSig: '', depNew: false };
 const PRD_HEAD = ['lot', 'date', 'due', 'endDate', 'prodPool', 'pdPool', 'detail', 'note', 'ax', 'who'];
+function prdTxtC(L, n, w) { return (Array.isArray(L) ? L : []).filter((t) => typeof t === 'string' && t).slice(0, n).map((t) => t.slice(0, w)); }
+function prdMatC(m) {   /* SPN V1.8.1 / CN V7.18.12: วัตถุดิบที่ใช้ต่อรายการ (Production V302) — เส้นยาว + ไส้ใน AX (ยอดรวมของแถว) · ไม่มีราคา */
+  const o = {}; if (m.bar != null && typeof m.bar !== 'object' && String(m.bar)) o.bar = String(m.bar).slice(0, 60);
+  const r = (Array.isArray(m.raw) ? m.raw : []).filter((c) => c && typeof c === 'object' && c.c).slice(0, 12).map((c) => ({ c: String(c.c).slice(0, 60), q: +c.q || 0, u: String(c.u || 'EA').slice(0, 12) }));
+  if (r.length) o.raw = r; return o;
+}
+function prdWdC(W) {   /* รายการเบิกต่อแผนก { <แผนก>: { bars, raw, mc } } (Production V302) */
+  const o = {};
+  Object.keys(W).slice(0, 30).forEach((k) => { const v = W[k]; if (!/^[a-z0-9]{1,24}$/.test(k) || !v || typeof v !== 'object') return;
+    const x = { bars: (Array.isArray(v.bars) ? v.bars : []).filter((b) => b && typeof b === 'object' && b.c).slice(0, 40).map((b) => ({ c: String(b.c).slice(0, 60), n: String(b.n || '').slice(0, 120), len: +b.len || 0, q: +b.q || 0, u: String(b.u || 'EA').slice(0, 12), use: prdTxtC(b.use, 30, 80), plan: prdTxtC(b.plan, 30, 200) })),
+      raw: (Array.isArray(v.raw) ? v.raw : []).filter((r) => r && typeof r === 'object' && r.c).slice(0, 60).map((r) => ({ c: String(r.c).slice(0, 60), n: String(r.n || '').slice(0, 120), q: +r.q || 0, u: String(r.u || 'EA').slice(0, 12), use: prdTxtC(r.use, 30, 80) })) };
+    if (+v.mc > 1) x.mc = Math.min(99, Math.floor(+v.mc));
+    if (x.bars.length || x.raw.length) o[k] = x; });
+  return o;
+}
 function prdClean(x) {   /* ส่งเฉพาะช่องที่กำหนด (Server ตัดซ้ำ) — ไม่มีราคา */
   const pick = (o, ks) => { const r = {}; ks.forEach((k) => { if (o && o[k] != null && typeof o[k] !== 'object') r[k] = o[k]; }); return r; };
   const arr = (v, n) => (Array.isArray(v) ? v : []).slice(0, n);
@@ -3804,7 +4126,9 @@ function prdClean(x) {   /* ส่งเฉพาะช่องที่กำ�
     colors: arr(x.cut.colors, 80).map((c) => Object.assign(pick(c, ['code', 'short', 'name', 'm2', 'pcs', 'rows']), { specs: arr(c.specs, 20).map((s) => pick(s, ['spec', 'name', 'm2', 'pcs'])) })),
     parts: arr(x.cut.parts, 1500).map((p) => pick(p, ['cab', 'name', 'bc', 'w', 'l', 't', 'q', 'mat', 'top', 'bot', 'm2'])),
     mats: arr(x.cut.mats, 120).map((m) => pick(m, ['code', 'rows', 'pcs', 'paint'])) });
-  if (x.mo && typeof x.mo === 'object') out.mo = Object.assign(pick(x.mo, ['at', 'by']), { items: arr(x.mo.items, 600).map((i) => pick(i, ['sec', 'code', 'name', 'spec', 'qty', 'unit', 'cab', 'dep', 'depName', 'no'])) });   /* V1.3: แผนก · V1.4: เลขที่เอกสารของแผนก */
+  if (x.mo && typeof x.mo === 'object') out.mo = Object.assign(pick(x.mo, ['at', 'by']), { items: arr(x.mo.items, 600).map((i) => Object.assign(pick(i, ['sec', 'code', 'name', 'spec', 'qty', 'unit', 'cab', 'dep', 'depName', 'no']),
+      i && i.mat && typeof i.mat === 'object' && !Array.isArray(i.mat) ? { mat: prdMatC(i.mat) } : {})) },   /* V1.3: แผนก · V1.4: เลขที่เอกสารของแผนก · V1.8.1: วัตถุดิบที่ใช้ */
+    x.mo.wd && typeof x.mo.wd === 'object' && !Array.isArray(x.mo.wd) ? { wd: prdWdC(x.mo.wd) } : {});   /* V1.8.1: รายการเบิกต่อแผนก (ไม่มี = Server คงค่าเดิม) */
   if (x.due && typeof x.due === 'object') {   /* SPN V1.5 (Production V282): วันติดตั้ง + กำหนดจบ (งานสี / ต่อแผนก) */
     const one = (v) => (v && typeof v === 'object' ? pick(v, ['d', 'n', 'ov']) : null), ds = {};
     Object.keys(x.due.deps || {}).slice(0, 30).forEach((k) => { const v = one(x.due.deps[k]); if (v && /^[a-z0-9]{1,24}$/.test(k)) ds[k] = v; });
@@ -3902,7 +4226,8 @@ const prdOnoH = (iid, oid, cls) => { const n = prdOno(iid, oid); return '<span c
 /* ---------- สถานะ (ทุกสถานีคำเดียวกัน · ผู้ใช้ 16:54 ใช้คำ “รับงานแล้ว”) ---------- */
 const PRD_ORD = ['sent', 'got', 'doing', 'done'];
 const prdRank = (s) => Math.max(0, PRD_ORD.indexOf(s || 'sent'));
-const PRD_ST4 = (sent, got, doing, done) => ({ sent: ['ยังไม่รับงาน', 't-gray', sent], got: ['รับงานแล้ว', 't-blue', got], doing: ['กำลังทำ', 't-violet', doing], done: ['เสร็จแล้ว', 't-green', done] });
+const PRD_ST4 = (sent, got, doing, done) => ({ sent: ['ยังไม่รับงาน', 't-gray spn-st s-sent', sent], got: ['รับงานแล้ว', 't-blue spn-st s-got', got], doing: ['กำลังทำ', 't-violet spn-st s-doing', doing], done: ['เสร็จแล้ว', 't-green spn-st s-done', done] });   /* V1.8.2: สีตามสถานะ (ทึบ + ไอคอน) */
+const PRD_STI = { sent: 'clock', got: 'inbox', doing: 'gear', done: 'check' };
 const PRD_STG = {
   lm: { t: 'ปิดผิว', tab: 'สั่งปิดผิว', list: 'รายการสั่งปิดผิว', doc: 'ใบปิดผิว', ico: 'file', items: 'ไม้ที่ปิดผิว',
     st: PRD_ST4('แผนส่งใบปิดผิวมาแล้ว — ยังไม่มีใครติ๊ก “รับงานแล้ว”', 'รับงานแล้ว — ยังไม่เริ่มทำ', 'กำลังทำ — บางรายการเสร็จแล้ว / กำลังทำ', 'ปิดผิวเสร็จครบทุกรายการ') },
@@ -4002,7 +4327,7 @@ function prdNavItem(c) {
   const t = r === 'production' && tb.length && tb.length < prdAllTabs().length ? 'งาน' + Array.from(new Set(tb.map((x) => prdStg(x[0]).t))).join(' / ') : 'งานไลน์ผลิต';   /* V1.8.0: ชื่อแผนก */
   return { h: '#/prd/orders', i: 'factory', t: t, s: 'งาน', n: c ? c.prd : prdNavCount(), w: true, tip: 'งานที่แผนส่งมาแล้ว ยังไม่มีใครติ๊ก “รับงานแล้ว”' };
 }
-function prdBadge(k, st) { const x = prdStg(k).st[st || 'sent']; return '<span class="badge ' + x[1] + '" title="' + esc(x[2]) + '">' + x[0] + '</span>'; }
+function prdBadge(k, st) { const x = prdStg(k).st[st || 'sent']; return '<span class="badge ' + x[1] + '" title="' + esc(x[2]) + '">' + icon(PRD_STI[st || 'sent'] || 'clock', 'xs') + x[0] + '</span>'; }
 function prdSw(code) { let h = 0; String(code || '').split('').forEach((c) => { h = (h * 31 + c.charCodeAt(0)) % 360; }); return '<span class="prd-sw" style="--h:' + h + '"></span>'; }
 /* แถบความคืบหน้า: เสร็จ (เขียว) · กำลังทำ (ม่วง) · รับงาน (ฟ้า) */
 
@@ -4087,6 +4412,193 @@ function prdDays(s) { const k = prdDueKey(s); if (k === '9999-99-99') return nul
   return Math.round((Date.UTC(+k.slice(0, 4), +k.slice(5, 7) - 1, +k.slice(8, 10)) - Date.UTC(t.getFullYear(), t.getMonth(), t.getDate())) / 864e5); }
 const prdWHref = (k, ref) => '#/prd/w/' + k + '/' + encodeURIComponent(ref);
 
+/* ---------- SPN V1.8.5: ช่วยไลน์ผลิตทำงานง่ายขึ้น (ผู้ใช้ 19/11 05:28) ---------- */
+/* ปุ่มใหญ่ “ขั้นต่อไป” — เลื่อนรายการที่ยังค้าง (ขั้นต่ำสุด) ไปขั้นถัดไปทีเดียว · ปุ่ม 3 ขั้นเดิมยังอยู่ (แตะซ้ำ = ยกเลิก) */
+function prdNextBtn(k, ref, oid, T) {
+  if (!T.length) return '';
+  const s = Math.min.apply(null, T.map((i) => prdRank(i.st))) + 1;
+  if (s > 3) return '<div class="spn-next fin" role="status">' + icon('checkCircle') + '<span>เสร็จครบทุกรายการแล้ว</span></div>';
+  const lb = prdStg(k).st[PRD_ORD[s]][0], n = T.filter((i) => prdRank(i.st) < s).length;
+  return '<button type="button" class="spn-next s' + s + '" data-act="prdTick" data-k="' + k + '" data-ref="' + esc(ref) + '" data-oid="' + esc(oid) + '" data-s="' + s + '"' +
+    tipA('แตะครั้งเดียว = รายการที่ยังค้างเลื่อนไปขั้น “' + lb + '” · กดผิด แตะปุ่ม “' + lb + '” ด้านล่างซ้ำเพื่อยกเลิก') + '>' + icon('play') + '<span>ขั้นต่อไป: ' + lb + '</span><span class="sub">(' + n + ' รายการ)</span></button>';
+}
+/* รายการงานของสถานี: แบ่งกลุ่มตามวันกำหนด */
+function prdDg(u) { const n = prdDays(u.due); return n == null ? 'none' : n < 0 ? 'late' : n <= 1 ? 'soon' : n <= 7 ? 'week' : 'far'; }
+const PRD_DG = { late: ['alert', 'เลยกำหนดแล้ว — ทำก่อน'], soon: ['clock', 'วันนี้ – พรุ่งนี้'], week: ['calendar', 'ภายใน 7 วัน'], far: ['calendar', 'มากกว่า 7 วัน'], none: ['info', 'ยังไม่รู้วันกำหนด'] };
+function prdDgHead(gk, rows) { const n = rows.filter((u) => prdDg(u) === gk).length, x = PRD_DG[gk]; return '<div class="prd-dg g-' + gk + '" data-g="' + gk + '">' + icon(x[0], 'sm') + '<span>' + x[1] + '</span><span class="n">' + n + ' งาน</span></div>'; }
+/* ความคืบหน้าต่อแผนก (prd_orders.mo_prog) */
+function prdPg(D, dep) { const p = ((((D || {}).order || {}).moProg) || {})[dep || '']; return p && typeof p === 'object' ? p : {}; }
+function prdPlanG(P) { const G = [], M = {}; (Array.isArray(P) ? P : []).forEach((s) => { s = String(s); let g = M[s]; if (!g) { const i = s.lastIndexOf(' · เศษ '); g = M[s] = { n: 0, t: i >= 0 ? s.slice(0, i) : s, l: i >= 0 ? s.slice(i + 7) : '' }; G.push(g); } g.n++; }); return G; }
+function prdCutKey(c, g) { return (String(c || '') + '|' + g.t + '|' + g.l).slice(0, 190); }
+/* รหัสแบบตัด = รหัสเส้น | แบบตัด | เศษ (เส้นรหัสเดียวกันที่แบบตัดซ้ำกันอีกแถว = ต่อท้าย #1, #2) */
+function prdKeys(bars) { const seen = {}; return (bars || []).map((b) => { const m = {}; prdPlanG(b.plan).forEach((g) => { const base = prdCutKey(b.c, g), n = seen[base] || 0; seen[base] = n + 1; m[g.t + '|' + g.l] = n ? base + '#' + n : base; }); return m; }); }
+function prdCutTot(w, pg) { let d = 0, t = 0; const C = (pg && pg.cut) || {}, K = prdKeys(w && w.bars); ((w && w.bars) || []).forEach((b, bi) => { prdPlanG(b.plan).forEach((g) => { t += g.n; d += Math.min(g.n, +C[K[bi][g.t + '|' + g.l]] || 0); }); }); return { d, t }; }
+function prdWdTag(pg, w) {
+  const t = prdCutTot(w, pg), L = [];
+  if (pg && pg.wd) L.push('<span class="prd-wdtag">' + icon('check', 'xs') + ' เบิกของครบแล้ว</span>');
+  if (t.d) L.push('<span class="prd-wdtag' + (t.d >= t.t ? '' : ' part') + '">' + (t.d >= t.t ? icon('check', 'xs') + ' ตัดครบ ' : 'ตัดแล้ว ') + t.d + '/' + t.t + ' เส้น</span>');
+  return L.join(' ');
+}
+const PRD_REM_MIN = 300;   /* เศษตั้งแต่ 30 ซม. = เก็บไว้ใช้ได้ */
+function prdCutCtl(Y, g, kx, dn) {
+  const X = Y.X, a = ' data-oid="' + esc(X.oid) + '" data-dep="' + esc(X.dep) + '" data-key="' + esc(kx) + '"', full = dn >= g.n;
+  const lf = +String(g.l).replace(/,/g, '') || 0, R = ((X.pg || {}).rem || {})[kx];
+  let h = '';
+  if (X.can) {
+    h += '<button type="button" class="prd-cpk' + (full ? ' full' : dn ? ' part' : '') + '" data-act="prdCutT" data-v="' + (full ? g.n : dn + 1) + '"' + a + (full ? ' disabled' : '') +
+      tipA(full ? 'ตัดครบทุกเส้นของแบบนี้แล้ว (กด − เพื่อลด)' : 'แตะ 1 ครั้ง = ตัดเสร็จเพิ่ม 1 เส้น') + '><span class="bx">' + icon('check') + '</span>' +
+      (full ? 'ตัดครบ ' + g.n + '/' + g.n + ' เส้น' : g.n === 1 ? 'แตะเมื่อตัดเส้นนี้แล้ว' : 'ตัดแล้ว ' + dn + '/' + g.n + ' เส้น · แตะ +1') + '</button>';
+    if (!full && g.n > 1) h += '<button type="button" class="prd-cpa" data-act="prdCutT" data-v="' + g.n + '"' + a + '>ครบทั้ง ' + g.n + ' เส้น</button>';
+    if (dn > 0) h += '<button type="button" class="prd-cpm" data-act="prdCutT" data-v="' + (dn - 1) + '"' + a + ' aria-label="ลดจำนวนที่ตัดแล้ว 1 เส้น">− 1</button>';
+  } else if (dn > 0) h += '<span class="prd-cpdn">' + (full ? '✓ ตัดครบ ' : 'ตัดแล้ว ') + dn + '/' + g.n + ' เส้น</span>';
+  if (lf >= PRD_REM_MIN) {
+    const t = prdQty(lf) + ' มม. × ' + (R ? R.n : g.n);
+    if (R && R.usedAt) h += '<span class="prd-rmk used">♻ เศษ ' + t + ' — ใช้ไปแล้ว</span>';
+    else if (X.can) h += '<button type="button" class="prd-rmk' + (R ? ' on' : '') + '" data-act="prdRemT" data-v="' + (R ? 0 : 1) + '" data-n="' + g.n + '" data-len="' + lf + '" data-c="' + esc(Y.c) + '" data-nm="' + esc(Y.nm || '') + '"' + a +
+      tipA(R ? 'เก็บไว้แล้ว — ขึ้นใน “เศษที่เก็บไว้ใช้” หน้าภาพรวม · แตะอีกครั้ง = ไม่เก็บ' : 'เศษยาวพอใช้ต่อได้ — แตะเพื่อบันทึกว่าเก็บไว้ (ทุกงานเห็นในหน้าภาพรวม)') + '>' + (R ? icon('check', 'sm') + ' เก็บเศษไว้แล้ว ' : '♻ เก็บเศษ ') + t + (R ? '' : ' ไว้ใช้') + '</button>';
+    else if (R) h += '<span class="prd-rmk on">♻ เก็บเศษไว้แล้ว ' + t + '</span>';
+  }
+  return h ? '<div class="prd-cpx">' + h + '</div>' : '';
+}
+function prdWdAct(X, w) {
+  const wd = (X.pg || {}).wd, a = ' data-oid="' + esc(X.oid) + '" data-dep="' + esc(X.dep) + '"';
+  return '<div class="prd-wd-a">' + (X.can ? '<button type="button" class="btn prd-wdok' + (wd ? ' on' : '') + '" data-act="prdWdOk" data-v="' + (wd ? 0 : 1) + '"' + a +
+      tipA(wd ? 'บันทึกแล้วว่าเบิกของครบ — แตะอีกครั้ง = ยกเลิก' : 'แตะเมื่อเบิกของจากคลังได้ครบตามรายการ — แผน / หัวหน้าเห็นว่าเบิกครบแล้ว') + '>' + (wd ? icon('check', 'sm') + ' เบิกของครบแล้ว' : '📦 แตะเมื่อเบิกของครบ') + '</button>'
+      : wd ? '<span class="prd-wdok">' + icon('check', 'sm') + ' เบิกของครบแล้ว</span>' : '') +
+    (wd ? '<span class="xs muted">' + fmtDT(wd.at) + (wd.by ? ' · ' + esc(wd.by) : '') + '</span>' : '') + '<span class="sp"></span>' +
+    '<button type="button" class="btn sm" data-act="prdWdPrint"' + a + tipA('พิมพ์ใบเบิก + แผนตัด + รายการที่ต้องทำของแผนกนี้ (A4 · ไม่มีราคา)') + '>' + icon('print', 'sm') + ' พิมพ์ใบเบิก + แผนตัด</button></div>';
+}
+/* แผนแก้ / เพิ่มรายการหลังไลน์ผลิตรับงาน (prd_items.prev / add_at) */
+function prdChgOf(x, PG) {
+  const p = x.pv; if (!p || !p.at || !x.s || !x.s.at || x.st === 'sent' || !(new Date(p.at) > new Date(x.s.at))) return '';
+  const ak = ((PG || {}).ack || {})[x.key]; if (ak && new Date(ak) >= new Date(p.at)) return '';
+  const L = [];
+  if (p.qty != null && x.q0 != null && +p.qty !== +x.q0) L.push('จำนวน ' + prdQty(p.qty) + ' → ' + prdQty(x.q0) + ' ' + (x.u || ''));
+  if ((p.spec || '') !== (x.sp || '')) L.push('ขนาด ' + (p.spec || '—') + ' → ' + (x.sp || '—'));
+  return L.join(' · ');
+}
+function prdNewOf(D, x, list) {
+  if (x.st !== 'sent' || !x.ad) return false;
+  const g = ((D || {}).stages || {}).mo, ga = g && g.gotAt; if (!ga || !(new Date(x.ad) > new Date(ga))) return false;
+  return list.some((y) => y !== x && prdRank(y.st) >= 1);
+}
+function prdXL(D, L, ist, PG) {
+  const X = L.map((i) => { const s = ist[i.key] || null; return { key: i.key, s, st: (s && s.st) || 'sent', pv: i.prev || null, ad: i.addAt || '', q0: i.qtyOrig != null ? i.qtyOrig : i.qty, sp: i.spec || '', u: i.unit || 'EA' }; });
+  X.forEach((x) => { x.chg = prdChgOf(x, PG); x.isNew = prdNewOf(D, x, X); }); return X;
+}
+function prdChgH(x, dep, oid) {
+  if (!x) return '';
+  let h = '';
+  if (x.chg) h += '<span class="prd-chg">' + icon('alert', 'xs') + '<span>แผนแก้หลังรับงาน: ' + esc(x.chg) + '</span>' + (dep ? '<button type="button" class="btn sm" data-act="prdAck" data-oid="' + esc(oid) + '" data-dep="' + esc(dep) + '" data-key="' + esc(x.key) + '"' + tipA('เห็นแล้ว — ป้ายนี้หายไป') + '>รับทราบ</button>' : '') + '</span>';
+  if (x.isNew) h += '<span class="prd-new">🆕 แผนเพิ่มหลังรับงาน</span>';
+  return h;
+}
+function prdChgBan(nc, nn) {
+  if (!nc && !nn) return '';
+  return '<div class="prd-chgbn">' + icon('alert', 'sm') + '<span>' + [nc ? 'แผนแก้จำนวน / ขนาดหลังรับงาน <b>' + nc + '</b> รายการ' : '', nn ? 'แผนเพิ่มรายการหลังรับงาน <b>' + nn + '</b> รายการ' : ''].filter(Boolean).join(' · ') + ' — ดูป้ายสีเหลือง / ฟ้าที่รายการด้านล่าง</span></div>';
+}
+async function prdProgSet(el, kind, key, val) {
+  const oid = el.dataset.oid, dep = el.dataset.dep;
+  const d = await rpc('cn_prd_prog', { p_oid: oid, p_dep: dep, p_kind: kind, p_key: key, p_val: val });
+  PRD.det[oid] = d; (PRD.detAt || (PRD.detAt = {}))[oid] = Date.now(); rerender(); return d;
+}
+on('prdWdOk', async (el) => { const v = el.dataset.v === '1'; await prdProgSet(el, 'wd', null, v); toast(v ? 'บันทึกแล้ว — เบิกของครบ' : 'ยกเลิก “เบิกของครบ” แล้ว'); });
+on('prdCutT', async (el) => { await prdProgSet(el, 'cut', el.dataset.key, Math.max(0, Math.min(999, +el.dataset.v || 0))); });
+on('prdRemT', async (el) => { const v = el.dataset.v === '1';
+  await prdProgSet(el, 'rem', el.dataset.key, v ? { n: +el.dataset.n || 1, len: +el.dataset.len || 0, c: el.dataset.c || '', name: el.dataset.nm || '' } : null);
+  PRD.remAt = 0; toast(v ? 'บันทึกเศษไว้แล้ว — ดูได้ที่หน้าภาพรวม “เศษที่เก็บไว้ใช้”' : 'ยกเลิกการเก็บเศษนี้แล้ว'); });
+on('prdAck', async (el) => { await prdProgSet(el, 'ack', el.dataset.key, true); });
+/* พิมพ์ใบเบิก + แผนตัดของแผนก (ข้อมูลเดียวกับหน้าจอ · ไม่มีราคา) */
+function prdOpenDoc(html) { let w = null; try { w = window.open('', '_blank'); } catch (e) { w = null; } if (!w) return false; w.document.open(); w.document.write(html); w.document.close(); return true; }
+function prdWdDoc(D, dep) {
+  const o = D.order, oid = o.oid, W = prdWork('d.' + dep, oid, D), w = prdWdOf(D, dep), E = esc;
+  const bars = w ? (w.bars || []) : [], raw = w ? (w.raw || []) : [], pg = prdPg(D, dep);
+  const col = prdCol([].concat(...bars.map((b) => (b.use || []).map(prdUseMm))));
+  const sw = (mm) => { const c = col[+mm]; return c ? '<i class="sw" style="background:' + c[0] + ';border-color:' + c[1] + '"></i>' : ''; };
+  const ck = '<span class="ck"></span>';
+  const t1 = bars.map((b) => '<tr><td class="mono b">' + E(b.c) + '</td><td>' + E(b.n || '') + ' <span class="tg">เส้นยาว</span></td><td class="r">' + (+b.len ? prdQty(b.len) : '—') + '</td><td class="r"><b>' + prdQty(b.q) + '</b> ' + E(b.u || 'EA') + '</td><td class="c">' + ck + '</td></tr>').join('') +
+    raw.map((r) => '<tr><td class="mono b">' + E(r.c) + '</td><td>' + E(r.n || '') + ' <span class="tg raw">วัตถุดิบ</span></td><td class="r">—</td><td class="r"><b>' + prdN4(r.q) + '</b> ' + E(r.u || 'EA') + '</td><td class="c">' + ck + '</td></tr>').join('');
+  const KS = prdKeys(bars);
+  const blk = bars.map((b, bi) => { if (!(b.use || []).length && !(b.plan || []).length) return '';
+    const L = +b.len || 0, G = prdPlanG(b.plan), C = pg.cut || {};
+    const U = (b.use || []).map((t) => { t = String(t); const m = /^(.*?) — ([\d.,]+) มม\. × ([\d.,]+) (\S+)$/.exec(t); return m ? { mm: +m[2].replace(/,/g, '') || 0, h: '<tr><td class="r nw">' + sw(+m[2].replace(/,/g, '')) + '<b>' + E(m[2]) + '</b> มม.</td><td class="mono b">' + E(m[1]) + '</td><td class="r nw">× <b>' + E(m[3]) + '</b> ' + E(m[4]) + '</td></tr>' } : { mm: 0, h: '<tr><td colspan="3">' + E(t) + '</td></tr>' }; })
+      .sort((a, z) => z.mm - a.mm).map((x) => x.h).join('');
+    const rows = G.map((g) => { const dn = Math.min(g.n, +C[KS[bi][g.t + '|' + g.l]] || 0), lf = +String(g.l).replace(/,/g, '') || 0;
+      const seg = L ? prdCuts(g.t).map((mm) => { const wp = mm / L * 100, c = col[mm] || PRD_CP[9]; return '<span class="sg" style="width:' + wp.toFixed(2) + '%;background:' + c[0] + ';color:' + c[1] + '">' + (wp >= 6 ? String(mm) : '') + '</span>'; }).join('') + '<span class="lf">' + (lf && lf / L >= .12 ? 'เศษ ' + E(g.l) : '') + '</span>' : '';
+      return '<div class="pr"><span class="pn"><b>' + g.n + '</b> เส้น</span>' + (L ? '<span class="pb">' + seg + '</span>' : '') + '<span class="pt">' + E(g.t) + (g.l !== '' ? ' · <b>เศษ ' + E(g.l) + '</b>' + (lf >= PRD_REM_MIN ? ' ♻' : '') : '') + '</span>' +
+        '<span class="pk">' + Array.from({ length: Math.min(g.n, 24) }, (_, i) => '<span class="ck' + (i < dn ? ' on' : '') + '"></span>').join('') + (g.n > 24 ? ' +' + (g.n - 24) : '') + '</span></div>'; }).join('');
+    return '<div class="bk"><div class="bh"><b class="mono">' + E(b.c) + '</b> ' + E(b.n || '') + (L ? ' · เส้นละ <b>' + prdQty(L) + '</b> มม.' : '') + ' · เบิก <b>' + prdQty(b.q) + '</b> ' + E(b.u || 'EA') + '</div>' +
+      (U ? '<div class="st">ชิ้นที่ต้องตัดจากเส้นนี้</div><table class="ut">' + U + '</table>' : '') + (rows ? '<div class="st">แผนตัด (☐ = 1 เส้น · ติ๊กเมื่อตัดเสร็จ)</div>' + rows : '') + '</div>';
+  }).join('');
+  const t3 = W ? W.items.map((i) => '<tr><td class="mono b">' + E(i.a) + '</td><td>' + E(i.b) + '</td><td class="r nw"><b>' + E(i.c) + '</b></td><td class="c">' + ck + '</td></tr>').join('') : '';
+  const due = W && W.due ? prdIso(W.due) : '', dno = W ? W.docNo || '' : '';
+  const css = '*{box-sizing:border-box}body{font-family:"Sarabun","Noto Sans Thai",Tahoma,sans-serif;color:#0F172A;margin:0;padding:14px 18px;font-size:13px}' +
+    '.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 10px;margin:-14px -18px 12px;background:#EFF6FF;border-bottom:1px solid #BFDBFE}.bar button{font:inherit;font-size:15px;font-weight:700;padding:8px 16px;border-radius:8px;border:2px solid #2563EB;background:#2563EB;color:#fff;cursor:pointer}' +
+    '.pst{text-align:right;font-size:9.5px;color:#94a3b8}.hd{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:2px solid #0F172A;padding-bottom:8px;margin-bottom:10px}' +
+    '.ttl{font-size:19px;font-weight:800}.sub{font-size:12.5px;color:#334155;margin-top:2px}.kp{text-align:right;font-size:12px;color:#334155}.kp b{display:block;font-size:17px;color:#0F172A}' +
+    'h2{font-size:15px;margin:14px 0 6px;padding:5px 9px;background:#F1F5F9;border-left:4px solid #2563EB;border-radius:4px}' +
+    'table{width:100%;border-collapse:collapse}.t th,.t td{border:1px solid #CBD5E1;padding:5px 7px;text-align:left;vertical-align:top}.t th{background:#F8FAFC;font-size:12px}' +
+    '.r{text-align:right}.c{text-align:center;width:34px}.nw{white-space:nowrap}.mono{font-family:Consolas,"Courier New",monospace}.b{font-weight:700}' +
+    '.tg{font-size:10.5px;padding:1px 6px;border-radius:999px;background:#DBEAFE;color:#1E3A8A;white-space:nowrap}.tg.raw{background:#FEF3C7;color:#78350F}' +
+    '.ck{display:inline-block;width:14px;height:14px;border:1.6px solid #334155;border-radius:3px;vertical-align:-2px;margin:1px}.ck.on{background:#16A34A;border-color:#16A34A}' +
+    '.bk{border:1px solid #CBD5E1;border-radius:8px;padding:8px 10px;margin:8px 0;break-inside:avoid}.bh{font-size:14px;margin-bottom:4px}.st{font-size:11.5px;color:#475569;margin:6px 0 3px;font-weight:700}' +
+    '.ut{width:auto;min-width:50%}.ut td{padding:2px 10px 2px 0;font-size:13px}.sw{display:inline-block;width:13px;height:13px;border:2px solid;border-radius:3px;vertical-align:-2px;margin-right:6px}' +
+    '.pr{display:flex;align-items:center;gap:8px;margin:4px 0}.pn{flex:0 0 52px;text-align:right;white-space:nowrap}.pn b{font-size:16px}' +
+    '.pb{flex:1 1 auto;display:flex;height:24px;border:2px solid #1F2937;border-radius:3px;overflow:hidden;background:#fff;min-width:0}' +
+    '.sg{flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;border-right:2px solid #1F2937;overflow:hidden;white-space:nowrap}' +
+    '.lf{flex:1 1 auto;display:flex;align-items:center;justify-content:center;font-size:10.5px;color:#334155;white-space:nowrap;background:repeating-linear-gradient(135deg,#F8FAFC 0 5px,#CBD5E1 5px 6px)}' +
+    '.pt{flex:0 0 170px;font-size:12px;line-height:1.3}.pk{flex:0 0 130px;line-height:1.1}' +
+    '.sign{display:flex;gap:16px;margin-top:24px;break-inside:avoid}.sign div{flex:1;border-top:1px solid #334155;padding-top:4px;text-align:center;font-size:11.5px;color:#334155;margin-top:30px}' +
+    '.nt{font-size:10.5px;color:#64748b;margin-top:6px}' +
+    '@media print{.bar{display:none}body{padding:0}.sg,.lf,.sw,.tg,.ck,h2,.t th{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
+  /* แท็กหัว / ท้ายเขียนแยก (<\/…) — ไฟล์นี้ฝังอยู่ในหน้าอื่น ห้ามมีข้อความปิดแท็กหน้าเว็บตรง ๆ */
+  return '<!DOCTYPE html><ht' + 'ml lang="th"><he' + 'ad><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ใบเบิก + แผนตัด ' + E(prdDepName(dep)) + ' ' + E(prdOno(o.iid, oid)) + '<\/title><style>' + css + '<\/style><\/he' + 'ad><bo' + 'dy>' +
+    '<div class="bar"><button type="button" onclick="window.print()">🖨 พิมพ์</button><span style="font-size:12.5px;color:#334155">A4 แนวตั้ง · ☐ ไว้ติ๊กด้วยปากกา (ช่องเขียว = ติ๊กในแอปแล้ว) · ไม่มีราคา</span></div>' +
+    '<div class="pst">พิมพ์จาก Starmark SPN เมื่อ ' + E(fmtDT(Date.now())) + '</div>' +
+    '<div class="hd"><div><div class="ttl">ใบเบิก + แผนตัด — ' + E(prdDepName(dep)) + '</div><div class="sub">Order <b class="mono">' + E(prdOno(o.iid, oid)) + '</b>' + (o.title ? ' · ' + E(o.title) : '') + (dno ? ' · เลขที่ <b class="mono">' + E(dno) + '</b>' : '') + '</div>' +
+      (pg.wd ? '<div class="sub">✓ เบิกของครบแล้ว ' + E(fmtDT(pg.wd.at)) + (pg.wd.by ? ' · ' + E(pg.wd.by) : '') + '</div>' : '') + '</div>' +
+      (due ? '<div class="kp">' + E(W.dueL || 'กำหนด') + '<b>' + E(due) + '</b></div>' : '') + '</div>' +
+    (t1 ? '<h2>1 · รายการเบิก — วัตถุดิบที่ต้องใช้ (ยอดรวม)</h2><table class="t"><thead><tr><th>รหัส</th><th>รายละเอียด</th><th class="r">ยาว (มม.)</th><th class="r">ต้องเบิก</th><th class="c">ได้แล้ว</th></tr></thead><tbody>' + t1 + '</tbody></table>' : '') +
+    (blk ? '<h2>2 · แผนตัดเส้นยาว</h2>' + blk : '') +
+    (t3 ? '<h2>' + (t1 || blk ? '3' : '1') + ' · ' + E(prdMoTtl2(dep)) + ' (' + W.items.length + ' รายการ)</h2><table class="t"><thead><tr><th>รหัส</th><th>รายการ</th><th class="r">จำนวน</th><th class="c">เสร็จ</th></tr></thead><tbody>' + t3 + '</tbody></table>' : '') +
+    '<div class="nt">♻ = เศษยาวตั้งแต่ 30 ซม. เก็บไว้ใช้ต่อได้ · ข้อมูลจากแผน (Production) ล่าสุดที่ส่งเข้าไลน์ผลิต</div>' +
+    '<div class="sign"><div>ผู้เบิก · วันที่ ____/____/______</div><div>ผู้จ่าย (คลัง) · วันที่ ____/____/______</div><div>หัวหน้าแผนก · วันที่ ____/____/______</div></div>' +
+    '<\/bo' + 'dy><\/ht' + 'ml>';
+}
+on('prdWdPrint', (el) => { const D = PRD.det[el.dataset.oid]; if (!D) return; const h = prdWdDoc(D, el.dataset.dep); if (!h) { toast('ไม่มีข้อมูลให้พิมพ์', 'err'); return; }
+  if (!prdOpenDoc(h)) toast('เปิดแท็บใหม่ไม่ได้ — อนุญาตป๊อปอัปของเว็บนี้ก่อน', 'err'); });
+/* หน้าภาพรวม: เศษที่เก็บไว้ใช้ (ทุกงาน) */
+async function prdRemLoad(force) {
+  if (PRD.remBusy || (!force && Date.now() - (PRD.remAt || 0) < 60000)) return;
+  PRD.remBusy = true;
+  try { PRD.remL = await rpc('cn_prd_remnants', {}); PRD.remErr = ''; }
+  catch (e) { if (e.code === 'session') { PRD.remBusy = false; forceLogout(e.message); return; } PRD.remErr = e.message; }
+  finally { PRD.remBusy = false; PRD.remAt = Date.now(); }
+  if (curPath() === '/prd/all' && !isEditing() && !$('#overlay.on')) rerender();
+}
+function prdRemCard() {
+  setTimeout(() => prdRemLoad(), 0);
+  const L = Array.isArray(PRD.remL) ? PRD.remL.slice() : null;
+  let b;
+  if (!L) b = '<div class="small muted">' + (PRD.remErr ? esc(PRD.remErr) : 'กำลังโหลด…') + '</div>';
+  else if (!L.length) b = empty('layers', 'ยังไม่มีเศษที่เก็บไว้', 'ที่แผนตัดของแผนก (แท็บแผนก / หน้าติ๊กสถานะ) แตะ “♻ เก็บเศษ … ไว้ใช้” ที่แถวที่มีเศษยาวตั้งแต่ 30 ซม. — เศษจะขึ้นที่นี่ให้ทุกงานเห็น');
+  else {
+    L.sort((a, z) => String(a.c || '').localeCompare(String(z.c || '')) || (+z.len || 0) - (+a.len || 0));
+    b = '<div class="xs muted" style="margin-bottom:6px">ก่อนตัดเส้นใหม่ ดูว่ามีเศษรหัสเดียวกันที่ยาวพอไหม · ใช้แล้วแตะ “ใช้แล้ว” ให้หายจากรายการ</div><div class="table-wrap"><table class="t resp"><thead><tr><th>รหัส</th><th class="r">ยาว (มม.)</th><th class="r">จำนวน</th><th>จากงาน</th><th>เก็บเมื่อ</th><th></th></tr></thead><tbody>' +
+      L.map((x) => '<tr><td class="main"><b class="mono">' + esc(x.c || '—') + '</b>' + (x.name ? '<div class="sub">' + esc(x.name) + '</div>' : '') + '</td><td data-l="ยาว (มม.)" class="r"><b>' + prdQty(x.len) + '</b></td><td data-l="จำนวน" class="r">' + prdQty(x.n) + ' ชิ้น</td>' +
+        '<td data-l="จากงาน" class="small"><a href="#/prd/o/' + encodeURIComponent(x.oid) + '">' + prdOnoH(x.iid, x.oid) + '</a>' + (x.title ? '<div class="sub">' + esc(x.title) + '</div>' : '') + '<div class="sub">' + esc(prdDepName(x.dep)) + '</div></td>' +
+        '<td data-l="เก็บเมื่อ" class="small">' + fmtDT(x.at) + (x.by ? '<div class="sub">' + esc(x.by) + '</div>' : '') + '</td>' +
+        '<td>' + (prdCan('d.' + x.dep) ? '<button type="button" class="btn sm" data-act="prdRemUse" data-oid="' + esc(x.oid) + '" data-dep="' + esc(x.dep) + '" data-key="' + esc(x.key) + '"' + tipA('เอาเศษนี้ไปใช้แล้ว — หายจากรายการ') + '>' + icon('check', 'sm') + ' ใช้แล้ว</button>' : '') + '</td></tr>').join('') + '</tbody></table></div>';
+  }
+  return '<details class="card prd-rem" data-prdtg="remOpen"' + (PRD.remOpen ? ' open' : '') + '><summary>♻ เศษที่เก็บไว้ใช้ (ทุกงาน)' + (L ? ' <span class="badge t-green">' + L.length + ' รายการ</span>' : '') +
+    '<span class="xs muted">เศษเส้นยาวที่แผนกตัดเก็บไว้ · กดดู</span>' + icon('chevRight', 'sm chev') + '</summary><div class="card-b">' + b + '</div></details>';
+}
+on('prdRemUse', async (el) => {
+  const oid = el.dataset.oid, d = await rpc('cn_prd_prog', { p_oid: oid, p_dep: el.dataset.dep, p_kind: 'rem', p_key: el.dataset.key, p_val: 'used' });
+  if (PRD.det[oid]) { PRD.det[oid] = d; (PRD.detAt || (PRD.detAt = {}))[oid] = Date.now(); }
+  await prdRemLoad(true); toast('บันทึกแล้ว — ใช้เศษนี้แล้ว');
+});
+
 /* ---------- หน้ารายการของสถานี (#/prd/orders) ---------- */
 route(/^\/prd\/orders$/, 'prd', () => {
   setTimeout(() => prdStLoad(), 0); setTimeout(() => prdLqLoad(), 0); setTimeout(() => folLoad(), 0);
@@ -4109,9 +4621,9 @@ route(/^\/prd\/orders$/, 'prd', () => {
       .map((x) => '<button class="fchip ' + (f === x[0] ? 'on' : '') + '" aria-pressed="' + (f === x[0]) + '" data-act="prdF" data-t="' + lt + '" data-f="' + x[0] + '"' + tipA(spnTip(x[0] === 'done' && lt === 'lm' ? 'f_done_lm' : 'f_' + x[0])) + '>' + x[1] + ' <span class="n">' + cntF(x[0]) + '</span></button>').join('');
     const rows = U.filter((u) => f === 'all' || (f === 'done') === prdUnitDone(u))
       .sort((a, b) => prdDueKey(a.due).localeCompare(prdDueKey(b.due)) || String(a.no).localeCompare(String(b.no)));
-    body = '<div class="prd-flt"><div class="chips">' + chips + '</div><span class="xs muted">เรียงตามวันกำหนด (ใกล้สุดก่อน) · แตะเพื่อดูรายการและติ๊กสถานะ</span></div>' +
-      '<div class="spn-list">' + (rows.length ? rows.map((u) => { const done = prdUnitDone(u);
-        return '<a class="spn-row prd-qc" href="' + prdWHref(u.k, u.ref) + '" data-pq="' + esc(u.pq) + '">' + prdDueBox(u, done) +
+    body = '<div class="prd-flt"><div class="chips">' + chips + '</div><span class="xs muted">เรียงตามวันกำหนด (ใกล้สุดก่อน)' + (f === 'todo' ? ' · แบ่งกลุ่ม เลยกำหนด / วันนี้–พรุ่งนี้ / 7 วัน' : '') + ' · แตะเพื่อดูรายการและติ๊กสถานะ</span></div>' +
+      '<div class="spn-list">' + (rows.length ? rows.map((u, ix) => { const done = prdUnitDone(u), gk = f === 'todo' ? prdDg(u) : '';   /* V1.8.5: หัวกลุ่มวันกำหนด */
+        return (gk && (!ix || prdDg(rows[ix - 1]) !== gk) ? prdDgHead(gk, rows) : '') + '<a class="spn-row prd-qc st-' + (done ? 'done' : (u.st || 'sent')) + (u.hold ? ' st-hold' : '') + '" href="' + prdWHref(u.k, u.ref) + '" data-pq="' + esc(u.pq) + '"' + (gk ? ' data-g="' + gk + '"' : '') + '>' + prdDueBox(u, done) +
           '<span class="sr-b"><span class="sr-h"><b class="mono">' + esc(u.no) + '</b>' + folMark(u.oid) + prdBadge(u.k, u.st) + '</span>' +
             '<span class="sr-j">' + (u.k === 'lm' || u.docNo ? prdOnoH(u.iid, u.job) + (u.title ? ' · ' : '') : '') + esc(u.title) + (u.k === 'lm' || u.docNo || !u.iid || u.iid === u.job ? '' : (u.title ? ' · ' : '') + '<span class="xs muted mono prd-oid0">' + esc(u.job) + '</span>') + (u.adm ? ' ' + prdAdmTag() : '') + '</span>' +
             '<span class="sr-m">' + esc(u.meta) + '</span>' + (u.note ? '<span class="prd-anote small">' + icon('edit', 'xs') + ' ' + esc(u.note) + '</span>' : '') +
@@ -4162,11 +4674,13 @@ function prdWork(k, ref, D) {
       const sec = { cut: 'รหัสสั่งตัด', glass: 'กระจก', sheet: 'งานตัดแผ่น / อื่น ๆ', other: 'สั่งทำอื่น ๆ', bom: 'ไส้ใน AX (เบิก)' };
       const dno = (live.find((i) => i.no) || {}).no || '';   /* V1.4: เลขที่เอกสารของแผนก (RM / SP-… จาก Production) */
       const ddw = dep ? prdDueOf(b, dep) : '';   /* V1.5 */
+      W.wd = dep ? prdWdOf(D, dep) : null; W.wdNo = dno;   /* V1.8.1: รายการเบิกของแผนก */
       Object.assign(W, { no: dno || W.no, docNo: dno, due: ddw || b.install || '', dueL: ddw ? 'กำหนดจบ' : 'วันติดตั้ง', meta: (k === 'mo' ? 'ใบรายการสั่งทำ' : prdStg(k).t) + ' · ' + live.length + ' รายการ · แผนส่ง ' + fmtDT(o.moAt),
         st: prdStFromCnt(live.reduce((c, i) => { const t = (ist(g.ist)[i.key] || {}).st; c.n++; if (t && c[t] != null) c[t]++; return c; }, { n: 0, got: 0, doing: 0, done: 0 })),
         items: keys.filter((x) => byKey[x]).map((x) => { const i = byKey[x];
-          return { key: x, s: ist(g.ist)[x], a: i.code, b: (i.name || '') + (i.spec ? ' · ' + i.spec : '') + (i.cab ? ' · ตู้ ' + i.cab : '') + ' (' + (sec[i.sec] || i.sec) + ')', c: prdQty(i.qty) + ' ' + (i.unit || 'EA'), rm: true,
-            note: (i.adm || {}).note || '', was: (i.adm || {}).qty != null ? i.qtyOrig : null }; }),
+          return { key: x, s: ist(g.ist)[x], a: i.code, b: (i.name || '') + (i.spec ? ' · ' + i.spec : '') + (i.cab ? ' · ตู้ ' + i.cab : '') + ' (' + (sec[i.sec] || i.sec) + ')', c: prdQty(i.qty) + ' ' + (i.unit || 'EA'), rm: true, mh: prdMatH(i),
+            note: (i.adm || {}).note || '', was: (i.adm || {}).qty != null ? i.qtyOrig : null,
+            pv: i.prev || null, ad: i.addAt || '', q0: i.qtyOrig != null ? i.qtyOrig : i.qty, sp: i.spec || '', u: i.unit || 'EA' }; }),   /* V1.8.5 */
         dropped: D.items.filter((i) => !i.gone && !i.removedAt && i.dropAt && inDep(i)) });
     }
   }
@@ -4186,6 +4700,9 @@ route(/^\/prd\/w\/(lm|cut|paint|mo|d\.[a-z0-9]{1,24})\/(.+)$/, 'prd', (m) => {
   const HM = prdHoldMap(D, prdSrvK(k), k === 'lm' ? ref : ''); W.items.forEach((i) => { i.hold = i.st !== 'done' ? HM[i.key] || null : null; });   /* V1.8.0 ป้ายรอ */
   const nHold = W.items.filter((i) => i.hold).length;
   const can = prdCan(k) && !W.off, sel = prdPick(wk); Array.from(sel).forEach((x) => { if (!W.items.some((i) => i.key === x)) sel.delete(x); });
+  const dep5 = prdIsDep(k) ? prdDepId(k) : '', PG5 = prdPg(D, dep5);   /* V1.8.5: แผนแก้ / เพิ่มหลังรับงาน */
+  W.items.forEach((i) => { i.chg = prdChgOf(i, PG5); i.isNew = prdNewOf(D, i, W.items); });
+  const nChg = W.items.filter((i) => i.chg).length, nNew = W.items.filter((i) => i.isNew).length;
   const T = sel.size ? W.items.filter((i) => sel.has(i.key)) : W.items, msg = PRD.msg[wk];
   const u = { due: W.due, dueL: W.dueL };
   const steps = [1, 2, 3].map((s) => { const on = T.length > 0 && T.every((i) => prdRank(i.st) >= s), nOn = T.filter((i) => prdRank(i.st) >= s).length;
@@ -4193,8 +4710,8 @@ route(/^\/prd\/w\/(lm|cut|paint|mo|d\.[a-z0-9]{1,24})\/(.+)$/, 'prd', (m) => {
       '<span class="bx">' + icon('check', 'sm') + '</span><b>' + prdStg(k).st[PRD_ORD[s]][0] + '</b><span class="sub">' + (on ? 'ติ๊กแล้ว' : nOn ? nOn + '/' + T.length : 'ยังไม่ติ๊ก') + '</span></button>'; }).join('');
   const allSel = W.items.length > 0 && sel.size === W.items.length;
   const items = W.items.map((i) => { const on = sel.has(i.key), s = i.s || null;
-    return '<div class="spn-item' + (on ? ' sel' : '') + '"><label class="si-l">' + (can ? '<input type="checkbox" data-chg="prdPickOne" data-w="' + esc(wk) + '" data-key="' + esc(i.key) + '"' + (on ? ' checked' : '') + ' aria-label="เลือก ' + esc(i.a) + '">' : '') +
-      '<span class="si-b">' + (i.sw ? prdSw(i.sw) : '') + '<b class="mono">' + esc(i.a) + '</b><span class="si-d">' + esc(i.b) + '</span>' + (i.note ? '<span class="prd-anote small">' + icon('edit', 'xs') + ' ' + esc(i.note) + '</span>' : '') +
+    return '<div class="spn-item st-' + (i.st || 'sent') + (i.hold ? ' hold' : '') + (on ? ' sel' : '') + '"><label class="si-l">' + (can ? '<input type="checkbox" data-chg="prdPickOne" data-w="' + esc(wk) + '" data-key="' + esc(i.key) + '"' + (on ? ' checked' : '') + ' aria-label="เลือก ' + esc(i.a) + '">' : '') +
+      '<span class="si-b">' + (i.sw ? prdSw(i.sw) : '') + '<b class="mono">' + esc(i.a) + '</b><span class="si-d">' + esc(i.b) + '</span>' + (i.mh || '') + prdChgH(i, can && dep5 ? dep5 : '', oid) + (i.note ? '<span class="prd-anote small">' + icon('edit', 'xs') + ' ' + esc(i.note) + '</span>' : '') +
         '<span class="si-s">' + prdBadge(k, i.st) + prdHoldPill(i.hold) + (s && s.at ? '<span class="xs muted">' + fmtDT(s.at) + (s.by ? ' · ' + esc(s.by) : '') + '</span>' : '') + '</span>' + (prdHoldTxt(i.hold) ? '<span class="prd-holdn xs">' + esc(prdHoldTxt(i.hold)) + '</span>' : '') + '</span>' +
       '<span class="si-q">' + esc(i.c) + (i.was != null ? '<span class="sub prd-was">Admin แก้ · เดิม ' + prdQty(i.was) + '</span>' : '') + '</span></label>' +
       (i.rm && can ? '<button type="button" class="btn sm spn-x" data-act="prdDropAsk" data-k="' + esc(k) + '" data-oid="' + esc(oid) + '" data-key="' + esc(i.key) + '" aria-label="ลบ ' + esc(i.a) + ' (Support ไม่ได้ทำเอง)"' + tipA(spnTip('drop')) + '>' + icon('x', 'sm') + '</button>' : '') + '</div>'; }).join('');
@@ -4202,20 +4719,23 @@ route(/^\/prd\/w\/(lm|cut|paint|mo|d\.[a-z0-9]{1,24})\/(.+)$/, 'prd', (m) => {
     W.dropped.map((i) => '<div class="spn-dr"><span><b class="mono">' + esc(i.code) + '</b> ' + esc(i.name || '') + ' · ' + prdQty(i.qty) + ' ' + esc(i.unit || 'EA') + '<span class="xs muted"> — ลบโดย ' + esc(i.dropBy || '') + ' ' + fmtDT(i.dropAt) + '</span></span>' +
       (S.user.role === 'admin' ? '<button class="btn sm" data-act="prdDropUndo" data-oid="' + esc(oid) + '" data-key="' + esc(i.key) + '">' + icon('undo', 'sm') + ' กู้คืน</button>' : '') + '</div>').join('') +
     (S.user.role === 'admin' ? '' : '<div class="xs muted" style="margin-top:6px">กดผิด → ติดต่อ Admin ให้กู้คืน</div>') + '</div></div>' : '';
-  const head = '<div class="card spn-wh"><div class="card-b">' +
+  const head = '<div class="card spn-wh st-' + (W.st || 'sent') + '"><div class="card-b">' +
     '<div class="spn-wt"><div><b class="mono">' + esc(W.no) + '</b> ' + prdBadge(k, W.st) + (W.off ? ' <span class="badge t-gray">ยกเลิก / ไม่อยู่ในรอบล่าสุด</span>' : '') + '<div class="small">' + (k === 'lm' || W.docNo ? prdOnoH(D.order.iid, oid) + (W.title && W.title !== oid ? ' · ' + esc(W.title) : '') : esc(W.title !== oid ? W.title : '') + (D.order.iid && D.order.iid !== oid ? (W.title && W.title !== oid ? ' · ' : '') + '<span class="xs muted mono prd-oid0">' + esc(oid) + '</span>' : '')) + '</div><div class="xs muted">' + esc(W.meta) + '</div></div>' +
       '<span class="spn-wa">' + folBtn(oid) + '<a class="btn sm" href="#/prd/o/' + encodeURIComponent(oid) + '" data-act="prdGoDoc" data-oid="' + esc(oid) + '" data-t="' + k + '"' + tipA(spnTip('doc')) + '>' + icon('file', 'sm') + ' เอกสารทั้งงาน</a></span></div>' +
     '<div class="spn-wd">' + prdDueBox(u, W.st === 'done') + '<div class="spn-wp"><div class="spn-wp-h"><span>ความคืบหน้า · เสร็จ <b class="n">' + W.cnt.done + '/' + W.cnt.n + '</b> รายการ' + tipI(spnTip('prog'), 'ความคืบหน้า') + '</span><b>' + prdPct(W.cnt, W.st) + '%</b></div>' + prdBar(W.cnt, true, nHold) +
       '<div class="spn-lg"><span><i class="b-done"></i>เสร็จ <b>' + W.cnt.done + '</b></span><span><i class="b-doing"></i>กำลังทำ <b>' + W.cnt.doing + '</b></span><span><i class="b-got"></i>รับงาน <b>' + W.cnt.got + '</b></span><span><i class="b-none"></i>ยังไม่รับ <b>' + (W.cnt.n - W.cnt.done - W.cnt.doing - W.cnt.got) + '</b></span>' + (nHold ? '<span class="lg-hold"><i class="b-hold"></i>⏸ รอ <b>' + nHold + '</b></span>' : '') + '</div></div></div>' +
-    (W.warn ? '<div class="sr-w">' + esc(W.warn) + '</div>' : '') + (W.note ? '<div class="prd-anote small">' + icon('edit', 'xs') + ' หมายเหตุ: ' + esc(W.note) + '</div>' : '') + prdHoldBanner(W.items.map((i) => i.hold)) + '</div></div>';
+    (W.warn ? '<div class="sr-w">' + esc(W.warn) + '</div>' : '') + (W.note ? '<div class="prd-anote small">' + icon('edit', 'xs') + ' หมายเหตุ: ' + esc(W.note) + '</div>' : '') + prdHoldBanner(W.items.map((i) => i.hold)) + prdChgBan(nChg, nNew) + '</div></div>';
   const list = '<div class="card spn-items"><div class="spn-ih">' + (can ? '<label class="si-all"' + tipA(spnTip('all')) + '><input type="checkbox" data-chg="prdPickAll" data-w="' + esc(wk) + '"' + (allSel ? ' checked' : '') + '> ' + prdStg(k).items + ' · เลือกทั้งหมด</label>' : '<b>' + prdStg(k).items + '</b>') +
     '<span class="xs muted">' + (sel.size ? 'เลือก ' + sel.size + '/' + W.items.length : W.items.length + ' รายการ' + (can ? ' · ไม่เลือก = ทั้งใบ' : '')) + '</span></div>' + items + '</div>';
   const bar = can ? '<div class="spn-act" role="group" aria-label="ติ๊กสถานะ">' + (msg ? '<div class="spn-msg ' + msg.kind + '" role="status">' + esc(msg.t) + '</div>' : '') +
+      prdNextBtn(k, ref, oid, T) +   /* V1.8.5: ปุ่มใหญ่ ขั้นต่อไป */
       '<div class="spn-act-h"><b>' + (sel.size ? 'ติ๊กให้ ' + sel.size + ' รายการที่เลือก' : 'ติ๊กให้ทั้งใบ (' + W.items.length + ' รายการ)') + '</b><span>แตะติ๊ก · แตะซ้ำยกเลิก' + tipI(spnTip('act'), 'วิธีติ๊ก') + '</span></div><div class="spn-tgs">' + steps + '</div>' +
       '<div class="spn-hrow">' + (T.some((i) => i.st !== 'done') ? '<button type="button" class="btn spn-hbtn" data-act="prdHoldAsk" data-k="' + k + '" data-ref="' + esc(ref) + '" data-oid="' + esc(oid) + '"' + tipA('ติดป้ายรอ (รอวัตถุดิบ ฯลฯ) ให้' + (sel.size ? 'รายการที่เลือก' : 'ทุกรายการที่ยังไม่เสร็จ') + ' — คนอื่นเห็นในภาพรวม + แจ้งเตือน') + '>' + icon('pause', 'sm') + ' ติดป้ายรอ…</button>' : '') +
         (T.some((i) => i.hold) ? '<button type="button" class="btn spn-hbtn go" data-act="prdHoldOff" data-k="' + k + '" data-ref="' + esc(ref) + '" data-oid="' + esc(oid) + '">' + icon('play', 'sm') + ' ของมาแล้ว ทำต่อ</button>' : '') + '</div></div>'
     : '<div class="card"><div class="card-b small muted">' + icon('lock', 'sm') + ' ' + (W.off ? 'ใบนี้ยกเลิก / ไม่อยู่ในรอบที่แผนส่งล่าสุด — ติ๊กไม่ได้' : (prdMyRo() ? 'บัญชีนี้ติดตามอย่างเดียว — ดูได้ แต่ติ๊กสถานะ / ติดป้ายรอไม่ได้' : 'ดูอย่างเดียว — งาน' + prdStg(k).t + 'ไม่ใช่ส่วนงานของบัญชีนี้ (Admin ตั้งได้ที่หน้าบัญชีผู้ใช้)')) + '</div></div>';
-  return { nav: '#/prd/orders', html: pageHead(esc(prdStg(k).doc) + ' · ' + '<span class="mono">' + esc(W.no) + '</span>', '', back) + head + list + drop + bar };
+  const wdBox = W.wd ? '<details class="card prd-wdc" data-prdtg="' + esc('wdo|' + wk) + '"' + (PRD['wdo|' + wk] ? ' open' : '') + '><summary>' + icon('layers', 'sm') + ' <b>รายการเบิก — วัตถุดิบที่ต้องใช้</b><span class="xs muted">' + esc(prdWdSum(W.wd)) + (W.wd.mc > 1 ? ' · ใบรวม ' + W.wd.mc + ' Order' : '') + ' · กดดู</span>' + prdWdTag(PG5, W.wd) + icon('chevRight', 'sm chev') + '</summary>' +
+    prdWdHtml(W.wd, W.wdNo, dep5 ? { oid, dep: dep5, pg: PG5, can: can && !!dep5 } : null) + '</details>' : '';   /* V1.8.1 · V1.8.5: ติ๊กตัด / เบิกครบ / เศษ / พิมพ์ · จำว่ากางไว้ */
+  return { nav: '#/prd/orders', html: pageHead(esc(prdStg(k).doc) + ' · ' + '<span class="mono">' + esc(W.no) + '</span>', '', back) + head + wdBox + list + drop + bar };
 });
 on('prdLtGo', (el) => { PRD.lt = el.dataset.t; go('#/prd/orders'); });
 Acts.prdPickOne = (el) => { const s = prdPick(el.dataset.w); if (el.checked) s.add(el.dataset.key); else s.delete(el.dataset.key); rerender(); };
@@ -4306,10 +4826,10 @@ function prdOvT(k) { return k === 'mo' ? (prdOvKeys().some(prdIsDep) ? 'สั�
 const PRD_OVT = { lm: 'ปิดผิว', cut: 'ตัด', paint: 'ทำสี', mo: 'สั่งตัด/สั่งทำ' };
 const PRD_DOT = { na: ['—', 'na'], sent: ['ยังไม่รับงาน', 'sent'], got: ['รับงานแล้ว', 'got'], doing: ['กำลังทำ', 'doing'], done: ['เสร็จแล้ว', 'done'] };
 const PRD_OVS = {   /* สถานะที่ติ๊กกรองได้ของแต่ละส่วน */
-  lm: [['sent', 'ยังไม่รับงาน'], ['got', 'รับงานแล้ว'], ['doing', 'กำลังทำ'], ['done', 'เสร็จแล้ว'], ['na', 'ยังไม่มีใบ']],
-  cut: [['sent', 'ยังไม่รับงาน'], ['got', 'รับงานแล้ว'], ['doing', 'กำลังทำ'], ['done', 'เสร็จแล้ว'], ['na', 'ยังไม่มีใบ']],
-  paint: [['sent', 'ยังไม่รับงาน'], ['got', 'รับงานแล้ว'], ['doing', 'กำลังทำ'], ['done', 'เสร็จแล้ว'], ['na', 'ไม่มีงานสี']],
-  mo: [['sent', 'ยังไม่รับงาน'], ['got', 'รับงานแล้ว'], ['doing', 'กำลังทำ'], ['done', 'เสร็จแล้ว'], ['na', 'ไม่มีรายการ']]
+  lm: [['sent', 'ยังไม่รับงาน'], ['got', 'รับงานแล้ว'], ['doing', 'กำลังทำ'], ['done', 'เสร็จแล้ว'], ['na', 'ไม่มีงาน / ยังไม่ส่ง']],
+  cut: [['sent', 'ยังไม่รับงาน'], ['got', 'รับงานแล้ว'], ['doing', 'กำลังทำ'], ['done', 'เสร็จแล้ว'], ['na', 'ไม่มีงาน / ยังไม่ส่ง']],
+  paint: [['sent', 'ยังไม่รับงาน'], ['got', 'รับงานแล้ว'], ['doing', 'กำลังทำ'], ['done', 'เสร็จแล้ว'], ['na', 'ไม่มีงานสี / ยังไม่ส่ง']],
+  mo: [['sent', 'ยังไม่รับงาน'], ['got', 'รับงานแล้ว'], ['doing', 'กำลังทำ'], ['done', 'เสร็จแล้ว'], ['na', 'ไม่มีงาน / ยังไม่ส่ง']]
 };
 const PRD_NEAR = 7;   /* “ใกล้กำหนด” = อีก ≤ 7 วัน (รวมเลยกำหนดแล้ว) */
 function prdOvShow() {   /* ส่วนงานที่ติ๊กให้แสดง — จำไว้ในเครื่องนี้ (ไม่ส่งขึ้น Server) */
@@ -4350,14 +4870,34 @@ function prdChaseBar(all) {
 }
 on('prdChase', () => { PRD.f.all = 'todo'; PRD.at = ''; PRD.q = ''; PRD.ovSt = { lm: [], cut: ['sent', 'got', 'doing'], paint: ['sent', 'got', 'doing'], mo: [] }; PRD.ovNear = true;
   const sh = prdOvShow(); ['cut', 'paint'].forEach((k) => { if (sh.indexOf(k) < 0) sh.push(k); }); PRD.ovShow = prdOvKeys().filter((k) => sh.indexOf(k) >= 0); go('#/prd/all'); });
-function prdPipe(b, show) {   /* V1.8.0: ต่อแผนก + ป้ายรอ */
+/* SPN V1.8.4: ส่วนที่ไม่มีงาน — แยก “ไม่มีงาน” (แผนแจ้ง 🔕 ใน Production / ส่งใบแล้วไม่มีรายการของส่วนนี้) กับ “ยังไม่ส่ง” (แผนยังไม่ได้ส่ง) · b = งาน (ภาพรวม) หรือข้อมูลหน้างาน */
+function prdNa(b, k, full) {   /* full = ข้อความเต็ม (หน้างาน) · ไม่ส่ง = ข้อความสั้น (ช่องภาพรวม — หัวคอลัมน์บอกส่วนงานแล้ว) */
+  b = b || {}; const nn = b.none || {}, dep = prdIsDep(k), ms = (v) => +v > 0, N = (tl, s) => ({ no: 1, t: full ? tl : 'ไม่มีงาน', s }), W = (tl) => ({ no: 0, t: full ? tl : 'ยังไม่ส่ง' });
+  if (k === 'lm') return ms(nn.lm) ? N('ไม่มีงานปิดผิว', 'แผนแจ้งแล้ว') : W('ยังไม่ส่งใบปิดผิว');
+  if (k === 'cut') return b.cutPO ? N('ไม่มีงานตัดไม้', 'ส่งเฉพาะงานสี') : W('ยังไม่ส่ง');
+  if (k === 'paint') return b.cutAt ? N('ไม่มีงานสี', full ? 'ใบที่ส่งไม่มีชิ้นทำสี' : 'ไม่มีในใบที่ส่ง') : ms(nn.paint) ? N('ไม่มีงานสี', 'แผนแจ้งแล้ว') : W('ยังไม่ส่งงานสี');
+  const tl = dep ? 'ไม่มีงาน' : 'ไม่มีงานสั่งตัด / สั่งทำ';
+  return b.moAt ? N(tl, full ? (dep ? 'แผนกนี้ไม่มีรายการในใบที่ส่ง' : 'ใบที่ส่งไม่มีรายการ') : 'ไม่มีในใบที่ส่ง') : ms(nn.mo) ? N(tl, 'แผนแจ้งแล้ว') : W('ยังไม่ส่ง');
+}
+function prdNaChip(n) { return '<span class="prd-nachip ' + (n.no ? 'no' : 'wait') + '">' + icon(n.no ? 'x' : 'clock', 'xs') + ' ' + esc(n.t) + (n.s ? ' <small>· ' + esc(n.s) + '</small>' : '') + '</span>'; }
+function prdNoDeps(deps, o) {   /* แผนกที่ไม่มีงานใน Order นี้ (แผนส่งงานสั่งตัด / สั่งทำแล้ว) */
+  if (!o || !o.moAt) return '';
+  const L = prdDeps().filter((d) => d && d.id && !deps[d.id]).map((d) => prdDepName(d.id) || d.name || d.id);
+  return L.length ? '<div class="prd-dpl prd-nodep">' + prdNaChip({ no: 1, t: 'ไม่มีงาน: ' + L.join(' · ') }) + '</div>' : '';
+}
+function prdNoneCard(what, ms) {
+  return '<div class="card"><div class="card-b"><div class="prd-nonec">' + icon('x') + '<div><b>Order นี้ไม่มี' + esc(what) + '</b><div class="small" style="margin-top:4px">แผนแจ้งจาก Production' + (+ms > 0 ? ' เมื่อ ' + fmtDT(new Date(+ms).toISOString()) : '') + ' — ส่วนนี้ไม่ต้องทำ</div></div></div></div></div>';
+}
+function prdPipe(b, show) {   /* V1.8.0: ต่อแผนก + ป้ายรอ · V1.8.3: บล็อกสีทึบแบบตารางจอง + แถบ % + ป้ายรอที่มุม */
   const x = prdStaOf(b), na = { lm: 'ยังไม่มีใบ', cut: 'ยังไม่มีใบ', paint: 'ไม่มีงานสี' };
-  const st = (k) => !x[k] || x[k] === 'na' ? na[k] || 'ไม่มีรายการ' : PRD_DOT[x[k]][0];
+  const st = (k) => !x[k] || x[k] === 'na' ? prdNa(b, k).t : PRD_DOT[x[k]][0];   /* V1.8.4 */
   const cn = (k) => (k === 'cut' ? b.cutCnt : k === 'paint' ? b.paintCnt : prdCntOf(b, k)) || prdCnt0;
-  const dt = (k) => !x[k] || x[k] === 'na' ? '' : k === 'lm' ? 'เสร็จ ' + (+b.lmDone || 0) + '/' + b.lm + ' ใบ' : prdPct(cn(k), x[k]) + '% · ' + (k === 'paint' ? prdM2(b.cutM2) + ' ตร.ม.' : k === 'cut' ? prdQty(b.cutAll) + ' ชิ้น' : (+cn(k).n || 0) + ' รายการ');
-  return '<div class="prd-pipe" style="grid-template-columns:repeat(' + show.length + ',minmax(96px,1fr))">' + show.map((k) => { const v = x[k] || 'na', h = v !== 'done' && v !== 'na' ? prdHoldOf(b, k) : null;
-    return '<span class="pp pp-' + PRD_DOT[v][1] + (h ? ' pp-hold' : '') + '" title="' + esc(prdOvT(k) + ': ' + st(k) + (dt(k) ? ' · ' + dt(k) : '') + (h ? ' · ⏸ ' + (PRD_HOLD_R[h.r] || 'รอ') + ' ' + h.n + ' รายการ' + (h.note ? ' — ' + h.note : '') + (h.due ? ' · คาดเข้า ' + prdIso(h.due) : '') : '')) + '"><i>' + (v === 'done' ? icon('check', 'xs') : h ? icon('pause', 'xs') : '') + '</i><b>' + esc(prdOvT(k)) + '</b><span class="ps">' + esc(st(k)) + (h ? ' · ⏸ รอ ' + h.n : '') + '</span>' +
-    (dt(k) ? '<span class="pd">' + esc(dt(k)) + '</span>' : '') + '</span>'; }).join('') + '</div>';
+  const dt = (k) => !x[k] || x[k] === 'na' ? prdNa(b, k).s || '' : k === 'lm' ? 'เสร็จ ' + (+b.lmDone || 0) + '/' + b.lm + ' ใบ' : prdPct(cn(k), x[k]) + '% · ' + (k === 'paint' ? prdM2(b.cutM2) + ' ตร.ม.' : k === 'cut' ? prdQty(b.cutAll) + ' ชิ้น' : (+cn(k).n || 0) + ' รายการ');
+  const pc = (k) => !x[k] || x[k] === 'na' ? -1 : k === 'lm' ? (+b.lm > 0 ? Math.round(Math.min(1, (+b.lmDone || 0) / +b.lm) * 100) : x[k] === 'done' ? 100 : 0) : prdPct(cn(k), x[k]);
+  return '<div class="prd-pipe" style="grid-template-columns:repeat(' + show.length + ',minmax(112px,1fr))">' + show.map((k) => { const v = x[k] || 'na', h = v !== 'done' && v !== 'na' ? prdHoldOf(b, k) : null, p = pc(k);
+    return '<span class="pp pp-' + PRD_DOT[v][1] + (v === 'na' ? (prdNa(b, k).no ? ' pp-no' : ' pp-wait') : '') + (h ? ' pp-hold' : '') + '" title="' + esc(prdOvT(k) + ': ' + st(k) + (dt(k) ? ' · ' + dt(k) : '') + (h ? ' · ⏸ ' + (PRD_HOLD_R[h.r] || 'รอ') + ' ' + h.n + ' รายการ' + (h.note ? ' — ' + h.note : '') + (h.due ? ' · คาดเข้า ' + prdIso(h.due) : '') : '')) + '">' + (v === 'done' ? '<i>' + icon('check', 'xs') + '</i>' : '') +
+      '<b class="pp-k">' + esc(prdOvT(k)) + '</b><span class="ps">' + (v === 'na' ? icon(prdNa(b, k).no ? 'x' : 'clock', 'xs') + ' ' : '') + esc(st(k)) + '</span>' + (dt(k) ? '<span class="pd">' + esc(dt(k)) + '</span>' : '') +
+      (p >= 0 ? '<span class="pp-bar" aria-hidden="true"><s style="width:' + p + '%"></s></span>' : '') + (h ? '<span class="pp-hd">' + icon('pause', 'xs') + ' รอ ' + h.n + '</span>' : '') + '</span>'; }).join('') + '</div>';
 }
 function prdOverview(r, all, tb, sub) {
   const f = PRD.f.all || 'todo', at = PRD.at || '', so = PRD.so.all || 'due', show = prdOvShow(), ST = prdOvSt(), near = !!PRD.ovNear;
@@ -4407,9 +4947,9 @@ function prdOverview(r, all, tb, sub) {
       '<div class="card" style="margin-top:12px"><div class="card-b">' +
         '<div class="sbox">' + icon('search', 'sm') + '<input class="input" type="search" id="prd-q" data-inp="prdQ" value="' + esc(PRD.q) + '" placeholder="ค้นเลขงาน / ชื่องาน / Item Id" aria-label="ค้นหางาน"></div>' +
         '<div class="prd-flt"><div class="chips">' + chips + '</div>' + sorts + '</div>' + tick + atChips + '</div>' +
-        '<div class="table-wrap"><table class="t resp prd-tbl prd-tbl-all"><thead><tr><th>งาน (Order)</th><th>ตอนนี้อยู่ที่' + tipI(spnTip('ov_at'), 'ตอนนี้อยู่ที่') + '</th><th>สถานะแต่ละส่วน: ' + show.map((k) => esc(prdOvT(k))).join(' → ') + tipI(spnTip('ov_st'), 'สถานะแต่ละส่วน') + '</th><th>กำหนด</th><th>อัปเดต</th><th aria-label="ดูเอกสาร"></th></tr></thead><tbody>' +
+        '<div class="table-wrap"><table class="t resp prd-tbl prd-tbl-all"><thead><tr><th>งาน (Order)</th><th>ตอนนี้อยู่ที่' + tipI(spnTip('ov_at'), 'ตอนนี้อยู่ที่') + '</th><th class="prd-pipe-th">สถานะแต่ละส่วน' + tipI(spnTip('ov_st'), 'สถานะแต่ละส่วน') + '<div class="prd-pipe-h" style="grid-template-columns:repeat(' + show.length + ',minmax(112px,1fr))">' + show.map((k, j) => '<span>' + (j ? '<em>→</em>' : '') + esc(prdOvT(k)) + '</span>').join('') + '</div></th><th>กำหนด</th><th>อัปเดต</th><th aria-label="ดูเอกสาร"></th></tr></thead><tbody>' +
           (rows || '<tr><td colspan="6">' + (all.length ? empty('search', 'ไม่มีงานตามที่ติ๊ก', 'กด “ล้างตัวกรอง” หรือเลือก “ทั้งหมด”') : empty('factory', 'ยังไม่มีงานจากแผน', 'งานที่แผนกด “📤 ส่งเอกสารเข้า App ไลน์ผลิต” ใน Production จะขึ้นที่นี่')) + '</td></tr>') +
-          '<tr id="prd-none" class="hidden"><td colspan="6">' + empty('search', 'ไม่พบงานที่ค้น', 'ลองคำค้นอื่น') + '</td></tr></tbody></table></div></div>' };
+          '<tr id="prd-none" class="hidden"><td colspan="6">' + empty('search', 'ไม่พบงานที่ค้น', 'ลองคำค้นอื่น') + '</td></tr></tbody></table></div></div>' + prdRemCard() };   /* V1.8.5 */
 }
 Acts.prdOvK = (el) => { const k = el.dataset.k, sh = prdOvShow().filter((x) => x !== k); if (el.checked) sh.push(k);
   PRD.ovShow = sh.length ? prdOvKeys().filter((x) => sh.indexOf(x) >= 0) : prdOvKeys().slice();
@@ -4429,6 +4969,7 @@ function prdQApply() {
   const words = PRD.q.trim().toUpperCase().split(/\s+/).filter(Boolean); let n = 0;
   const all = $$('#app tr.prd-row, #app .prd-qc');
   all.forEach((tr) => { const hit = words.every((w) => tr.dataset.pq.indexOf(w) >= 0); tr.classList.toggle('hidden', !hit); if (hit) n++; });
+  $$('#app .prd-dg').forEach((h) => { h.classList.toggle('hidden', !$$('#app .prd-qc[data-g="' + h.dataset.g + '"]:not(.hidden)').length); });   /* V1.8.5: หัวกลุ่มที่ไม่มีงานตรงคำค้น = ซ่อน */
   const nm = $('#prd-none'); if (nm) nm.classList.toggle('hidden', n > 0 || !all.length);
 }
 on('prdLt', (el) => { PRD.lt = el.dataset.t; rerender(); });
@@ -4632,9 +5173,9 @@ function prdSigOf(oid) { const b = prdBrief(oid); return b ? [b.at, b.lmAt, b.cu
 async function prdLoad(oid, force) {
   if (PRD.loading[oid]) return;
   const sig = prdSigOf(oid);
-  if (!force && PRD.det[oid] && PRD.sig[oid] === sig) return;
+  if (!force && PRD.det[oid] && PRD.sig[oid] === sig && Date.now() - ((PRD.detAt || {})[oid] || 0) < 90000) return;   /* V1.8.5: ความคืบหน้าแผนตัด / เบิกครบ ของคนอื่น */
   PRD.loading[oid] = true;
-  try { PRD.det[oid] = await rpc('cn_prd_order', { p_oid: oid }); PRD.sig[oid] = sig; PRD.err[oid] = ''; }
+  try { PRD.det[oid] = await rpc('cn_prd_order', { p_oid: oid }); PRD.sig[oid] = sig; PRD.err[oid] = ''; (PRD.detAt || (PRD.detAt = {}))[oid] = Date.now(); }
   catch (e) { if (e.code === 'session') { forceLogout(e.message); return; } PRD.err[oid] = e.message; }
   finally { PRD.loading[oid] = false; }
   if ((curPath() === '/prd/o/' + oid || /^\/prd\/w\//.test(curPath())) && !isEditing() && !$('#overlay.on')) rerender();
@@ -4644,10 +5185,11 @@ function prdDocTabs(D) {   /* V1.8.0 (ผู้ใช้ 18/11 09:27 “แย�
   const po = !!(D.cut && D.cut.paintOnly);   /* V1.3: ส่งเฉพาะงานสี = ไม่มีใบสั่งตัดไม้ */
   const dn = {}; D.items.filter((i) => !i.gone && !i.removedAt && !i.dropAt).forEach((i) => { const k = i.dep ? 'd.' + i.dep : 'mo'; dn[k] = (dn[k] || 0) + 1; });
   const dk = Object.keys(dn).filter(prdIsDep);
-  let L = [['lm', 'ใบปิดผิว', D.docs.filter((d) => !d.cancelled && !d.gone && !d.removedAt).length]].concat(D.order.cutAt && !po ? [['cut', 'ใบสั่งตัด', crm ? 'ลบแล้ว' : '✓']] : [])
-    .concat([['paint', 'ใบส่งทำสี', nCol ? (crm ? 'ลบแล้ว' : nCol + ' สี') : '—']])
+  const nn4 = D.order.none || {};   /* V1.8.4 */
+  let L = [['lm', 'ใบปิดผิว', D.docs.filter((d) => !d.cancelled && !d.gone && !d.removedAt).length || (+nn4.lm > 0 ? 'ไม่มี' : 0)]].concat(D.order.cutAt && !po ? [['cut', 'ใบสั่งตัด', crm ? 'ลบแล้ว' : '✓']] : [])
+    .concat([['paint', 'ใบส่งทำสี', nCol ? (crm ? 'ลบแล้ว' : nCol + ' สี') : D.order.cutAt || +nn4.paint > 0 ? 'ไม่มี' : '—']])
     .concat(dk.map((k) => [k, prdStg(k).tab, dn[k]]))
-    .concat(dn.mo || !dk.length ? [['mo', dk.length ? 'สั่งทำ (ไม่แยกแผนก)' : 'งานสั่งตัด / สั่งทำ', dn.mo || 0]] : []);
+    .concat(dn.mo || !dk.length ? [['mo', dk.length ? 'สั่งทำ (ไม่แยกแผนก)' : 'งานสั่งตัด / สั่งทำ', dn.mo || (D.order.moAt || +nn4.mo > 0 ? 'ไม่มี' : 0)]] : []);
   const ord = prdAllTabs().map((x) => x[0]), pos = (k, i) => ord.indexOf(k) >= 0 ? ord.indexOf(k) : 500 + i;
   L = L.map((x, i) => [x, pos(x[0], i)]).sort((a, b) => a[1] - b[1]).map((x) => x[0]);
   const my = prdMySt();
@@ -4656,7 +5198,7 @@ function prdDocTabs(D) {   /* V1.8.0 (ผู้ใช้ 18/11 09:27 “แย�
 function prdDepStage(k, oid, L, ist, HM) {   /* V1.8.0: สถานะของแผนกเดียว (แท็บแผนก) */
   const c = L.reduce((x, i) => { const t = (ist[i.key] || {}).st; x.n++; if (t && x[t] != null) x[t]++; return x; }, { n: 0, got: 0, doing: 0, done: 0 }), st = prdStFromCnt(c), G = prdStg(k), can = prdCan(k);
   const H = L.filter((i) => (ist[i.key] || {}).st !== 'done').map((i) => HM[i.key]).filter(Boolean);
-  return '<div class="card prd-doc prd-stage' + (st === 'done' ? ' ok' : '') + '"><div class="card-h"><h2>' + icon(G.ico) + ' สถานะ' + esc(G.t) + ' ' + prdBadge(k, st) + '</h2><span class="small muted">' + esc(((G.st || {})[st] || [])[2] || '') + '</span></div><div class="card-b">' +
+  return '<div class="card prd-doc prd-stage st-' + st + (st === 'done' ? ' ok' : '') + '"><div class="card-h"><h2>' + icon(G.ico) + ' สถานะ' + esc(G.t) + ' ' + prdBadge(k, st) + '</h2><span class="small muted">' + esc(((G.st || {})[st] || [])[2] || '') + '</span></div><div class="card-b">' +
     '<div class="spn-jp"><div class="spn-wp-h"><span>ความคืบหน้า · ' + prdCntTxt(c) + '</span><b>' + prdPct(c, st) + '%</b></div>' + prdBar(c, true, H.length) +
     '<a class="btn ' + (can ? 'primary' : '') + ' spn-jgo" href="' + prdWHref(k, oid) + '">' + icon(can ? 'check' : 'eye', 'sm') + ' ' + (can ? 'ติ๊กสถานะ / ติดป้ายรอ' : 'ดูรายการ') + ' ' + icon('chevRight', 'xs') + '</a></div>' + prdHoldBanner(H) + '</div></div>';
 }
@@ -4678,14 +5220,15 @@ route(/^\/prd\/o\/(.+)$/, 'prd', (m) => {
   const blk = (t, h) => '<div class="prd-hb"><div class="xs muted">' + t + '</div>' + h + '</div>';
   const hN = (g) => (D.holds || []).filter((h) => h.g === g).length, hChip = (g) => hN(g) ? ' <span class="prd-hold">' + icon('pause', 'xs') + ' รอ ' + hN(g) + '</span>' : '';   /* V1.8.0 ป้ายรอ */
   const po = !!(cut && cut.paintOnly), lc = o.cutAt && !po && stg.cut;   /* V1.3: ใบสั่งตัดไม้ = เฉพาะงานเก่า */
+  const nb = { none: o.none || (b && b.none) || {}, cutAt: o.cutAt, moAt: o.moAt, cutPO: po };   /* V1.8.4: ไม่มีงาน / ยังไม่ส่ง */
   const deps = {}; D.items.filter((i) => !i.gone && !i.removedAt && !i.dropAt).forEach((i) => { const k = i.dep || ''; (deps[k] = deps[k] || []).push(i); });
   const dIst = (stg.mo && stg.mo.ist) || {}, depPill = (k) => { const L = deps[k], c = L.reduce((x, i) => { const t = (dIst[i.key] || {}).st; x.n++; if (t && x[t] != null) x[t]++; return x; }, { n: 0, got: 0, doing: 0, done: 0 }), st = prdStFromCnt(c);
     return '<div class="prd-dpl"><span class="small">' + esc(k ? prdDepName(k) : 'ยังไม่แยกแผนก') + '</span> ' + prdStPill(k ? 'd.' + k : 'mo', st, c) + hChip(k ? 'd.' + k : 'mo') + '</div>'; };
   const head = '<div class="card prd-head"><div class="card-b"><div class="xs muted prd-hcap">ภาพรวมสถานะทุกส่วนงาน (ทุกบัญชีเห็น)</div><div class="prd-hrow prd-hrow' + (lc ? 4 : 3) + '">' +
-    blk('ปิดผิว', (b ? prdLmPills(b) : '—') + hChip('lm')) +
+    blk('ปิดผิว', (b && +b.lm ? prdLmPills(b) : prdNaChip(prdNa(nb, 'lm', 1))) + hChip('lm')) +
     (lc ? blk('ตัด', prdStPill('cut', stg.cut.st, prdCntK(stg.cut))) : '') +
-    blk('ทำสี', cut && cut.colors && cut.colors.length && stg.paint ? prdStPill('paint', stg.paint.st, prdCntK(stg.paint)) + ' <span class="small"><b>' + prdM2(cut.total) + '</b> ตร.ม. · ' + cut.colors.length + ' สี</span>' + hChip('paint') : '<span class="xs muted">' + (o.cutAt ? 'ไม่มีงานสี' : '—') + '</span>') +
-    blk('สั่งตัด / สั่งทำ', stg.mo && Object.keys(deps).length ? Object.keys(deps).sort((x, y) => (x ? 0 : 1) - (y ? 0 : 1)).map(depPill).join('') : '<span class="xs muted">' + (o.moAt ? 'ไม่มีรายการ' : 'ยังไม่ส่งงานสั่งตัด / สั่งทำ') + '</span>') + '</div>' +
+    blk('ทำสี', cut && cut.colors && cut.colors.length && stg.paint ? prdStPill('paint', stg.paint.st, prdCntK(stg.paint)) + ' <span class="small"><b>' + prdM2(cut.total) + '</b> ตร.ม. · ' + cut.colors.length + ' สี</span>' + hChip('paint') : prdNaChip(prdNa(nb, 'paint', 1))) +
+    blk('สั่งตัด / สั่งทำ', stg.mo && Object.keys(deps).length ? Object.keys(deps).sort((x, y) => (x ? 0 : 1) - (y ? 0 : 1)).map(depPill).join('') + prdNoDeps(deps, o) : prdNaChip(prdNa(nb, 'mo', 1))) + '</div>' +
     (o.iid && o.iid !== oid ? '<div class="xs muted" style="margin-top:8px">เลข Order = Item Id Set <span class="mono">' + esc(o.iid) + '</span> · เลข Order เดิม (Production) <span class="mono">' + esc(oid) + '</span></div>' : '') +   /* V1.7.1 */
     (b && b.install ? '<div class="xs muted" style="margin-top:4px">ติดตั้ง ' + prdIso(b.install) + (b.paintDue && cut && cut.colors && cut.colors.length ? ' · ต้องเข้าแผนกสี ' + prdIso(b.paintDue) : '') + '</div>' : '') +
     ((o.adm || {}).note ? '<div class="prd-anote small">' + icon('edit', 'xs') + ' หมายเหตุ: ' + esc(o.adm.note) + '</div>' : '') + '</div></div>';
@@ -4858,12 +5401,13 @@ function prdProg(k, ref, st, c) {   /* ความคืบหน้า + ป�
 }
 function prdStageCard(k, oid, x, extra, H) {   /* V1.8.0: H = ป้ายรอ */
   const st = x.st || 'sent';
-  return '<div class="card prd-doc prd-stage' + (st === 'done' ? ' ok' : '') + '"><div class="card-h"><h2>' + icon(PRD_STG[k].ico) + ' สถานะ' + PRD_STG[k].t + ' ' + prdBadge(k, st) + (extra || '') + '</h2>' +
+  return '<div class="card prd-doc prd-stage st-' + st + (st === 'done' ? ' ok' : '') + '"><div class="card-h"><h2>' + icon(PRD_STG[k].ico) + ' สถานะ' + PRD_STG[k].t + ' ' + prdBadge(k, st) + (extra || '') + '</h2>' +
     '<span class="small muted">' + esc(PRD_STG[k].st[st][2]) + '</span></div><div class="card-b">' + prdProg(k, oid, st, prdCntK(x)) + prdHoldBanner(H) + '</div></div>';
 }
 
 /* ใบปิดผิว (ทีละใบ) */
 function prdLmHtml(oid, docs, r, o) {
+  if (!docs.length && o && o.none && +o.none.lm > 0) return prdNoneCard('งานปิดผิว', o.none.lm);   /* V1.8.4 */
   if (!docs.length) return '<div class="card">' + empty('file', 'ยังไม่มีใบปิดผิวของงานนี้', 'แผนกด “📤 ส่งเฉพาะใบปิดผิว เข้า App ไลน์ผลิต” ในแท็บเอกสารใบปิดผิวของ Production (หรือกล่อง “📤 ส่งเอกสารเข้า App ไลน์ผลิต”) แล้วใบจะขึ้นที่นี่') + '</div>';
   const live = docs.filter((d) => !d.cancelled && !d.gone && !d.removedAt), dead = docs.filter((d) => (d.cancelled || d.gone) && !d.removedAt), rmd = docs.filter((d) => d.removedAt), adm = r === 'admin';
   const bulk = '';
@@ -4905,7 +5449,8 @@ function prdCutAdm(oid, D) {   /* V7.17.2 Admin: ลบ / กู้คืนใ�
   return '<div class="prd-admrow"><button class="btn sm ghost prd-del" data-act="prdAdmDel" data-kind="cut" data-oid="' + esc(oid) + '" title="Admin ลบ (ซ่อนจากทุกคน)">' + icon('trash', 'sm') + ' ' + (D.cut && D.cut.paintOnly ? 'ลบงานสี' : 'ลบใบสั่งตัดไม้ (+ งานสี)') + '</button></div>';
 }
 function prdCutHtml(oid, D) {
-  const c = D.cut, o = D.order; if (!o.cutAt || !c) return prdNoCut();
+  const c = D.cut, o = D.order; if ((!o.cutAt || !c) && o.none && +o.none.paint > 0) return prdNoneCard('งานสี', o.none.paint);   /* V1.8.4 */
+  if (!o.cutAt || !c) return prdNoCut();
   const M = Array.isArray(c.mats) ? c.mats : [], C = Array.isArray(c.colors) ? c.colors : [];
   const x = Object.assign({ sentAt: o.cutAt }, (D.stages || {}).cut || {});
   return prdCutAdm(oid, D) + prdSent(o.cutAt, o.cutBy) + prdStageCard('cut', oid, x, prdEditedAfter(D, 'cut'), Object.values(prdHoldMap(D, 'cut', ''))) +
@@ -4927,7 +5472,8 @@ function prdPaintData(D) {
 }
 on('prdPaintPrint', (el) => { const D = PRD.det[el.dataset.oid]; if (!D) return; if (!PAINTDOC_open(prdPaintData(D))) toast('เปิดแท็บใหม่ไม่ได้ — อนุญาตป๊อปอัปของเว็บนี้ก่อน', 'err'); });
 function prdPaintHtml(oid, D) {
-  const c = D.cut, o = D.order; if (!o.cutAt || !c) return prdNoCut();
+  const c = D.cut, o = D.order; if ((!o.cutAt || !c) && o.none && +o.none.paint > 0) return prdNoneCard('งานสี', o.none.paint);   /* V1.8.4 */
+  if (!o.cutAt || !c) return prdNoCut();
   const C = Array.isArray(c.colors) ? c.colors : [], P = Array.isArray(c.parts) ? c.parts : [];
   if (!C.length) return prdCutAdm(oid, D) + prdSent(o.cutAt, o.cutBy) + '<div class="card"><div class="card-b">' + notice('info', 'งานสีที่แผนส่งล่าสุดของงานนี้ไม่มีชิ้นทำสี — ไม่มีชิ้นที่หน้าบน / ล่างเป็นรหัสสี N00S') + '</div></div>';
   const x = Object.assign({ sentAt: o.cutAt }, (D.stages || {}).paint || {});
@@ -4953,13 +5499,70 @@ function prdPaintHtml(oid, D) {
 on('prdCf', (el) => { PRD.cf[el.dataset.oid] = el.dataset.c; rerender(); });
 
 /* ใบรายการสั่งทำ = สถานีงานสั่งทำ (แผนก Support) — รายการ + สถานะทีละรายการ · ติ๊กที่หน้าติ๊กสถานะ · Admin แก้ / ลบ / กู้คืน */
+/* ---------- SPN V1.8.1 รายการเบิก + วัตถุดิบที่ใช้ (ดูอย่างเดียว · Production V302) ----------
+   ผู้ใช้ 18/11 14:32–14:36 “แล้วในโปรแกรม SPN ออกรายการไหน … ให้เค้าดูอย่างเดียวพอ — ok จัดไป”
+   แท็บแผนก: 1 · รายการเบิก (เส้นยาว + วัตถุดิบไส้ AX รวมยอด · ใช้ตัด / ใช้กับรหัสไหน · แผนตัด) · 2 · รายการที่ต้องตัด / ทำ + โน้ตวัตถุดิบต่อรายการ (ต่อ 1 หน่วย × จำนวน = รวม)
+   หน้าติ๊กสถานะ: โน้ตวัตถุดิบใต้รายการ + กล่องรายการเบิก (กดเปิด) · ไม่มีปุ่ม / ติ๊กเบิก — การเบิกจริงบันทึกที่ AX / คลัง · ของไม่พอ = ⏸ ติดป้ายรอ
+   ข้อมูลมากับการกด 📤 ส่ง ของ Production V302 (Order ที่ส่งก่อนหน้า = ยังไม่มี จนกว่าแผนจะกดส่งใหม่) */
+function prdN4(n) { return (Math.round((+n || 0) * 10000) / 10000).toLocaleString('en-US', { maximumFractionDigits: 4 }); }
+function prdDepGrp(dep) { return (prdDeps().find((d) => d.id === dep) || {}).grp || ''; }
+function prdMatH(i) {   /* โน้ตวัตถุดิบของรายการ (HTML) — Admin แก้จำนวน = คิดยอดรวมตามจำนวนใหม่ (ต่อ 1 หน่วยตาม Production) */
+  const m = (i && i.mat) || {}, q0 = +(i.qtyOrig != null ? i.qtyOrig : i.qty) || 0, q = +i.qty || 0, u = esc(i.unit || 'EA'), L = [];
+  if (m.bar) L.push(esc(m.bar) + ' <span class="xs">(เส้นยาว)</span>');
+  (Array.isArray(m.raw) ? m.raw : []).forEach((c) => { const per = q0 ? (+c.q || 0) / q0 : 0, cu = esc(c.u || 'EA');
+    L.push(esc(c.c) + ' · ใช้ <b>' + prdN4(per) + '</b> ' + cu + ' ต่อ 1 ' + u + ' × ' + prdN4(q) + ' = รวม <b>' + prdN4(q0 && q !== q0 ? per * q : c.q) + '</b> ' + cu); });
+  return L.length ? '<span class="prd-mat">วัตถุดิบ: ' + L.join('<br>') + '</span>' : '';
+}
+function prdWdOf(D, dep) { const w = (((D || {}).order || {}).moWd || {})[dep || '']; return w && ((w.bars || []).length || (w.raw || []).length) ? w : null; }
+/* V1.8.3 (ผู้ใช้ 18/11 19:35 “เส้นยาวอันนี้ตัดขนาดอันไหน ทำให้อ่านง่าย ถ้ามีหลายรายการดูงง”): ใช้ตัด = ตาราง รหัส / ยาว / ชิ้น (ข้อความจาก Production V305 “รหัส — ยาว มม. × ชิ้น” · ข้อความรุ่นเก่า = แสดงตามเดิมทีละแถว)
+   แผนตัด = รวมเส้นที่ตัดแบบเดียวกัน “5 เส้น · 697 ×3 · เศษ 399” */
+const PRD_CP = [['#BFDBFE', '#1E3A8A'], ['#BBF7D0', '#14532D'], ['#FDE68A', '#78350F'], ['#FBCFE8', '#831843'], ['#DDD6FE', '#4C1D95'], ['#A5F3FC', '#164E63'], ['#FED7AA', '#7C2D12'], ['#FECACA', '#7F1D1D'], ['#D9F99D', '#365314'], ['#E2E8F0', '#0F172A'], ['#99F6E4', '#134E4A'], ['#F5D0FE', '#701A75']];   /* สีต่อขนาด — ชุดเดียวกับใบพิมพ์ Production V305 */
+function prdCol(L) { const u = []; (L || []).forEach((m) => { m = +m; if (m > 0 && u.indexOf(m) < 0) u.push(m); }); u.sort((a, b) => b - a); const M = {}; u.forEach((m, i) => { M[m] = PRD_CP[i % PRD_CP.length]; }); return M; }
+function prdUseMm(t) { const m = /— ([\d.,]+) มม\./.exec(String(t)); return m ? +m[1].replace(/,/g, '') || 0 : 0; }
+function prdCuts(t) { const out = []; String(t).split('+').forEach((p) => { const m = /([\d.]+)\s*(?:×\s*(\d+))?/.exec(p.trim()); if (m) { const n = +(m[2] || 1); for (let i = 0; i < n && out.length < 80; i++) out.push(+m[1]); } }); return out; }
+function prdCsw(col, mm) { const c = col[+mm]; return c ? '<i class="prd-csw" style="background:' + c[0] + ';border-color:' + c[1] + '"></i>' : ''; }
+function prdUseTbl(L, col) {
+  L = Array.isArray(L) ? L : []; if (!L.length) return '';
+  col = col || {}; let n = 0, ok = true;
+  const R = L.map((t) => { t = String(t); let m = /^(.*?) — ([\d.,]+) มม\. × ([\d.,]+) (\S+)$/.exec(t); if (m) { n += +m[3].replace(/,/g, '') || 0; return { mm: +m[2].replace(/,/g, '') || 0, h: '<tr><td class="r nw">' + prdCsw(col, +m[2].replace(/,/g, '')) + '<b>' + esc(m[2]) + '</b> มม.</td><td><b class="cc">' + esc(m[1]) + '</b></td><td class="r nw">× <b>' + esc(m[3]) + '</b> ' + esc(m[4]) + '</td></tr>' }; }
+    m = /^(.*?) × ([\d.,]+) (\S+)$/.exec(t); if (m) { n += +m[2].replace(/,/g, '') || 0; return { mm: 0, h: '<tr><td class="r">—</td><td><b class="cc">' + esc(m[1]) + '</b></td><td class="r nw">× <b>' + esc(m[2]) + '</b> ' + esc(m[3]) + '</td></tr>' }; }
+    ok = false; return { mm: 0, h: '<tr><td colspan="3">' + esc(t) + '</td></tr>' }; });
+  R.sort((a, b) => b.mm - a.mm);
+  return '<div class="prd-cbh">✂ ชิ้นที่ต้องตัดจากเส้นนี้ ' + L.length + ' รายการ' + (ok ? ' · รวม ' + prdQty(n) + ' ชิ้น' : '') + '</div><table class="prd-ut">' + R.map((x) => x.h).join('') + '</table>';
+}
+function prdPlanTbl(P, q, len, col, Y) {   /* V1.8.5: Y = { c, nm, X:{ oid, dep, pg, can } } → ติ๊กตัดแล้ว / เก็บเศษ */
+  P = Array.isArray(P) ? P : []; if (!P.length) return '';
+  col = col || {}; const G = [], M = {}, L = +len || 0;
+  P.forEach((s) => { s = String(s); let g = M[s]; if (!g) { const i = s.lastIndexOf(' · เศษ '); g = M[s] = { n: 0, t: i >= 0 ? s.slice(0, i) : s, l: i >= 0 ? s.slice(i + 7) : '' }; G.push(g); } g.n++; });
+  if (!Object.keys(col).length) col = prdCol([].concat(...G.map((g) => prdCuts(g.t))));
+  const nb = +q > P.length ? +q : P.length;
+  const bar = (g) => { if (!L) return ''; const lf = +String(g.l).replace(/,/g, '') || 0, lw = lf > 0 ? lf / L * 100 : 0;
+    return '<span class="prd-cpb">' + prdCuts(g.t).map((mm) => { const w = mm / L * 100, c = col[mm] || PRD_CP[9]; return '<span class="prd-sg" style="width:' + w.toFixed(2) + '%;background:' + c[0] + ';color:' + c[1] + '">' + (w >= 6 ? String(mm) : '') + '</span>'; }).join('') + '<span class="prd-lf">' + (lw >= 12 ? 'เศษ ' + esc(g.l) : '') + '</span></span>'; };
+  return '<details class="prd-plan" open><summary>♻ แผนตัด ' + prdQty(nb) + ' เส้น' + (L ? ' (เส้นละ ' + prdQty(L) + ' มม.)' : '') + (G.length > 1 ? ' · ' + G.length + ' แบบ' : '') + (Y ? (() => { const C = (Y.X.pg || {}).cut || {}; let d = 0, t = 0; G.forEach((g) => { t += g.n; d += Math.min(g.n, +C[(Y.ks || {})[g.t + '|' + g.l] || prdCutKey(Y.c, g)] || 0); }); return d ? ' · <span class="prd-cpdn">' + (d >= t ? '✓ ตัดครบ ' : 'ตัดแล้ว ') + d + '/' + t + ' เส้น</span>' : ''; })() : '') + '</summary>' +
+    G.map((g) => { const kx = Y ? (Y.ks || {})[g.t + '|' + g.l] || prdCutKey(Y.c, g) : '', dn = Y ? Math.min(g.n, +((Y.X.pg || {}).cut || {})[kx] || 0) : 0;
+      return '<div class="prd-cpr' + (Y && dn >= g.n ? ' done' : '') + '"><span class="cpn"><b>' + g.n + '</b> เส้น</span>' + bar(g) + '<span class="cpt">' + esc(g.t) + (g.l !== '' ? ' · <b>เศษ ' + esc(g.l) + '</b>' : '') + '</span></div>' + (Y ? prdCutCtl(Y, g, kx, dn) : ''); }).join('') + (nb > P.length ? '<div class="small muted">… แสดง ' + P.length + ' เส้นแรก</div>' : '') + '</details>';
+}
+function prdWdHtml(w, dno, X) {   /* V1.8.5: X = { oid, dep, pg, can } → ติ๊กตัดแล้ว / เบิกครบ / เศษ / พิมพ์ */
+  const cut = (L) => esc(L.slice(0, 8).join(', ') + (L.length > 8 ? ' … (+' + (L.length - 8) + ')' : ''));
+  const row = (code, name, tag, note, len, q, u) => '<tr><td class="main mono strong">' + esc(code) + '</td><td data-l="รายละเอียด"><div>' + esc(name || '') + ' <span class="prd-wdt ' + tag[0] + '">' + tag[1] + '</span>' + (note ? '<div class="sub">' + note + '</div>' : '') + '</div></td>' +
+    '<td data-l="ยาว (มม.)" class="r small">' + (+len ? prdQty(len) : '—') + '</td><td data-l="ต้องเบิก" class="r"><span><b>' + q + '</b> ' + esc(u || 'EA') + '</span></td></tr>';
+  const col = prdCol([].concat(...(w.bars || []).map((b) => (b.use || []).map(prdUseMm))));   /* V1.8.3: สีต่อขนาด ทั้งกล่อง */
+  const KS = X ? prdKeys(w.bars) : [];   /* V1.8.5 */
+  const body = (w.bars || []).map((b, bi) => row(b.c, b.n, ['bar', 'เส้นยาว'], prdUseTbl(b.use, col) + prdPlanTbl(b.plan, b.q, b.len, col, X ? { c: b.c, nm: b.n, X, ks: KS[bi] } : null), b.len, prdQty(b.q), b.u)).join('') +   /* V1.8.3 */
+    (w.raw || []).map((r) => row(r.c, r.n, ['raw', 'วัตถุดิบ'], r.use && r.use.length ? 'ใช้กับ: ' + cut(r.use) : '', 0, prdN4(r.q), r.u)).join('');
+  return '<div class="prd-wd"><div class="prd-wd-h"><b>' + icon('layers', 'sm') + ' 1 · รายการเบิก — วัตถุดิบที่ต้องใช้</b><span class="xs muted">' + (w.mc > 1 ? 'ยอดรวมทั้งใบรวม ' + w.mc + ' Order' + (dno ? ' · ' + esc(dno) : '') : 'ยอดรวมที่ต้องเบิก') + (X && X.can ? ((w.bars || []).length ? ' · ติ๊กตัดแล้ว / เบิกครบได้ที่นี่' : ' · กดเบิกครบได้ที่นี่') : ' · ดูอย่างเดียว') + '</span></div>' +
+    (X ? prdWdAct(X, w) : '') + '<div class="table-wrap"><table class="t resp prd-wd-t"><thead><tr><th>รหัส</th><th>รายละเอียด</th><th class="r">ยาว (มม.)</th><th class="r">ต้องเบิก</th></tr></thead><tbody>' + body + '</tbody></table></div></div>';
+}
+function prdWdSum(w) { const nb = (w.bars || []).length, nr = (w.raw || []).length; return [nb ? 'เส้นยาว ' + nb + ' รหัส' : '', nr ? 'วัตถุดิบ ' + nr + ' รหัส' : ''].filter(Boolean).join(' · '); }
+function prdMoTtl2(dep) { const g = prdDepGrp(dep); return g === 'สั่งตัด' ? 'รายการที่ต้องตัด' : g === 'สั่งทำ' ? 'รายการที่ต้องทำ' : 'รายการที่ต้องตัด / ทำ'; }
 const PRD_SEC = { cut: ['รหัสสั่งตัด (มือจับ / อลูมิเนียม / ไฟ ฯลฯ)', 'tool'], glass: ['กระจก — สั่งตามขนาด', 'image'], sheet: ['งานตัดแผ่น / อื่น ๆ', 'file'], other: ['สั่งทำอื่น ๆ (ถาด ฯลฯ)', 'tool'], bom: ['ไส้ใน AX (เบิก)', 'layers'] };
 const PRD_SECS = { cut: 'ตัดเส้น', glass: 'กระจก', sheet: 'งานแผ่น', other: 'สั่งทำอื่น ๆ', bom: 'ไส้ใน AX (เบิก)' };   /* V1.4: + bom */
 function prdMoHtml(oid, D, r, only) {   /* V1.8.0: only = รหัสแผนก (แท็บแผนก) · '' = รายการไม่แยกแผนก · ไม่ส่ง = ทุกรายการ (แบบเดิม) */
   const inF = (i) => only == null || (i.dep || '') === only, HM = prdHoldMap(D, 'mo', '');
   const items = D.items.filter((i) => inF(i) && !i.gone && !i.removedAt && !i.dropAt), gone = D.items.filter((i) => inF(i) && i.gone && !i.removedAt), drops = D.items.filter((i) => inF(i) && !i.gone && !i.removedAt && i.dropAt), rmd = D.items.filter((i) => inF(i) && i.removedAt);
   const o = D.order, adm = r === 'admin', g = (D.stages || {}).mo || null, ist = (g && g.ist) || {};
-  if (!items.length && !gone.length && !rmd.length && !drops.length) return '<div class="card">' + empty('tool', 'ยังไม่ได้ส่งงานสั่งตัด / สั่งทำ', 'แผนกด “📤 ส่งเฉพาะงานสั่งตัด/สั่งทำ เข้า App ไลน์ผลิต” ในแท็บ “📋 สั่งตัด/สั่งทำ” ของ Production (หรือกล่อง “📤 ส่งเอกสารเข้า App ไลน์ผลิต”)') + '</div>';
+  if (!items.length && !gone.length && !rmd.length && !drops.length && !o.moAt && o.none && +o.none.mo > 0) return prdNoneCard('งานสั่งตัด / สั่งทำ', o.none.mo);   /* V1.8.4 */
+  if (!items.length && !gone.length && !rmd.length && !drops.length) return '<div class="card">' + empty('tool', o.moAt ? 'ไม่มีงานสั่งตัด / สั่งทำในส่วนนี้' : 'ยังไม่ได้ส่งงานสั่งตัด / สั่งทำ', 'แผนกด “📤 ส่งเฉพาะงานสั่งตัด/สั่งทำ เข้า App ไลน์ผลิต” ในแท็บ “📋 สั่งตัด/สั่งทำ” ของ Production (หรือกล่อง “📤 ส่งเอกสารเข้า App ไลน์ผลิต”)') + '</div>';
   const card = only == null ? (g ? prdStageCard('mo', oid, g) : '') : items.length ? prdDepStage(only ? 'd.' + only : 'mo', oid, items, ist, HM) : '';
   /* V1.3: แยกตามแผนก (แท็บใน SPN) — รายการเก่าที่ยังไม่แยกแผนก = แยกตามส่วนแบบเดิม */
   const grp = []; const gm = {};
@@ -4967,13 +5570,16 @@ function prdMoHtml(oid, D, r, only) {   /* V1.8.0: only = รหัสแผน�
   const ordK = (x) => x.dep ? (prdDeps().findIndex((d) => d.id === x.dep) + 1 || 50) : 100 + ['cut', 'glass', 'sheet', 'other', 'bom'].indexOf(x.sec);
   const secs = grp.sort((a, b2) => ordK(a) - ordK(b2)).map((G) => {
     const L = G.L, dno = G.dep ? (L.find((i) => i.no) || {}).no || '' : '';   /* V1.4: เลขที่เอกสารของแผนก */
+    const PG = prdPg(D, G.dep), XL = prdXL(D, L, ist, PG), cdep = G.dep && prdCan('d.' + G.dep) ? G.dep : '';   /* V1.8.5 */
+    const wd = G.dep ? prdWdOf(D, G.dep) : null;   /* V1.8.1: รายการเบิกของแผนก */
     const ttl = (G.dep ? icon(prdDepSc(G.dep) ? 'layers' : 'tool') + ' ' + esc(prdDepName(G.dep)) : icon((PRD_SEC[G.sec] || PRD_SEC.cut)[1]) + ' ' + (PRD_SEC[G.sec] || PRD_SEC.cut)[0]) + (dno ? ' <span class="prd-dno mono">' + esc(dno) + '</span>' : '');
-    return '<div class="card prd-sec"><div class="card-h"><h2>' + ttl + ' <span class="muted small">' + L.filter((i) => (ist[i.key] || {}).st === 'done').length + '/' + L.length + ' เสร็จ</span></h2>' +
+    return '<div class="card prd-sec"><div class="card-h"><h2>' + ttl + ' <span class="muted small">' + L.filter((i) => (ist[i.key] || {}).st === 'done').length + '/' + L.length + ' เสร็จ</span>' + (G.dep && wd ? ' ' + prdWdTag(PG, wd) : '') + '</h2>' +
       (G.dep && only == null ? '<a class="btn sm" href="' + prdWHref('d.' + G.dep, oid) + '">' + icon('check', 'sm') + ' ติ๊กสถานะแผนกนี้</a>' : '') + '</div>' +
+      (wd ? prdWdHtml(wd, dno, { oid, dep: G.dep, pg: PG, can: !!cdep }) + '<div class="prd-wd-h2"><b>' + icon('tool', 'sm') + ' 2 · ' + prdMoTtl2(G.dep) + '</b><span class="xs muted">ทุกรายการบอกวัตถุดิบที่ใช้ (ยอดเบิกรวมอยู่ในข้อ 1)</span></div>' : '') +
       '<div class="table-wrap"><table class="t resp prd-lines prd-mo-t"><thead><tr><th>รหัส</th><th>รายการ</th><th class="r">จำนวน</th><th>ตู้</th><th>สถานะ</th>' + (adm ? '<th class="prd-admth">Admin</th>' : '') + '</tr></thead><tbody>' +
-        L.map((i) => { const s = ist[i.key] || {};
-          return '<tr><td class="main mono strong">' + esc(i.code) + '</td><td data-l="รายการ"><div>' + esc(i.name || '') + (i.spec || G.dep ? '<div class="sub">' + (G.dep ? (PRD_SECS[i.sec] || i.sec) + (i.spec ? ' · ' : '') : '') + esc(i.spec || '') + '</div>' : '') +
-            ((i.adm || {}).note ? '<div class="prd-anote small">' + icon('edit', 'xs') + ' ' + esc(i.adm.note) + '</div>' : '') + '</div></td>' +
+        L.map((i, ix) => { const s = ist[i.key] || {};
+          return '<tr class="st-' + (s.st || 'sent') + '"><td class="main mono strong">' + esc(i.code) + '</td><td data-l="รายการ"><div>' + esc(i.name || '') + (i.spec || G.dep ? '<div class="sub">' + (G.dep ? (PRD_SECS[i.sec] || i.sec) + (i.spec ? ' · ' : '') : '') + esc(i.spec || '') + '</div>' : '') +
+            prdMatH(i) + prdChgH(XL[ix], cdep, oid) + ((i.adm || {}).note ? '<div class="prd-anote small">' + icon('edit', 'xs') + ' ' + esc(i.adm.note) + '</div>' : '') + '</div></td>' +
           '<td data-l="จำนวน" class="r"><span><b>' + prdQty(i.qty) + '</b> ' + esc(i.unit || 'EA') + ((i.adm || {}).qty != null ? '<span class="sub prd-was">Admin แก้ · เดิม ' + prdQty(i.qtyOrig) + '</span>' : '') + '</span></td><td data-l="ตู้" class="small">' + esc(i.cab || '—') + '</td>' +
           '<td data-l="สถานะ"><div>' + prdBadge('mo', s.st || 'sent') + (s.st !== 'done' ? prdHoldPill(HM[i.key]) : '') + (s.at ? '<div class="sub">' + fmtDT(s.at) + ' · ' + esc(s.by || '') + '</div>' : '') + (s.st !== 'done' && prdHoldTxt(HM[i.key]) ? '<div class="prd-holdn xs">' + esc(prdHoldTxt(HM[i.key])) + '</div>' : '') + '</div></td>' +
           (adm ? '<td data-l="Admin" class="prd-admc">' + prdMoAdmBtns(oid, i) + '</td>' : '') + '</tr>'; }).join('') +
