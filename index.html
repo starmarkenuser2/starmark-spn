@@ -1825,7 +1825,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark SPN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.8.7' : 'V7.18.12';
+const APP_NAME = APP_KIND === 'spn' ? 'Support Production Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.8.8' : 'V7.18.12';
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark SPN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -5022,8 +5022,9 @@ function prdPipe(b, show) {   /* V1.8.0: ต่อแผนก + ป้ายร
   const st = (k) => !x[k] || x[k] === 'na' ? prdNa(b, k).t : PRD_DOT[x[k]][0];   /* V1.8.4 */
   const cn = (k) => (k === 'cut' ? b.cutCnt : k === 'paint' ? b.paintCnt : prdCntOf(b, k)) || prdCnt0;
   const ex = (k) => !x[k] || x[k] === 'na' ? prdNaTip(prdNa(b, k)) : '';   /* V1.8.7: คำอธิบายเมื่อชี้ */
-  const dt = (k) => !x[k] || x[k] === 'na' ? '' : k === 'lm' ? 'เสร็จ ' + (+b.lmDone || 0) + '/' + b.lm + ' ใบ' : prdPct(cn(k), x[k]) + '% · ' + (k === 'paint' ? prdM2(b.cutM2) + ' ตร.ม.' : k === 'cut' ? prdQty(b.cutAll) + ' ชิ้น' : (+cn(k).n || 0) + ' รายการ');
-  const pc = (k) => !x[k] || x[k] === 'na' ? -1 : k === 'lm' ? (+b.lm > 0 ? Math.round(Math.min(1, (+b.lmDone || 0) / +b.lm) * 100) : x[k] === 'done' ? 100 : 0) : prdPct(cn(k), x[k]);
+  const lmc = { n: +b.lm || 0, done: +b.lmDone || 0, doing: +b.lmDoing || 0, got: +b.lmGot || 0 };   /* V1.8.8 (ผู้ใช้ 16:57 “ทำไม % ไม่ขึ้น”): ปิดผิว % ตามสถานะใบ (รับงาน 10 · กำลังทำ 50 · เสร็จ 100) เหมือนหน้าใบ */
+  const dt = (k) => !x[k] || x[k] === 'na' ? '' : k === 'lm' ? prdPct(lmc, x[k]) + '% · เสร็จ ' + (+b.lmDone || 0) + '/' + b.lm + ' ใบ' : prdPct(cn(k), x[k]) + '% · ' + (k === 'paint' ? prdM2(b.cutM2) + ' ตร.ม.' : k === 'cut' ? prdQty(b.cutAll) + ' ชิ้น' : (+cn(k).n || 0) + ' รายการ');
+  const pc = (k) => !x[k] || x[k] === 'na' ? -1 : k === 'lm' ? prdPct(lmc, x[k]) : prdPct(cn(k), x[k]);
   return '<div class="prd-pipe" style="grid-template-columns:repeat(' + show.length + ',minmax(112px,1fr))">' + show.map((k) => { const v = x[k] || 'na', h = v !== 'done' && v !== 'na' ? prdHoldOf(b, k) : null, p = pc(k);
     return '<span class="pp pp-' + PRD_DOT[v][1] + (v === 'na' ? (prdNa(b, k).no ? ' pp-no' : ' pp-wait') : '') + (h ? ' pp-hold' : '') + '"' + (v === 'na' ? '' : ' data-act="prdGoDoc" data-oid="' + esc(b.oid) + '" data-t="' + esc(k) + '" role="button" tabindex="0"') + ' title="' + esc((v === 'na' ? '' : 'แตะ = เปิดเอกสาร ') + prdOvT(k) + ': ' + st(k) + (dt(k) ? ' · ' + dt(k) : '') + (ex(k) ? ' — ' + ex(k) : '') + (h ? ' · ⏸ ' + (PRD_HOLD_R[h.r] || 'รอ') + ' ' + h.n + ' รายการ' + (h.note ? ' — ' + h.note : '') + (h.due ? ' · คาดเข้า ' + prdIso(h.due) : '') : '')) + '">' + (v === 'done' ? '<i>' + icon('check', 'xs') + '</i>' : '') +
       '<b class="pp-k">' + esc(prdOvT(k)) + '</b><span class="ps">' + (v === 'na' ? icon(prdNa(b, k).no ? 'x' : 'clock', 'xs') + ' ' : '') + esc(st(k)) + '</span>' + (dt(k) ? '<span class="pd">' + esc(dt(k)) + '</span>' : '') +
