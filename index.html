@@ -1683,6 +1683,18 @@ span.prd-wdok{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;bo
 /* SPN V1.8.9: ตัวเลขแดง = เอกสารค้าง / เลยกำหนด */
 .nav a .cnt.red,.nav a.on .cnt.red{background:#DC2626;color:#fff;font-weight:800;box-shadow:0 0 0 2px #FEE2E2}
 .ctabs a .cnt.red{background:#DC2626;color:#fff}
+/* PSN V1.9.3: 📐 ดูแบบผลิต · หน้าเลือกตอนสแกน QR */
+.prd-sn-off{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border:1px dashed var(--line,#d1d5db);border-radius:9px;color:var(--muted,#6b7280);cursor:help;white-space:nowrap}
+.qr-pick .spn-lg-h{align-items:center;margin-bottom:6px}
+.qr-pick .qr-o{font-size:24px;font-weight:800;margin:2px 0 0;line-height:1.15}
+.qr-pick .qr-oid{font-size:11.5px;color:var(--muted,#6b7280);word-break:break-all}
+.qr-pick .qr-q{margin:16px 0 2px;font-size:14px;font-weight:700}
+.qr-b{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;min-height:64px;height:auto;margin-top:10px;padding:10px 14px;text-align:left;font-size:16px;white-space:normal;border-radius:13px}
+.qr-b>svg{width:26px;height:26px;flex:none}
+.qr-b>span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.qr-b small{font-size:12px;font-weight:400;opacity:.85;line-height:1.35}
+.qr-none{display:flex;gap:8px;align-items:center;margin-top:10px;padding:12px 14px;border-radius:12px;background:#f3f4f6;text-align:left}
+.qr-ft{margin-top:14px;text-align:center}
 </style>
 </head>
 <body>
@@ -1828,7 +1840,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.1' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.3' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -2675,7 +2687,7 @@ function route(re, area, fn) { ROUTES.push({ re, area, fn }); }
 function rerender() { render({ keep: true }); }
 /* SPN V1.8.5: เปิดลิงก์งานตรง (สแกน QR บนใบพิมพ์ Production) ตอนยังไม่ล็อกอิน → ล็อกอินแล้วไปหน้านั้นต่อ (จำไว้ในแท็บนี้เท่านั้น) */
 function spnNextHash() { let h = ''; try { h = sessionStorage.getItem('spn_next') || ''; sessionStorage.removeItem('spn_next'); } catch (e) { h = ''; }
-  return /^#\/prd\/(orders|all|o\/|w\/)/.test(h) && h.length < 600 && !/[<>"'\s]/.test(h) ? h : ''; }
+  return /^#\/(prd\/(orders|all|o\/|w\/)|qr\/)/.test(h) && h.length < 600 && !/[<>"'\s]/.test(h) ? h : ''; }
 function curPath() { return (location.hash || '').replace(/^#/, '').split('?')[0]; }
 /* หน้าที่กำลังกรอกข้อมูลอยู่ — ไม่รีเฟรชทับ */
 function isEditing() { const p = curPath(); return (p === '/prd/plan' && !!window.__planEd) || /^\/sale\/(new|edit\/)/.test(p) || /^\/(admin|pur|sale)\/draw\//.test(p) || p === '/admin/settings' || p === '/register' || (p.indexOf('/con/job/') === 0 && typeof HF !== 'undefined' && HF.files.length > 0) ||
@@ -2703,14 +2715,15 @@ function render(opts) {
   if (FRAMED) snbSumSoon(); /* V7.8: สรุปตัวเลขงานให้การ์ดหน้าเลือกโปรแกรม */
   const path = curPath();
   if (!AUTH.s) {
-    if (path !== '/login' && path !== '/register') { if (/^\/prd\//.test(path)) { try { sessionStorage.setItem('spn_next', location.hash); } catch (e) { /* โหมดส่วนตัว — ไปหน้าแรกแทน */ } } go('#/login'); return; }
+    if (path !== '/login' && path !== '/register' && !/^\/qr\//.test(path)) { if (/^\/prd\//.test(path)) { try { sessionStorage.setItem('spn_next', location.hash); } catch (e) { /* โหมดส่วนตัว — ไปหน้าแรกแทน */ } } go('#/login'); return; }
   } else if (!DB) {
     app.innerHTML = loadingPage(S.bootErr); if (!S.bootErr) boot(); return;
   }
   if (DB) S.user = DB.me;
   if (S.user && (path === '' || path === '/' || path === '/login' || path === '/register')) { go(spnNextHash() || ROLES[S.user.role].home); return; }
   const m = ROUTES.map((r) => ({ r, x: r.re.exec(path) })).find((z) => z.x);
-  if (!m) { go(S.user ? ROLES[S.user.role].home : '#/login'); return; }
+  if (!m) { if (/^\/qr\//.test(path) && !render.qr9) { render.qr9 = 1; setTimeout(render, 0); return; }   /* V1.9.3: เปิดจาก QR ตอนโหลดแอป — หน้าเลือกลงทะเบียนทีหลัง รอรอบถัดไป */
+    go(S.user ? ROLES[S.user.role].home : '#/login'); return; }
   if (m.r.area && !S.user) { go('#/login'); return; }
   if (m.r.area && !canSee(m.r.area)) {
     toast('บัญชี ' + ROLES[S.user.role].label + ' เข้าหน้านี้ไม่ได้ — ระบบพาไปหน้าของคุณ', 'err');
@@ -4164,6 +4177,7 @@ function prdClean(x) {   /* ส่งเฉพาะช่องที่กำ�
   const pick = (o, ks) => { const r = {}; ks.forEach((k) => { if (o && o[k] != null && typeof o[k] !== 'object') r[k] = o[k]; }); return r; };
   const arr = (v, n) => (Array.isArray(v) ? v : []).slice(0, n);
   const out = pick(x, ['oid', 'title', 'itemIdSet', 'sig']);
+  if (prdSnOk(x.sn)) out.sn = x.sn;   /* V1.9.3: ลิงก์แบบผลิตทั้ง Order (StarNexus) จาก Production V329 */
   if (x.lm && typeof x.lm === 'object') out.lm = Object.assign(pick(x.lm, ['at', 'by']), { docs: arr(x.lm.docs, 200).filter((d) => d && (!d.type || d.type === 'lm')).map((d) => Object.assign(pick(d, ['no', 'type', 'at', 'cancel', 'orders']), { head: pick(d.head, PRD_HEAD),
     lines: arr(d.lines, 400).map((l) => Object.assign(pick(l, ['code', 'name', 'qty', 'unit', 'loc', 'pool']), Array.isArray(l.bom) ? { bom: l.bom.slice(0, 30).map((b) => pick(b, ['code', 'name', 'qty', 'unit'])) } : {})) })) });
   if (x.cut && typeof x.cut === 'object') out.cut = Object.assign(pick(x.cut, ['paintOnly', 'at', 'by', 'total', 'pcs', 'rows', 'all', 'more']), {   /* V1.3: paintOnly = ส่งเฉพาะงานสี */
@@ -4232,6 +4246,11 @@ async function prdSync(force) {
       if (lr.length && Date.now() > (PRDS.lotOff || 0)) {
         try { await rpc('cn_prd_lot', { p_rows: lr }); }
         catch (e) { if (e.code === 'session') throw e; if (e.code === 'PGRST202' || e.status === 404 || /cn_prd_lot/.test(e.message || '')) PRDS.lotOff = Date.now() + 600000; }   /* ยังไม่ได้รัน SQL SPN V1.8.6 — ส่งเอกสารต่อได้ (LOT ยังไม่ขึ้น) */
+      }
+      const sr = rows.filter((x) => typeof x.sn === 'string').map((x) => ({ oid: x.oid, sn: x.sn }));   /* PSN V1.9.3: 📐 ลิงก์แบบผลิตทั้ง Order */
+      if (sr.length && Date.now() > (PRDS.snOff || 0)) {
+        try { await rpc('cn_prd_sn', { p_rows: sr }); }
+        catch (e) { if (e.code === 'session') throw e; if (e.code === 'PGRST202' || e.status === 404 || /cn_prd_sn/.test(e.message || '')) PRDS.snOff = Date.now() + 600000; }   /* ยังไม่ได้รัน SQL PSN V1.9.3 — ส่งเอกสารต่อได้ (ปุ่มแบบผลิตยังไม่ขึ้น) */
       }
       const rr = rows.filter((x) => x.rs).map((x) => ({ oid: x.oid, rs: x.rs }));   /* SPN V1.8.9 (ผู้ใช้ 20/11 08:28 “กด 📤 ส่งจาก Production แล้วให้งานที่ลบใน SPN กลับมาเสมอ”) */
       if (rr.length && Date.now() > (PRDS.rsOff || 0)) {
@@ -4311,6 +4330,14 @@ function prdLotH(lot) { return lot ? '<span class="prd-lot" title="LOT ที่
 /* SPN V1.7.1 (ผู้ใช้ 17/11 09:53 “เลข Order ในแอปให้ดึงจาก Item Id Set — เงื่อนไขเดียวกับเอกสารต่าง ๆ”): เลข Order ที่โชว์ = Item Id Set · ไม่มี = เลข Order เดิม
    เลข Order เดิม (ของ Production) ตัวเล็กข้าง ๆ เหมือนหัวเอกสาร Production V286 · ลิงก์ / ค้นหา / ข้อมูลยังใช้เลข Order เดิม */
 const prdOno = (iid, oid) => String(iid || '').trim() || String(oid || '');
+/* PSN V1.9.3 (ผู้ใช้ 21/11 13:50–13:53): 📐 ดูแบบผลิตทั้ง Order (StarNexus ?view=<รหัสทั้ง Order> — ไม่ใช่รายชิ้น) */
+const PRD_SN_RE = /^https:\/\/[A-Za-z0-9.-]{3,120}(\/[A-Za-z0-9._~-]{1,80}){0,8}\/?\?view=[A-Za-z0-9_-]{4,40}$/;
+function prdSnOk(u) { return typeof u === 'string' && u.length >= 20 && u.length <= 300 && PRD_SN_RE.test(u); }
+function prdSnBtn(o) {
+  const u = o && prdSnOk(o.snUrl) ? o.snUrl : '';
+  if (u) return '<a class="btn sm prd-sn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer"' + tipA('📐 **ดูแบบผลิตทั้ง Order** (StarNexus)\nเปิดแบบ 3D / แบบผลิตของทั้ง Order ในแท็บใหม่ — ไม่ใช่รายชิ้น') + '>' + icon('drawing', 'sm') + ' ดูแบบผลิต</a>';
+  return '<span class="prd-sn-off xs" tabindex="0"' + tipA('📐 **ยังไม่มีลิงก์แบบผลิต** ของ Order นี้\nแผนกด 📤 ส่ง Order นี้จาก Production (V329 ขึ้นไป) อีกครั้ง → ปุ่ม “ดูแบบผลิต” จะขึ้นที่นี่') + '>' + icon('drawing', 'xs') + ' แบบผลิต: รอลิงก์</span>';
+}
 const prdOnoH = (iid, oid, cls) => { const n = prdOno(iid, oid); return '<span class="mono' + (cls ? ' ' + cls : '') + '">' + esc(n) + '</span>' + (n !== String(oid || '') ? ' <span class="xs muted mono prd-oid0">' + esc(oid) + '</span>' : ''); };
 
 /* ---------- สถานะ (ทุกสถานีคำเดียวกัน · ผู้ใช้ 16:54 ใช้คำ “รับงานแล้ว”) ---------- */
@@ -4442,9 +4469,25 @@ function prdOvNavItem() {
 function prdNavItem(c) {
   const r = S.user && S.user.role, tb = prdTabsFor();
   const t = r === 'production' && tb.length && tb.length < prdAllTabs().length ? 'งาน' + Array.from(new Set(tb.map((x) => prdStg(x[0]).t))).join(' / ') : 'งานไลน์ผลิต';   /* V1.8.0: ชื่อแผนก */
-  let P = null; try { P = prdPend(); } catch (e) { P = null; }   /* V1.8.9: ทุกบทบาท (เดิมเฉพาะฝ่ายผลิต) + ตัวเลขแดง + รายการที่ค้าง */
-  if (!P) return { h: '#/prd/orders', i: 'factory', t: t, s: 'งาน', n: c ? c.prd : prdNavCount(), w: true, tip: 'งานที่แผนส่งมาแล้ว ยังไม่มีใครติ๊ก “รับงานแล้ว”' };
-  return { h: '#/prd/orders', i: 'factory', t: t, s: 'งาน', n: P.n, w: true, red: P.n > 0, tip: prdPendTip(P) };
+  let O = null; try { O = prdNavOpen(); } catch (e) { O = null; }   /* V1.9.2: นับเหมือนตัวเลขบนแท็บ (งานยังไม่เสร็จ) — เดิม (V1.8.9) นับเฉพาะยังไม่มีใครรับ */
+  if (!O) { let P = null; try { P = prdPend(); } catch (e) { P = null; }
+    if (!P) return { h: '#/prd/orders', i: 'factory', t: t, s: 'งาน', n: c ? c.prd : prdNavCount(), w: true, tip: 'งานที่แผนส่งมาแล้ว ยังไม่มีใครติ๊ก “รับงานแล้ว”' };
+    return { h: '#/prd/orders', i: 'factory', t: t, s: 'งาน', n: P.n, w: true, red: P.n > 0, tip: prdPendTip(P) }; }
+  return { h: '#/prd/orders', i: 'factory', t: t, s: 'งาน', n: O.n, w: true, red: O.n > 0, tip: prdNavOpenTip(O) };
+}
+/* V1.9.2 (ผู้ใช้ 21/11 13:39 “งานไลน์ผลิต มีแดงอยู่ 3 แต่ tap ทางซ้ายขึ้น 2”): ตัวเลขเมนู = ผลรวมตัวเลขบนแท็บ (งานยังไม่เสร็จ · แท็บที่บัญชีนี้เห็น)
+   แยกในคำอธิบาย: ยังไม่มีใครกด “รับงานแล้ว” · รับแล้ว / กำลังทำ */
+function prdNavOpen() {
+  const all = prdList(), rows = []; let n = 0, s = 0;
+  prdTabsFor().forEach((x) => { const k = x[0], L = prdUnits(k), open = L ? L.filter((u) => !prdUnitDone(u)) : null;
+    const c = open ? open.length : (k === 'lm' ? prdLmLeft2(all) : 0), q = open ? open.filter((u) => (u.st || 'sent') === 'sent').length : (k === 'lm' ? prdSum('lmSent', all) : 0);
+    if (c > 0) { n += c; s += q; rows.push({ t: x[1], n: c, s: q }); } });
+  return { n, s, rows };
+}
+function prdNavOpenTip(O) {
+  if (!O.n) return 'งานไลน์ผลิต — ตอนนี้ไม่มีงานค้าง (นับเหมือนตัวเลขบนแท็บ)';
+  return '**งานยังไม่เสร็จ ' + O.n + '** (นับเหมือนตัวเลขบนแท็บ)\n' + O.rows.map((x) => '• ' + x.t + ' ' + x.n + (x.s ? ' — ยังไม่มีใครรับ ' + x.s : '') + (x.n - x.s ? (x.s ? ' · ' : ' — ') + 'รับแล้ว / กำลังทำ ' + (x.n - x.s) : '')).join('\n') +
+    (O.s ? '\nยังไม่มีใครกด “รับงานแล้ว” รวม ' + O.s : '') + '\nแตะเมนู = เปิดรายการงาน';
 }
 function prdBadge(k, st) { const x = prdStg(k).st[st || 'sent']; return '<span class="badge ' + x[1] + '" title="' + esc(x[2]) + '">' + icon(PRD_STI[st || 'sent'] || 'clock', 'xs') + x[0] + '</span>'; }
 function prdSw(code) { let h = 0; String(code || '').split('').forEach((c) => { h = (h * 31 + c.charCodeAt(0)) % 360; }); return '<span class="prd-sw" style="--h:' + h + '"></span>'; }
@@ -4919,7 +4962,7 @@ route(/^\/prd\/w\/(lm|cut|paint|mo|d\.[a-z0-9]{1,24})\/(.+)$/, 'prd', (m) => {
     : '<div class="card"><div class="card-b small muted">' + icon('lock', 'sm') + ' ' + (W.off ? 'ใบนี้ยกเลิก / ไม่อยู่ในรอบที่แผนส่งล่าสุด — ติ๊กไม่ได้' : (prdMyRo() ? 'บัญชีนี้ติดตามอย่างเดียว — ดูได้ แต่ติ๊กสถานะ / ติดป้ายรอไม่ได้' : 'ดูอย่างเดียว — งาน' + prdStg(k).t + 'ไม่ใช่ส่วนงานของบัญชีนี้ (Admin ตั้งได้ที่หน้าบัญชีผู้ใช้)')) + '</div></div>';
   const wdBox = W.wd ? '<details class="card prd-wdc" data-prdtg="' + esc('wdo|' + wk) + '"' + (PRD['wdo|' + wk] ? ' open' : '') + '><summary>' + icon('layers', 'sm') + ' <b>รายการเบิก — วัตถุดิบที่ต้องใช้</b><span class="xs muted">' + esc(prdWdSum(W.wd)) + (W.wd.mc > 1 ? ' · ใบรวม ' + W.wd.mc + ' Order' : '') + ' · กดดู</span>' + prdWdTag(PG5, W.wd) + icon('chevRight', 'sm chev') + '</summary>' +
     prdWdHtml(W.wd, W.wdNo, dep5 ? { oid, dep: dep5, pg: PG5, can: can && !!dep5, lk: W.st === 'sent' } : null) + '</details>' : '';   /* V1.8.1 · V1.8.5: ติ๊กตัด / เบิกครบ / เศษ / พิมพ์ · จำว่ากางไว้ */
-  return { nav: '#/prd/orders', html: pageHead(esc(prdStg(k).doc) + ' · ' + '<span class="mono">' + esc(W.no) + '</span>', '', back) + head + wdBox + list + drop + bar };
+  return { nav: '#/prd/orders', html: pageHead(esc(prdStg(k).doc) + ' · ' + '<span class="mono">' + esc(W.no) + '</span>', '', prdSnBtn(D.order) + back) + head + wdBox + list + drop + bar };
 });
 on('prdLtGo', (el) => { PRD.lt = el.dataset.t; go('#/prd/orders'); });
 Acts.prdPickOne = (el) => { const s = prdPick(el.dataset.w); if (el.checked) s.add(el.dataset.key); else s.delete(el.dataset.key); delete PRD.msg[el.dataset.w]; rerender(); };   /* V1.8.6: ข้อความผลกดครั้งก่อนหาย (ไม่สับสนว่าทำกับรายการไหน) */
@@ -5199,12 +5242,18 @@ function planToday() { const k = prdDueKey(PLAN.today); if (k !== '9999-99-99') 
 function planDays(k) { const t = planToday(); return Math.round((Date.UTC(+k.slice(0, 4), +k.slice(5, 7) - 1, +k.slice(8, 10)) - Date.UTC(+t.slice(0, 4), +t.slice(5, 7) - 1, +t.slice(8, 10))) / 864e5); }
 function planIk(x) { const k = prdDueKey(x && x.install); return k === '9999-99-99' ? '' : k; }
 function planDone(x) { return ((x && x.plan) || {}).st === 'done'; }
+/* V1.9.2 (ผู้ใช้ 21/11 13:38 “ทำไมแผนผลิตไม่มีตัวเลขสีแดงขึ้น ในเมื่อมีงานเข้ามา หรือว่าใส่วันเริ่มงานไปแล้ว”): ตัวเลขแดง = Order ที่ต้องดู (ไม่นับซ้ำ)
+   ยังไม่จัดแผน (งานเข้าใหม่) · เลยวันเริ่มผลิตแล้วยังรอผลิต · ติดตั้งภายใน 7 วัน / เลยวันติดตั้ง ยังผลิตไม่เสร็จ (เดิมนับแค่อันสุดท้าย) */
+function planLateStart(x) { const p = x.plan || {}, k = p.d ? prdDueKey(p.d) : '9999-99-99'; return !planDone(x) && !!p.at && (PLAN_PST[p.st] ? p.st : 'wait') === 'wait' && k !== '9999-99-99' && k < planToday(); }
+function planNear(x) { return !planDone(x) && !!planIk(x) && planDays(planIk(x)) <= 7; }
 function prdPlanNav() {
   if (!PLAN.rows && !PLAN.busy && Date.now() - PLAN.at > 60000) setTimeout(() => planLoad(), 0);
-  const L = (PLAN.rows || []).filter((x) => !planDone(x) && planIk(x) && planDays(planIk(x)) <= 7), late = L.filter((x) => planDays(planIk(x)) < 0).length;
-  return { h: '#/prd/plan', i: 'calendar', t: 'แผนผลิต', s: 'แผน', n: L.length, w: true, red: L.length > 0,
-    tip: L.length ? '**ติดตั้งภายใน 7 วัน / เลยวันติดตั้งแล้ว — ยังผลิตไม่เสร็จ ' + L.length + ' Order**' + (late ? ' (เลยแล้ว ' + late + ')' : '') + '\n' + L.slice(0, 6).map((x) => '• ' + prdOno(x.iid, x.oid) + ' — ติดตั้ง ' + prdIso(x.install)).join('\n') + '\nแตะเมนู = เปิดแผนผลิต'
-      : 'แผนผลิต — ทุก Order ที่แผนส่งเข้ามา เรียงตามวันติดตั้ง (ตอนนี้ไม่มีงานใกล้ / เลยวันติดตั้ง)' };
+  const R = (PLAN.rows || []).filter((x) => !planDone(x)), A = R.filter((x) => !(x.plan || {}).at), Bs = R.filter(planLateStart), C = R.filter(planNear);
+  const U = R.filter((x) => !(x.plan || {}).at || planLateStart(x) || planNear(x)), why = (x) => [!(x.plan || {}).at ? 'ยังไม่จัดแผน' : '', planLateStart(x) ? 'เลยวันเริ่ม' : '', planNear(x) ? (planDays(planIk(x)) < 0 ? 'เลยวันติดตั้ง' : 'ติดตั้ง ' + prdIso(x.install)) : ''].filter(Boolean).join(' · ');
+  return { h: '#/prd/plan', i: 'calendar', t: 'แผนผลิต', s: 'แผน', n: U.length, w: true, red: U.length > 0,
+    tip: U.length ? '**ต้องดู ' + U.length + ' Order**\n' + [['ยังไม่จัดแผน (งานเข้าใหม่)', A], ['เลยวันเริ่มผลิตแล้ว ยังรอผลิต', Bs], ['ติดตั้งภายใน 7 วัน / เลยวันติดตั้ง', C]].filter((z) => z[1].length).map((z) => '• ' + z[0] + ' ' + z[1].length).join('\n') +
+      '\n' + U.slice(0, 6).map((x) => '– ' + prdOno(x.iid, x.oid) + ': ' + why(x)).join('\n') + (U.length > 6 ? '\n…' : '') + '\nแตะเมนู = เปิดแผนผลิต'
+      : 'แผนผลิต — ทุก Order ที่แผนส่งเข้ามา (ตอนนี้จัดแผนครบ · ไม่มีงานเลยวันเริ่ม / ใกล้ติดตั้ง)' };
 }
 const PL_MON = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'], PL_DOW = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
 function planYmd(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
@@ -5297,6 +5346,7 @@ const PLAN_DIMS = [   /* { k, t (หัวข้อ), v(r) → ค่าขอ�
 const PLAN_QK = {   /* การ์ดสรุป (แตะ = กรองเร็ว · ยังไม่เสร็จเท่านั้น) */
   late: (r) => !planDone(r.x) && !!planIk(r.x) && planDays(planIk(r.x)) < 0,
   soon: (r) => !planDone(r.x) && !!planIk(r.x) && planDays(planIk(r.x)) >= 0 && planDays(planIk(r.x)) <= 7,
+  lates: (r) => planLateStart(r.x),   /* V1.9.2 */
   nosend: (r) => !planDone(r.x) && r.u.ns > 0,
   noplan: (r) => !planDone(r.x) && !((r.x.plan || {}).at)
 };
@@ -5422,13 +5472,13 @@ function planPage() {
   const cols = 6 + PLAN_STAGES.length;
   const body = G.map((g) => '<tr class="pl-wk ' + g.cls + '"><td colspan="' + cols + '">' + esc(g.title) + ' <span class="n">' + g.L.length + ' Order</span></td></tr>' + g.L.map((r) => planRow(r.x, B)).join('')).join('');
   /* การ์ดสรุป (นับตามตัวกรองอื่น · แตะ = กรองเร็ว) */
-  const kp = [['late', '⚠ เลยวันติดตั้ง', 'ยังผลิตไม่เสร็จ', 'var(--red)'], ['soon', '🔥 ติดตั้งใน 7 วัน', 'ยังผลิตไม่เสร็จ', 'var(--orange)'], ['nosend', 'Support ยังไม่ส่ง', 'ปิดผิว / สี / สั่งตัด / สั่งทำ', 'var(--red)'], ['noplan', '✎ ยังไม่จัดแผน', 'ยังไม่ใส่วันเริ่ม / สถานะ', 'var(--action)']]
+  const kp = [['late', '⚠ เลยวันติดตั้ง', 'ยังผลิตไม่เสร็จ', 'var(--red)'], ['soon', '🔥 ติดตั้งใน 7 วัน', 'ยังผลิตไม่เสร็จ', 'var(--orange)'], ['lates', '⏰ เลยวันเริ่มผลิต', 'จัดแผนแล้ว ยังรอผลิต', 'var(--red)'], ['nosend', 'Support ยังไม่ส่ง', 'ปิดผิว / สี / สั่งตัด / สั่งทำ', 'var(--red)'], ['noplan', '✎ ยังไม่จัดแผน', 'ยังไม่ใส่วันเริ่ม / สถานะ', 'var(--action)']]
     .map((k) => { const n = X.filter((r) => planPass(r, F, 'qk') && PLAN_QK[k[0]](r)).length; return '<button type="button" class="card kpi accent prd-kp' + (PLAN.qk === k[0] ? ' on' : '') + (n ? '' : ' pl-k0') + '" style="--k:' + k[3] + '" data-act="plQk" data-k="' + k[0] + '"' + tipA('แตะ = แสดงเฉพาะ Order กลุ่มนี้ (ร่วมกับตัวกรองด้านล่าง) · แตะอีกครั้ง = เลิก') + '><span class="k">' + k[1] + '</span><span class="v">' + n + '</span><span class="s">' + k[2] + '</span></button>'; }).join('');
   const chips = [['todo', 'ยังผลิตไม่เสร็จ'], ['done', 'ผลิตเสร็จแล้ว'], ['all', 'ทั้งหมด']]
     .map((z) => '<button class="fchip ' + (F.show === z[0] && !PLAN.qk ? 'on' : '') + '" data-act="plShow" data-f="' + z[0] + '">' + z[1] + ' <span class="n">' + nShow(z[0]) + '</span></button>').join('');
   /* ป้ายตัวกรองที่ใช้อยู่ (✕ = เอาออก) */
   const act = [];
-  if (PLAN.qk) act.push(['qk', '', { late: '⚠ เลยวันติดตั้ง', soon: '🔥 ติดตั้งใน 7 วัน', nosend: 'Support ยังไม่ส่ง', noplan: '✎ ยังไม่จัดแผน' }[PLAN.qk]]);
+  if (PLAN.qk) act.push(['qk', '', { late: '⚠ เลยวันติดตั้ง', soon: '🔥 ติดตั้งใน 7 วัน', lates: '⏰ เลยวันเริ่มผลิต', nosend: 'Support ยังไม่ส่ง', noplan: '✎ ยังไม่จัดแผน' }[PLAN.qk]]);
   if (F.d0 || F.d1) act.push(['rng', '', 'ติดตั้ง ' + (F.d0 ? planDmy(F.d0) : '…') + ' – ' + (F.d1 ? planDmy(F.d1) : '…')]);
   PLAN_DIMS.forEach((d) => (F.ms[d.k] || []).forEach((v) => act.push(['ms', d.k + '|' + v, d.t.replace(/^📅 /, '') + ': ' + d.lab(v)])));
   if (PLAN.q) act.push(['q', '', 'ค้นหา “' + PLAN.q + '”']);
@@ -5940,7 +5990,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && PLAN.ope
     '.pl-note{font-size:12px;color:var(--text-2);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pl-edb{border:1px solid var(--line-2);background:var(--surface);border-radius:7px;padding:2px 9px;font:inherit;font-size:12px;cursor:pointer;color:var(--action)}' +
     '.pl-edrow td{background:var(--action-bg)}.pl-ed{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-end}.pl-f{display:flex;flex-direction:column;gap:3px;font-size:12.5px;font-weight:600;color:var(--text-2)}.pl-fn{flex:1 1 220px}.pl-fn .input{width:100%}' +
     '.pl-seg{display:inline-flex;gap:4px;flex-wrap:wrap}.pl-sg{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:4px 10px;cursor:pointer;font-weight:700}.pl-fb{display:flex;flex-direction:column;gap:4px}' +
-    '.pl-kpi .kpi{padding:12px 14px}.pl-kpi .kpi .v{font-size:26px}.pl-k0 .v{color:var(--text-3)}.pl-lgd{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;margin-top:10px}.pl-lgd .pl-chip{cursor:default;font-size:11.5px;padding:2px 8px}.pl-lgd .pl-chip:hover{text-decoration:none;filter:none}' +
+    '.pl-kpi{grid-template-columns:repeat(5,minmax(0,1fr))}@media (max-width:1180px){.pl-kpi{grid-template-columns:repeat(3,minmax(0,1fr))}}@media (max-width:640px){.pl-kpi{grid-template-columns:repeat(2,minmax(0,1fr))}}.pl-kpi .kpi{padding:12px 14px}.pl-kpi .kpi .v{font-size:26px}.pl-k0 .v{color:var(--text-3)}.pl-lgd{display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;margin-top:10px}.pl-lgd .pl-chip{cursor:default;font-size:11.5px;padding:2px 8px}.pl-lgd .pl-chip:hover{text-decoration:none;filter:none}' +
     '.pl-rdy{font-size:11.5px;font-weight:700;color:var(--text-2);display:flex;align-items:center;gap:5px;white-space:nowrap}.pl-rdy.ok{color:var(--green)}.pl-rdy.no{color:var(--red)}.pl-bar{display:inline-block;width:38px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}.pl-bar i{display:block;height:100%;background:currentColor}' +
     '.pl-dth{font-size:12px;font-weight:600;color:var(--action-2)}' +
     '.pl-top{display:flex;flex-direction:column;gap:10px}.pl-r1{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}.pl-r1 .sbox{flex:1 1 280px;max-width:460px;margin:0}.pl-at{margin-left:auto}' +
@@ -6195,6 +6245,37 @@ function prdDepStage(k, oid, L, ist, HM) {   /* V1.8.0: สถานะของ
     '<div class="spn-jp"><div class="spn-wp-h"><span>ความคืบหน้า · ' + prdCntTxt(c) + '</span><b>' + prdPct(c, st) + '%</b></div>' + prdBar(c, true, H.length) +
     '<a class="btn ' + (can ? 'primary' : '') + ' spn-jgo" href="' + prdWHref(k, oid) + '">' + icon(can ? 'check' : 'eye', 'sm') + ' ' + (can ? 'ติ๊กสถานะ / ติดป้ายรอ' : 'ดูรายการ') + ' ' + icon('chevRight', 'xs') + '</a></div>' + prdHoldBanner(H) + '</div></div>';
 }
+/* ---------- PSN V1.9.3: สแกน QR บนเอกสาร Support (Production V329) → เลือก 📋 เปิดใน App PSN / 📐 ดูแบบผลิต Order นี้ ----------
+   ผู้ใช้ 21/11 13:53 “เอกสารให้สแกน QR CODE เข้า app psn กับ ดูแบบผลิตได้” · เปิดได้โดยไม่ล็อกอิน (ไม่อ่านข้อมูลจาก Server จนกว่าจะล็อกอิน)
+   #/qr/<lm|paint|cut|o|d.<แผนก>>/<เลขงาน / ใบ>[/<โดเมน~ทาง~>/<รหัสทั้ง Order>]  — ลิงก์แบบผลิตอยู่ใน QR (ไม่มี = ล็อกอินแล้วหาจาก Server) */
+function qrSnFrom(hp, id) {
+  if (!hp || !id || !/^[A-Za-z0-9.-]{3,120}(~[A-Za-z0-9._-]{1,80}){0,8}~?$/.test(hp) || !/\./.test(hp.split('~')[0])) return '';
+  const u = 'https://' + hp.replace(/~/g, '/') + '?view=' + id;
+  return prdSnOk(u) ? u : '';
+}
+function qrPick(k, ref, hp, id) {
+  const on = !!(AUTH.s && DB), li = ref.lastIndexOf('|'), oid = k === 'lm' && li > 0 ? ref.slice(0, li) : ref, D = on ? PRD.det[oid] : null;
+  let sn = qrSnFrom(hp, id);
+  if (!sn && D && D.order && prdSnOk(D.order.snUrl)) sn = D.order.snUrl;
+  if (!sn && on && !D && !PRD.err[oid]) setTimeout(() => { Promise.resolve(prdLoad(oid)).then(() => { if (/^\/qr\//.test(curPath())) rerender(); }); }, 0);
+  let dn = ''; if (k.indexOf('d.') === 0 && on) { try { dn = prdDepName(k.slice(2)); } catch (e) { dn = ''; } }
+  const what = k === 'lm' ? 'ใบปิดผิว' + (ref.indexOf('|') > 0 ? ' ' + ref.slice(ref.lastIndexOf('|') + 1) : '') : k === 'paint' ? 'งานทำสี' : k === 'cut' ? 'ใบสั่งตัดไม้' : k === 'o' ? 'เอกสารทั้ง Order' : (dn || 'งานสั่งตัด / สั่งทำ');
+  const href = k === 'o' ? '#/prd/o/' + encodeURIComponent(oid) : '#/prd/w/' + k + '/' + encodeURIComponent(ref);
+  const nm = String(oid).replace(/^[0-9]{6,}[_-]+/, '').replace(/_/g, ' ').trim() || String(oid);
+  const snB = sn ? '<a class="btn qr-b qr-sn" href="' + esc(sn) + '" target="_blank" rel="noopener noreferrer">' + icon('drawing') + '<span><b>ดูแบบผลิต Order นี้</b><small>StarNexus · ทั้ง Order (3D / แบบผลิต) · ไม่ใช่รายชิ้น</small></span></a>'
+    : !AUTH.s ? '<button type="button" class="btn qr-b" data-act="qrLogin">' + icon('drawing') + '<span><b>ดูแบบผลิต Order นี้</b><small>ใบนี้ยังไม่มีลิงก์ในตัว — เข้าสู่ระบบ แล้วระบบพากลับมาหาให้</small></span></button>'
+    : (D || PRD.err[oid]) ? '<div class="qr-none small">' + icon('info', 'sm') + '<span>Order นี้ยังไม่มีลิงก์แบบผลิต — แผนกด 📤 ส่งจาก Production อีกครั้ง</span></div>'
+    : '<div class="qr-none small muted"><span class="spin" aria-hidden="true"></span><span>กำลังหาลิงก์แบบผลิต…</span></div>';
+  return '<div class="login-wrap"><div class="login spn-login qr-pick"><div class="lg-h spn-lg-h">' + SPN_LOGO('big') + '<div><div class="small muted">สแกนจากเอกสาร · ' + esc(what) + '</div><h1 class="qr-o mono">' + esc(nm) + '</h1>' + (nm !== String(oid) ? '<div class="qr-oid mono">' + esc(oid) + '</div>' : '') + '</div></div>' +
+    '<div class="qr-q">ต้องการเปิดอะไร?</div>' +
+    '<a class="btn primary qr-b" href="' + esc(href) + '">' + icon('check') + '<span><b>เปิดใน App PSN</b><small>' + esc(what) + ' · ติ๊กสถานะ' + (AUTH.s ? '' : ' (เข้าสู่ระบบก่อน)') + '</small></span></a>' + snB +
+    '<div class="xs muted qr-ft">' + APP_SHORT + ' ' + APP_VERSION + '</div></div></div>';
+}
+route(/^\/qr\/(lm|cut|paint|o|d\.[a-z0-9]{1,24})\/([^/]{1,300})(?:\/([A-Za-z0-9.~_-]{3,400})\/([A-Za-z0-9_-]{4,40}))?$/, null, (m) => {
+  let ref = m[1]; try { ref = decodeURIComponent(ref); } catch (e) { /* ใช้ตามที่พิมพ์ */ }
+  return { html: qrPick(m[0], ref, m[2] || '', m[3] || '') };
+});
+on('qrLogin', () => { try { sessionStorage.setItem('spn_next', location.hash); } catch (e) { /* โหมดส่วนตัว */ } go('#/login'); });
 route(/^\/prd\/o\/(.+)$/, 'prd', (m) => {
   let oid = m[0]; try { oid = decodeURIComponent(oid); } catch (e) { /* ใช้ตามที่พิมพ์ */ }
   setTimeout(() => prdStLoad(), 0);
@@ -6229,7 +6310,7 @@ route(/^\/prd\/o\/(.+)$/, 'prd', (m) => {
   const body = !tabsL.length ? '<div class="card">' + empty('layers', 'งานนี้ไม่มีรายการของส่วนงานคุณ', 'ดูสถานะทุกส่วนงานได้ที่กล่องด้านบน') + '</div>'
     : (tab === 'lm' ? prdLmHtml(oid, D.docs, r, o) : tab === 'cut' ? prdCutHtml(oid, D) : tab === 'paint' ? prdPaintHtml(oid, D) : prdIsDep(tab) ? prdMoHtml(oid, D, r, prdDepId(tab)) : prdMoHtml(oid, D, r, hasDep ? '' : undefined));
   return { nav: '#/prd/orders', html: pageHead(prdOnoH(o.iid, oid), (o.lot ? prdLotH(o.lot) + ' ' : '') + esc(o.title && o.title !== oid ? o.title : '') + (r === 'admin' && o.adm && o.adm.title ? ' ' + prdAdmTag('ชื่อจาก Production: ' + o.titleOrig) : ''),
-      folBtn(oid) + back + '<button class="btn sm" data-act="prdReload" data-oid="' + esc(oid) + '" aria-label="โหลดใหม่">' + icon('refresh', 'sm') + '</button>', 'ไลน์ผลิต') +
+      folBtn(oid) + prdSnBtn(o) + back + '<button class="btn sm" data-act="prdReload" data-oid="' + esc(oid) + '" aria-label="โหลดใหม่">' + icon('refresh', 'sm') + '</button>', 'ไลน์ผลิต') +
     head + prdRoNote() + (r === 'admin' ? prdAdmBar(oid, D, b) : '') + prdJobBar(oid, D) + '<div class="prd-tabs">' + tabs + '</div>' + body };
 });
 
