@@ -1,4 +1,4 @@
-/* Starmark SPN V1.0 — ตัวรับแจ้งเตือนของแอปบนมือถือ (Service Worker) · ชุดเดียวกับ Contractor Nexus V7.16 (เปิดหน้าในแอปนี้ตามลิงก์ของแจ้งเตือน)
+/* Starmark PSN V1.9.0 (เดิม Starmark SPN V1.0 · ชื่อแจ้งเตือนสำรอง = Starmark PSN) — ตัวรับแจ้งเตือนของแอปบนมือถือ (Service Worker) · ชุดเดียวกับ Contractor Nexus V7.16 (เปิดหน้าในแอปนี้ตามลิงก์ของแจ้งเตือน)
    ไม่เก็บไฟล์ไว้ในเครื่อง: เปิดแอปแล้วโหลดเวอร์ชันล่าสุดจากลิงก์เดิมเสมอ (อัป index.html ใหม่ได้ทันที)
    V7.16: แจ้งเตือนมีเสียงมาตรฐานของเครื่อง (ปิดเสียงได้ทีละเครื่องในแอป — ค่าเก็บไว้ใน Cache Storage ชื่อ cn-cfg) · เลขบนไอคอนแอป = ตัวเลขที่ Server ส่งมา (งานที่รอท่านทำ) */
 function soundOn() {
@@ -11,9 +11,9 @@ self.addEventListener('install', function () { self.skipWaiting(); });
 self.addEventListener('activate', function (e) { e.waitUntil(self.clients.claim()); });
 self.addEventListener('push', function (e) {
   var d = {};
-  try { d = e.data ? e.data.json() : {}; } catch (_e) { d = { title: 'Starmark SPN', body: e.data ? e.data.text() : '' }; }
+  try { d = e.data ? e.data.json() : {}; } catch (_e) { d = { title: 'Starmark PSN', body: e.data ? e.data.text() : '' }; }
   e.waitUntil(soundOn().then(function (snd) {
-    var jobs = [self.registration.showNotification(d.title || 'Starmark SPN', {
+    var jobs = [self.registration.showNotification(d.title || 'Starmark PSN', {
       body: d.body || '', tag: d.tag || undefined, renotify: !!d.tag, silent: !snd,
       icon: 'icons/icon-192.png', badge: 'icons/badge-96.png', lang: 'th', data: { url: d.url || '#/' }
     })];

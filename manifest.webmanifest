@@ -1,7 +1,7 @@
 {
-  "name": "Starmark SPN",
-  "short_name": "Starmark SPN",
-  "description": "Starmark SPN (Support Production Nexus) — ไลน์ผลิต ปิดผิว · ตัด · ทำสี · สั่งทำ · ติ๊กสถานะ · แจ้งเตือน",
+  "name": "Starmark PSN",
+  "short_name": "Starmark PSN",
+  "description": "Starmark PSN (Plan & Support Nexus) — แผนผลิต · ไลน์ผลิต ปิดผิว · ตัด · ทำสี · สั่งตัด / สั่งทำ · ติ๊กสถานะ · แจ้งเตือน",
   "lang": "th",
   "start_url": "./",
   "scope": "./",
