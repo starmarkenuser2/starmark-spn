@@ -1828,7 +1828,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.0' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.1' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -4400,6 +4400,10 @@ function prdPct(c, st) {
   if (d >= n) return 100;
   return Math.min(99, Math.round((d * PRD_PW.done + (+c.doing || 0) * PRD_PW.doing + (+c.got || 0) * PRD_PW.got) / n));
 }
+function prdLmC(b) {   /* V1.9.1 (ผู้ใช้ 21/11 08:36 “หน้าปิดผิวขึ้น 3% ภาพรวมไปขึ้น 10% ต้องสอดคล้องกัน”): นับตามรายการของทุกใบ (เหมือนหน้าใบปิดผิว) · ln = นับตามรายการ */
+  const l = b && b.lmL; if (l && +l.n > 0) return { n: +l.n, got: +l.got || 0, doing: +l.doing || 0, done: +l.done || 0, ln: 1 };
+  return { n: +(b && b.lm) || 0, got: +(b && b.lmGot) || 0, doing: +(b && b.lmDoing) || 0, done: +(b && b.lmDone) || 0 };   /* ยังไม่ได้รัน SQL ส่วน 48 = ตามสถานะใบแบบเดิม */
+}
 function prdIn(k, b) {   /* งานนี้มีในสถานีนี้ไหม */
   if (k === 'lm') return +b.lm > 0;
   if (k === 'cut') return !!b.cutAt && !b.cutPO;   /* V1.3: ส่งเฉพาะงานสี = ไม่มีงานตัด */
@@ -5089,8 +5093,8 @@ function prdPipe(b, show) {   /* V1.8.0: ต่อแผนก + ป้ายร
   const st = (k) => !x[k] || x[k] === 'na' ? prdNa(b, k).t : PRD_DOT[x[k]][0];   /* V1.8.4 */
   const cn = (k) => (k === 'cut' ? b.cutCnt : k === 'paint' ? b.paintCnt : prdCntOf(b, k)) || prdCnt0;
   const ex = (k) => !x[k] || x[k] === 'na' ? prdNaTip(prdNa(b, k)) : '';   /* V1.8.7: คำอธิบายเมื่อชี้ */
-  const lmc = { n: +b.lm || 0, done: +b.lmDone || 0, doing: +b.lmDoing || 0, got: +b.lmGot || 0 };   /* V1.8.8 (ผู้ใช้ 16:57 “ทำไม % ไม่ขึ้น”): ปิดผิว % ตามสถานะใบ (รับงาน 10 · กำลังทำ 50 · เสร็จ 100) เหมือนหน้าใบ */
-  const dt = (k) => !x[k] || x[k] === 'na' ? '' : k === 'lm' ? prdPct(lmc, x[k]) + '% · เสร็จ ' + (+b.lmDone || 0) + '/' + b.lm + ' ใบ' : prdPct(cn(k), x[k]) + '% · ' + (k === 'paint' ? prdM2(b.cutM2) + ' ตร.ม.' : k === 'cut' ? prdQty(b.cutAll) + ' ชิ้น' : (+cn(k).n || 0) + ' รายการ');
+  const lmc = prdLmC(b);   /* V1.9.1: ตามรายการ (เหมือนหน้าใบ) */   /* V1.8.8 (ผู้ใช้ 16:57 “ทำไม % ไม่ขึ้น”): ปิดผิว % ตามสถานะใบ (รับงาน 10 · กำลังทำ 50 · เสร็จ 100) เหมือนหน้าใบ */
+  const dt = (k) => !x[k] || x[k] === 'na' ? '' : k === 'lm' ? prdPct(lmc, x[k]) + '% · เสร็จ ' + lmc.done + '/' + lmc.n + (lmc.ln ? ' รายการ' : ' ใบ') : prdPct(cn(k), x[k]) + '% · ' + (k === 'paint' ? prdM2(b.cutM2) + ' ตร.ม.' : k === 'cut' ? prdQty(b.cutAll) + ' ชิ้น' : (+cn(k).n || 0) + ' รายการ');
   const pc = (k) => !x[k] || x[k] === 'na' ? -1 : k === 'lm' ? prdPct(lmc, x[k]) : prdPct(cn(k), x[k]);
   return '<div class="prd-pipe" style="grid-template-columns:repeat(' + show.length + ',minmax(112px,1fr))">' + show.map((k) => { const v = x[k] || 'na', h = v !== 'done' && v !== 'na' ? prdHoldOf(b, k) : null, p = pc(k);
     return '<span class="pp pp-' + PRD_DOT[v][1] + (v === 'na' ? (prdNa(b, k).no ? ' pp-no' : ' pp-wait') : '') + (h ? ' pp-hold' : '') + '"' + (v === 'na' ? '' : ' data-act="prdGoDoc" data-oid="' + esc(b.oid) + '" data-t="' + esc(k) + '" role="button" tabindex="0"') + ' title="' + esc((v === 'na' ? '' : 'แตะ = เปิดเอกสาร ') + prdOvT(k) + ': ' + st(k) + (dt(k) ? ' · ' + dt(k) : '') + (ex(k) ? ' — ' + ex(k) : '') + (h ? ' · ⏸ ' + (PRD_HOLD_R[h.r] || 'รอ') + ' ' + h.n + ' รายการ' + (h.note ? ' — ' + h.note : '') + (h.due ? ' · คาดเข้า ' + prdIso(h.due) : '') : '')) + '">' + (v === 'done' ? '<i>' + icon('check', 'xs') + '</i>' : '') +
@@ -5224,15 +5228,15 @@ function planSt(oid, t, st, c, due, nm) {   /* st = sent | got | doing | done �
 function planDue(x, k) { const p = (x && x.pdue) || {}; const v = k === 'lm' ? p.lm : k === 'paint' ? p.paint : ((p.deps || {})[k] || null); return v && v.d ? v.d : ''; }
 function planLm(x, b) {
   const pi = x.planIn || {}, nn = x.none || {};
-  if (b && +b.lm > 0) { const c = { n: +b.lm, got: +b.lmGot || 0, doing: +b.lmDoing || 0, done: +b.lmDone || 0 }; return planSt(x.oid, 'lm', prdStaOf(b).lm, c, b.lmDue || planDue(x, 'lm'), 'ปิดผิว'); }
-  if (+pi.lam > 0) return planChip(x.oid, 'lm', 'no', '✗ ยังไม่ส่ง', 'มีไม้ต้องปิดผิว ' + pi.lam + ' รหัส (จาก Production) — แผนยังไม่ได้ส่งใบปิดผิว (LM-) เข้า PSN', planDue(x, 'lm'), true);
+  if (b && +b.lm > 0) return planSt(x.oid, 'lm', prdStaOf(b).lm, prdLmC(b), b.lmDue || planDue(x, 'lm'), 'ปิดผิว');   /* V1.9.1: % ตามรายการ (เหมือนหน้าใบ) */
+  if (+pi.lam > 0) return planChip(x.oid, 'lm', 'no', 'ยังไม่ส่ง', 'มีไม้ต้องปิดผิว ' + pi.lam + ' รหัส (จาก Production) — แผนยังไม่ได้ส่งใบปิดผิว (LM-) เข้า PSN', planDue(x, 'lm'), true);
   if (pi.lam === 0 || +nn.lm > 0) return planChip(x.oid, 'lm', 'wood', '🪵 ไม้สำเร็จ', 'ไม่มีงานปิดผิว — ใช้ไม้สำเร็จ (ไม้ไม่มี BOM ปิดผิว) · แตะ = เปิดงาน', '', false);
   return planNa('—', 'ยังไม่รู้ — แผนยังไม่ได้กด 📤 ส่งแผนจาก Production V326');
 }
 function planPaint(x, b) {
   const pi = x.planIn || {}, nn = x.none || {};
   if (b && prdHasPaint(b)) return planSt(x.oid, 'paint', prdStaOf(b).paint, b.paintCnt, b.paintDue || planDue(x, 'paint'), 'งานสี');
-  if (+pi.paint > 0) return planChip(x.oid, 'paint', 'no', '✗ ยังไม่ส่ง', 'มีงานสี ' + pi.paint + ' ชิ้น (จาก Production) — แผนยังไม่ได้ส่งงานสีเข้า PSN', planDue(x, 'paint') || (b && b.paintDue), true);
+  if (+pi.paint > 0) return planChip(x.oid, 'paint', 'no', 'ยังไม่ส่ง', 'มีงานสี ' + pi.paint + ' ชิ้น (จาก Production) — แผนยังไม่ได้ส่งงานสีเข้า PSN', planDue(x, 'paint') || (b && b.paintDue), true);
   if (pi.paint === 0 || +nn.paint > 0 || (b && b.cutAt)) return planNa('— ไม่มีสี', 'Order นี้ไม่มีงานสี');
   return planNa('—', 'ยังไม่รู้ — แผนยังไม่ได้กด 📤 ส่งแผนจาก Production V326');
 }
@@ -5242,7 +5246,7 @@ function planMo(x, b) {
   Object.keys((b && b.moDeps) || {}).forEach((id) => { const c = prdDepCnt(b, id); if (!+c.n) return; seen[id] = 1;
     out.push(planSt(x.oid, id ? 'd.' + id : 'mo', prdStFromCnt(c), c, planDue(x, id), id ? planDepLb(id, '').replace(/^\S+ /, '') : 'สั่งทำ (ไม่แยกแผนก)').replace('class="pl-cell">', 'class="pl-cell"><div class="pl-dep">' + esc(id ? planDepLb(id, b.moDeps[id].name) : '🔧 ไม่แยกแผนก') + '</div>')); });
   (Array.isArray(pi.deps) ? pi.deps : []).forEach((d) => { if (!d || !d.id || seen[d.id]) return; seen[d.id] = 1;
-    out.push(planChip(x.oid, 'd.' + d.id, 'no', '✗ ยังไม่ส่ง', (d.label || d.id) + ' — มีงาน (จาก Production) แต่แผนยังไม่ได้ส่งเข้า PSN', planDue(x, d.id), true).replace('class="pl-cell">', 'class="pl-cell"><div class="pl-dep">' + esc(planDepLb(d.id, d.label)) + '</div>')); });
+    out.push(planChip(x.oid, 'd.' + d.id, 'no', 'ยังไม่ส่ง', (d.label || d.id) + ' — มีงาน (จาก Production) แต่แผนยังไม่ได้ส่งเข้า PSN', planDue(x, d.id), true).replace('class="pl-cell">', 'class="pl-cell"><div class="pl-dep">' + esc(planDepLb(d.id, d.label)) + '</div>')); });
   if (+pi.miss > 0) out.push(planChip(x.oid, 'mo', 'no', '⚠ ไม่มีแผนก ' + pi.miss, 'งานสั่งตัด / สั่งทำ ' + pi.miss + ' รายการยังไม่มีแผนก — แผนต้องตั้งแผนกใน Production ก่อนส่ง', '', true));
   if (out.length) return '<div class="pl-deps">' + out.join('') + '</div>';
   if (Array.isArray(pi.deps) || +nn.mo > 0 || (b && b.moAt)) return planNa('— ไม่มี', 'Order นี้ไม่มีงานสั่งตัด / สั่งทำ');
@@ -5277,7 +5281,7 @@ function planDepK(x, b) {
   return out;
 }
 function planSupK(u, x) { return !u.n ? (x.planIn && x.planIn.at ? 'nosup' : 'unk') : u.d === u.n ? 'ready' : u.ns ? 'unsent' : 'part'; }
-const PL_ST = { no: '✗ ยังไม่ส่ง', sent: 'ยังไม่รับงาน', got: 'รับงานแล้ว', doing: 'กำลังทำ', done: '✓ เสร็จแล้ว' };
+const PL_ST = { no: 'ยังไม่ส่ง', sent: 'ยังไม่รับงาน', got: 'รับงานแล้ว', doing: 'กำลังทำ', done: '✓ เสร็จแล้ว' };
 const PLAN_DIMS = [   /* { k, t (หัวข้อ), v(r) → ค่าของแถว [..], lab(v), ord: ลำดับตัวเลือก } */
   { k: 'wk', t: '📅 สัปดาห์', v: (r) => [planWkK(r.x)], lab: planWkName, ord: (a, b) => (a === 'late' ? -1 : b === 'late' ? 1 : a === 'none' ? 1 : b === 'none' ? -1 : a.localeCompare(b)) },
   { k: 'ps', t: 'สถานะผลิต', v: (r) => { const p = r.x.plan || {}; return [PLAN_PST[p.st] ? p.st : 'wait'].concat(p.at ? [] : ['noplan']).concat(p.d ? [] : ['nostart']); },
@@ -5285,9 +5289,9 @@ const PLAN_DIMS = [   /* { k, t (หัวข้อ), v(r) → ค่าขอ�
   { k: 'lm', t: 'ปิดผิว', v: (r) => [planLmK(r.x, r.b)], lab: (v) => Object.assign({ wood: '🪵 ไม้สำเร็จ (ไม่มีปิดผิว)', unk: 'ยังไม่รู้' }, PL_ST)[v] || v, keys: ['no', 'sent', 'got', 'doing', 'done', 'wood', 'unk'] },
   { k: 'pt', t: 'สี', v: (r) => [planPtK(r.x, r.b)], lab: (v) => Object.assign({ none: 'ไม่มีสี', unk: 'ยังไม่รู้' }, PL_ST)[v] || v, keys: ['no', 'sent', 'got', 'doing', 'done', 'none', 'unk'] },
   { k: 'dep', t: 'สั่งตัด / สั่งทำ', v: (r) => planDepK(r.x, r.b),
-    lab: (v) => v === '_no' ? '✗ มีแผนกที่ยังไม่ส่ง' : v === '_miss' ? '⚠ มีรายการไม่มีแผนก' : v === '_none' ? 'ไม่มีสั่งตัด / สั่งทำ' : v === '_unk' ? 'ยังไม่รู้' : planDepLb(v.slice(2), PL_DL[v.slice(2)]),
+    lab: (v) => v === '_no' ? 'มีแผนกที่ยังไม่ส่ง' : v === '_miss' ? '⚠ มีรายการไม่มีแผนก' : v === '_none' ? 'ไม่มีสั่งตัด / สั่งทำ' : v === '_unk' ? 'ยังไม่รู้' : planDepLb(v.slice(2), PL_DL[v.slice(2)]),
     ord: (a, b) => (a[0] === '_') - (b[0] === '_') || String(PLAN_DIMS[4].lab(a)).localeCompare(String(PLAN_DIMS[4].lab(b)), 'th') },
-  { k: 'sup', t: 'Support', v: (r) => [planSupK(r.u, r.x)], lab: (v) => ({ ready: '✓ Support พร้อมครบ', part: 'Support กำลังทำ / ยังไม่ครบ', unsent: '✗ มีส่วนที่ยังไม่ส่งเข้า PSN', nosup: 'ไม่มีงาน Support', unk: 'ยังไม่รู้' })[v] || v, keys: ['unsent', 'part', 'ready', 'nosup', 'unk'] },
+  { k: 'sup', t: 'Support', v: (r) => [planSupK(r.u, r.x)], lab: (v) => ({ ready: '✓ Support พร้อมครบ', part: 'Support กำลังทำ / ยังไม่ครบ', unsent: 'มีส่วนที่ยังไม่ส่งเข้า PSN', nosup: 'ไม่มีงาน Support', unk: 'ยังไม่รู้' })[v] || v, keys: ['unsent', 'part', 'ready', 'nosup', 'unk'] },
   { k: 'lot', t: 'LOT', v: (r) => [r.x.lot ? 'has' : 'none'], lab: (v) => v === 'has' ? '🏷 มี LOT' : 'ยังไม่มี LOT', keys: ['has', 'none'] }
 ];
 const PLAN_QK = {   /* การ์ดสรุป (แตะ = กรองเร็ว · ยังไม่เสร็จเท่านั้น) */
@@ -5302,7 +5306,7 @@ function planF() {
   if (PLAN.F) return PLAN.F;
   let v = null; try { v = JSON.parse(kvGet(PLF_KEY) || 'null'); } catch (e) { v = null; }
   v = v && typeof v === 'object' ? v : {};
-  const F = { show: ['todo', 'done', 'all'].indexOf(v.show) >= 0 ? v.show : 'todo', sort: PL_SORT[v.sort] ? v.sort : 'ins', d0: PL_YMD.test(v.d0 || '') ? v.d0 : '', d1: PL_YMD.test(v.d1 || '') ? v.d1 : '', ms: {} };
+  const F = { show: ['todo', 'done', 'all'].indexOf(v.show) >= 0 ? v.show : 'todo', sort: PL_SORT[v.sort] ? v.sort : 'ins', view: ['list', 'ins', 'start'].indexOf(v.view) >= 0 ? v.view : 'list', bw: [1, 2, 4, 6, 8].indexOf(+v.bw) >= 0 ? +v.bw : 4, d0: PL_YMD.test(v.d0 || '') ? v.d0 : '', d1: PL_YMD.test(v.d1 || '') ? v.d1 : '', ms: {} };
   PLAN_DIMS.forEach((d) => { const a = v.ms && Array.isArray(v.ms[d.k]) ? v.ms[d.k].map(String).slice(0, 60) : []; if (a.length) F.ms[d.k] = a; });
   return (PLAN.F = F);
 }
@@ -5331,11 +5335,44 @@ function planDd(d, X, F) {
 }
 function planDmy(k) { return k ? k.slice(8, 10) + '/' + k.slice(5, 7) + '/' + String(+k.slice(0, 4) + 543).slice(2) : ''; }
 const PLAN_PST = { wait: ['รอผลิต', 'wait'], doing: ['กำลังผลิต', 'doing'], done: ['✓ ผลิตเสร็จ', 'done'] };
+/* “รออะไร” (ผู้ใช้ 21/11 08:33 “ถ้ายังไม่จัดแผนก็ต้องมีตัวอักษรแดงขึ้น · เอาเมาส์ไปแตะก็ขึ้นสถานะว่ารออะไร”) — ใช้กับป้ายผลิต · แถบ Support · การ์ด Booking · Excel */
+function planDmyF(k) { return k ? k.slice(8, 10) + '/' + k.slice(5, 7) + '/' + (+k.slice(0, 4) + 543) : ''; }
+function planDiff(a, b) { return Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 864e5); }
+function planWaitI(x, b) {
+  const pi = x.planIn || {}, p = x.plan || {}, W = [], ik = planIk(x), t = planToday();
+  const dd = (d) => { const k = d ? prdDueKey(d) : '9999-99-99'; return k === '9999-99-99' ? '' : ' · จบ ' + planDmy(k) + (k < t ? ' (เลยกำหนด)' : ''); };
+  const sl = { no: 'ยังไม่ส่งเข้า PSN', sent: 'ส่งแล้ว ยังไม่รับงาน', got: 'รับงานแล้ว ยังไม่เริ่ม', doing: 'กำลังทำ', unk: 'ยังไม่รู้ (แผนยังไม่ได้กด 📤 ส่งแผน)' };
+  const lk = planLmK(x, b), pk = planPtK(x, b);
+  if (sl[lk]) W.push('ปิดผิว — ' + sl[lk] + (lk === 'doing' && b ? ' ' + prdPct(prdLmC(b), 'doing') + '%' : '') + dd((b && b.lmDue) || planDue(x, 'lm')));
+  if (sl[pk]) W.push('สี — ' + sl[pk] + (pk === 'doing' && b ? ' ' + prdPct(b.paintCnt, 'doing') + '%' : '') + dd((b && b.paintDue) || planDue(x, 'paint')));
+  const seen = {};
+  Object.keys((b && b.moDeps) || {}).forEach((id) => { const c = prdDepCnt(b, id); if (!+c.n) return; seen[id] = 1; const st = prdStFromCnt(c);
+    if (st !== 'done') W.push(String((b.moDeps[id] || {}).name || prdDepName(id) || id) + ' — ' + sl[st] + (st === 'doing' ? ' ' + prdPct(c, st) + '%' : '') + dd(planDue(x, id))); });
+  (Array.isArray(pi.deps) ? pi.deps : []).forEach((d) => { if (d && d.id && !seen[d.id]) { seen[d.id] = 1; W.push(String(d.label || d.id) + ' — ' + sl.no + dd(planDue(x, d.id))); } });
+  if (+pi.miss > 0) W.push('สั่งตัด / สั่งทำ ' + pi.miss + ' รายการยังไม่มีแผนก — แผนต้องตั้งแผนกใน Production');
+  const u = planSup(x, b), st = PLAN_PST[p.st] ? p.st : 'wait', sk = p.d ? prdDueKey(p.d) : '9999-99-99';
+  const head = !p.at ? 'ยังไม่จัดแผนผลิต' : PLAN_PST[st][0] + (sk !== '9999-99-99' ? ' · เริ่ม ' + planDmy(sk) : ' · ยังไม่ใส่วันเริ่ม');
+  const todo = [];
+  if (!p.at) todo.push('ฝ่ายผลิตจัดแผน — วันเริ่มผลิต / สถานะ (✎ จัดแผน)');
+  else if (st === 'wait' && sk !== '9999-99-99' && sk < t) todo.push('เลยวันเริ่มผลิต ' + planDiff(sk, t) + ' วัน — ยังไม่เริ่ม (ปรับสถานะ / เลื่อนวัน)');
+  else if (st !== 'done' && sk === '9999-99-99') todo.push('ใส่วันเริ่มผลิต');
+  const sup = W.length ? '' : u.n ? '✓ งาน Support พร้อมครบ — ผลิตได้' : pi.at ? 'ไม่มีงาน Support — ผลิตได้เลย' : 'ยังไม่รู้งาน Support (แผนยังไม่ได้กด 📤 ส่งแผน)';
+  const n = ik ? planDiff(t, ik) : null;
+  const ins = ik ? 'ติดตั้ง ' + PL_DOW[new Date(ik + 'T00:00:00').getDay()] + ' ' + prdIso(ik) + (st !== 'done' ? ' · ' + (n < 0 ? 'เลยมา ' + -n + ' วัน' : n === 0 ? 'วันนี้' : 'อีก ' + n + ' วัน') : '') : 'ยังไม่มีวันติดตั้ง';
+  return { head, todo, wait: W, sup, ins, by: p.at ? 'จัดแผนโดย ' + (p.byName || '—') + ' · ' + fmtDT(p.at) : '', note: p.note || '', none: !p.at, lateS: todo[0] && /^เลยวันเริ่ม/.test(todo[0]) };
+}
+function planWait(x, b) {
+  const I = planWaitI(x, b), L = ['**' + I.head + '**'];
+  if (I.todo.length || I.wait.length) L.push('รอ:'); I.todo.forEach((z) => L.push('• ' + z)); I.wait.forEach((z) => L.push('• ' + z));
+  if (I.sup) L.push(I.sup); L.push(I.ins); if (I.by) L.push(I.by); if (I.note) L.push('หมายเหตุ: ' + I.note);
+  return L.join('\n');
+}
 function planProd(x, b) {
-  const p = x.plan || {}, st = PLAN_PST[p.st] ? p.st : 'wait', who = p.at ? 'จัดแผนโดย ' + (p.byName || '—') + ' · ' + fmtDT(p.at) : 'ยังไม่ได้จัดแผน', u = planSup(x, b);
-  const rdy = u.n ? '<div class="pl-rdy' + (u.d === u.n ? ' ok' : u.ns ? ' no' : '') + '" title="งาน Support (ปิดผิว / สี / สั่งตัด / สั่งทำ) เสร็จ ' + u.d + ' จาก ' + u.n + ' ส่วน' + (u.ns ? ' · ยังไม่ส่งเข้า PSN ' + u.ns + ' ส่วน' : '') + '">' +
+  const p = x.plan || {}, st = PLAN_PST[p.st] ? p.st : 'wait', u = planSup(x, b), tw = planWait(x, b), I = planWaitI(x, b);
+  const rdy = u.n ? '<div class="pl-rdy' + (u.d === u.n ? ' ok' : u.ns ? ' no' : '') + '"' + tipA(tw) + '>' +
     '<span class="pl-bar"><i style="width:' + Math.round(u.d * 100 / u.n) + '%"></i></span>Support ' + (u.d === u.n ? '✓ พร้อม' : 'พร้อม ' + u.d + '/' + u.n) + '</div>' : (x.planIn && x.planIn.at ? '<div class="pl-rdy ok" title="Order นี้ไม่มีงาน Support — ผลิตได้เลย">ไม่มีงาน Support</div>' : '');
-  return '<div class="pl-prod">' + rdy + '<span class="pl-ps pl-ps-' + st + '" title="' + esc(who) + '">' + PLAN_PST[st][0] + '</span>' + (p.d ? '<div class="pl-due">เริ่ม ' + esc(prdIso(p.d)) + '</div>' : '') +
+  return '<div class="pl-prod">' + rdy + (I.none ? '<span class="pl-ps pl-ps-none"' + tipA(tw) + '>ยังไม่จัดแผน</span>' : '<span class="pl-ps pl-ps-' + st + '"' + tipA(tw) + '>' + PLAN_PST[st][0] + '</span>') +
+    (p.d ? '<div class="pl-due' + (I.lateS ? ' late' : '') + '">เริ่ม ' + esc(prdIso(p.d)) + (I.lateS ? ' · เลยวันเริ่ม' : '') + '</div>' : '') +
     (p.note ? '<div class="pl-note" title="' + esc(p.note) + '">' + esc(p.note) + '</div>' : '') +
     (PLAN.can ? '<button type="button" class="pl-edb" data-act="plEd" data-oid="' + esc(x.oid) + '">' + (PLAN.ed === x.oid ? 'ปิด' : '✎ จัดแผน') + '</button>' : '') + '</div>';
 }
@@ -5381,39 +5418,474 @@ function planPage() {
     S2.forEach((r) => { const k = planWkK(r.x); add(k, planWkName(k), k === 'late' ? 'late' : k === 'none' ? 'none' : k === planWk(t).k ? 'now' : '', r); });
     G.sort((a, b) => (a.k === 'late' ? -1 : b.k === 'late' ? 1 : a.k === 'none' ? 1 : b.k === 'none' ? -1 : F.sort === 'insd' ? b.k.localeCompare(a.k) : a.k.localeCompare(b.k)));
   } else if (S2.length) add('~', 'เรียงตาม ' + PL_SORT[F.sort], '', null), (M['~'].L = S2);
+  PLAN.cur = { X, L: S2, G, B, F };   /* V1.9.1: ส่งออก (พิมพ์ / Excel / ภาพ) ใช้ชุดเดียวกับที่เห็น */
   const cols = 6 + PLAN_STAGES.length;
   const body = G.map((g) => '<tr class="pl-wk ' + g.cls + '"><td colspan="' + cols + '">' + esc(g.title) + ' <span class="n">' + g.L.length + ' Order</span></td></tr>' + g.L.map((r) => planRow(r.x, B)).join('')).join('');
   /* การ์ดสรุป (นับตามตัวกรองอื่น · แตะ = กรองเร็ว) */
-  const kp = [['late', '⚠ เลยวันติดตั้ง', 'ยังผลิตไม่เสร็จ', 'var(--red)'], ['soon', '🔥 ติดตั้งใน 7 วัน', 'ยังผลิตไม่เสร็จ', 'var(--orange)'], ['nosend', '✗ Support ยังไม่ส่ง', 'ปิดผิว / สี / สั่งตัด / สั่งทำ', 'var(--red)'], ['noplan', '✎ ยังไม่จัดแผน', 'ยังไม่ใส่วันเริ่ม / สถานะ', 'var(--action)']]
+  const kp = [['late', '⚠ เลยวันติดตั้ง', 'ยังผลิตไม่เสร็จ', 'var(--red)'], ['soon', '🔥 ติดตั้งใน 7 วัน', 'ยังผลิตไม่เสร็จ', 'var(--orange)'], ['nosend', 'Support ยังไม่ส่ง', 'ปิดผิว / สี / สั่งตัด / สั่งทำ', 'var(--red)'], ['noplan', '✎ ยังไม่จัดแผน', 'ยังไม่ใส่วันเริ่ม / สถานะ', 'var(--action)']]
     .map((k) => { const n = X.filter((r) => planPass(r, F, 'qk') && PLAN_QK[k[0]](r)).length; return '<button type="button" class="card kpi accent prd-kp' + (PLAN.qk === k[0] ? ' on' : '') + (n ? '' : ' pl-k0') + '" style="--k:' + k[3] + '" data-act="plQk" data-k="' + k[0] + '"' + tipA('แตะ = แสดงเฉพาะ Order กลุ่มนี้ (ร่วมกับตัวกรองด้านล่าง) · แตะอีกครั้ง = เลิก') + '><span class="k">' + k[1] + '</span><span class="v">' + n + '</span><span class="s">' + k[2] + '</span></button>'; }).join('');
   const chips = [['todo', 'ยังผลิตไม่เสร็จ'], ['done', 'ผลิตเสร็จแล้ว'], ['all', 'ทั้งหมด']]
     .map((z) => '<button class="fchip ' + (F.show === z[0] && !PLAN.qk ? 'on' : '') + '" data-act="plShow" data-f="' + z[0] + '">' + z[1] + ' <span class="n">' + nShow(z[0]) + '</span></button>').join('');
   /* ป้ายตัวกรองที่ใช้อยู่ (✕ = เอาออก) */
   const act = [];
-  if (PLAN.qk) act.push(['qk', '', { late: '⚠ เลยวันติดตั้ง', soon: '🔥 ติดตั้งใน 7 วัน', nosend: '✗ Support ยังไม่ส่ง', noplan: '✎ ยังไม่จัดแผน' }[PLAN.qk]]);
+  if (PLAN.qk) act.push(['qk', '', { late: '⚠ เลยวันติดตั้ง', soon: '🔥 ติดตั้งใน 7 วัน', nosend: 'Support ยังไม่ส่ง', noplan: '✎ ยังไม่จัดแผน' }[PLAN.qk]]);
   if (F.d0 || F.d1) act.push(['rng', '', 'ติดตั้ง ' + (F.d0 ? planDmy(F.d0) : '…') + ' – ' + (F.d1 ? planDmy(F.d1) : '…')]);
   PLAN_DIMS.forEach((d) => (F.ms[d.k] || []).forEach((v) => act.push(['ms', d.k + '|' + v, d.t.replace(/^📅 /, '') + ': ' + d.lab(v)])));
   if (PLAN.q) act.push(['q', '', 'ค้นหา “' + PLAN.q + '”']);
+  PLAN.cur.act = act.map((a) => a[2]);
   const actH = '<div class="pl-act"><span class="pl-cnt"><b>' + L.length + '</b> จาก ' + all.length + ' Order</span>' + act.map((a) => '<button type="button" class="pl-ac" data-act="plRm" data-k="' + a[0] + '" data-v="' + esc(a[1]) + '" title="เอาตัวกรองนี้ออก">' + esc(a[2]) + ' <span aria-hidden="true">✕</span></button>').join('') +
     (act.length ? '<button type="button" class="pl-acx" data-act="plClr">ล้างตัวกรองทั้งหมด</button>' : '') + '</div>';
   const flt = '<div class="pl-flt">' + planDd(PLAN_DIMS[0], X, F) +
     '<div class="pl-rng"' + tipA('ช่วงวันติดตั้ง (วว/ดด/ปปปป) — เว้นว่าง = ไม่จำกัด · ใช้ร่วมกับสัปดาห์ได้') + '><span>ติดตั้ง</span><input class="input" type="date" data-chg="plRng" data-r="d0" value="' + esc(F.d0) + '" aria-label="ติดตั้งตั้งแต่"><span>–</span><input class="input" type="date" data-chg="plRng" data-r="d1" value="' + esc(F.d1) + '" aria-label="ติดตั้งถึง"></div>' +
     PLAN_DIMS.slice(1).map((d) => planDd(d, X, F)).join('') + '</div>';
   const srt = '<label class="pl-sort"' + tipA('เรียงตาม — วันติดตั้ง = แบ่งเป็นสัปดาห์ (W) · แบบอื่น = รายการเดียว') + '><span aria-hidden="true">↕</span><select class="input" data-chg="plSort" aria-label="เรียงตาม">' + Object.keys(PL_SORT).map((k) => '<option value="' + k + '"' + (F.sort === k ? ' selected' : '') + '>' + PL_SORT[k] + '</option>').join('') + '</select></label>';
-  const lgd = '<div class="pl-lgd"><span class="xs muted">สถานะงาน Support:</span><span class="pl-chip pl-no">✗ ยังไม่ส่ง</span><span class="pl-chip pl-sent">ยังไม่รับงาน</span><span class="pl-chip pl-got">รับงานแล้ว</span><span class="pl-chip pl-doing">กำลังทำ</span><span class="pl-chip pl-done">✓ เสร็จแล้ว</span><span class="pl-chip pl-wood">🪵 ไม้สำเร็จ</span><span class="xs muted">· แตะชิป = เปิดงานนั้น</span></div>';
+  const lgd = F.view !== 'list' ? '' : '<div class="pl-lgd"><span class="xs muted">สถานะงาน Support:</span><span class="pl-chip pl-no">ยังไม่ส่ง</span><span class="pl-chip pl-sent">ยังไม่รับงาน</span><span class="pl-chip pl-got">รับงานแล้ว</span><span class="pl-chip pl-doing">กำลังทำ</span><span class="pl-chip pl-done">✓ เสร็จแล้ว</span><span class="pl-chip pl-wood">🪵 ไม้สำเร็จ</span><span class="xs muted">· แตะชิป = เปิดงานนั้น</span></div>';
   const home = psnHome() === '#/prd/plan';
   const head = pageHead('แผนผลิต', 'ทุก Order ที่แผนกด 📤 ส่งเข้ามา (รวม Order ที่ไม่มีงาน Support) เรียงตามวันติดตั้ง แบ่งสัปดาห์ · กรองได้ทุกหัวข้อแบบ StarStock · แตะชิปสถานะ = เปิดงานส่วนนั้น' + (PLAN.can ? ' · ✎ จัดแผน = วันเริ่มผลิต / สถานะ / หมายเหตุ' : ' · บัญชีนี้ดูอย่างเดียว'),
     '<label class="pl-home"' + tipA('เปิดแอปแล้วเข้าหน้านี้ก่อน (จำในเครื่องนี้)') + '><input type="checkbox" data-chg="plHome"' + (home ? ' checked' : '') + '> 📌 เปิดหน้านี้เป็นหน้าแรก</label> <button class="btn sm" data-act="plReload"' + (PLAN.busy ? ' disabled' : '') + '>' + icon('refresh', 'sm') + ' โหลดใหม่</button>');
   const note = PLAN.err ? notice('danger', esc(PLAN.err)) : '';
   const kpis = PLAN.rows == null ? '' : '<div class="grid g4 prd-kpi pl-kpi">' + kp + '</div>';
   const tbl = PLAN.rows == null ? '<div class="card" style="margin-top:12px"><div class="card-b"><span class="spin" aria-hidden="true"></span> กำลังโหลดแผนผลิต…</div></div>'
-    : '<div class="card" style="margin-top:12px"><div class="card-b pl-top"><div class="pl-r1"><div class="sbox">' + icon('search', 'sm') + '<input class="input" type="search" id="pl-q" data-inp="plQ" value="' + esc(PLAN.q) + '" placeholder="ค้นเลข Order / Item Id / ชื่องาน / LOT / หมายเหตุ" aria-label="ค้นหา Order"></div>' +
-      '<div class="chips">' + chips + '</div>' + srt + '<span class="xs muted pl-at">ข้อมูล ' + (PLAN.at ? fmtDT(PLAN.at) : '—') + '</span></div>' + flt + actH + lgd + '</div>' +
-      '<div class="table-wrap"><table class="t resp prd-tbl pl-tbl"><thead><tr><th>Order</th><th>ติดตั้ง</th><th>ปิดผิว</th><th>สี</th><th>สั่งตัด / สั่งทำ</th>' + PLAN_STAGES.map((s) => '<th>' + esc(s.t) + '</th>').join('') + '<th>ผลิต</th></tr></thead><tbody>' +
+    : '<div class="card" style="margin-top:12px"><div class="card-b pl-top">' + planViewBar(F) + '<div class="pl-r1"><div class="sbox">' + icon('search', 'sm') + '<input class="input" type="search" id="pl-q" data-inp="plQ" value="' + esc(PLAN.q) + '" placeholder="ค้นเลข Order / Item Id / ชื่องาน / LOT / หมายเหตุ" aria-label="ค้นหา Order"></div>' +
+      '<div class="chips">' + chips + '</div>' + (F.view === 'list' ? srt : '') + '<span class="xs muted pl-at">ข้อมูล ' + (PLAN.at ? fmtDT(PLAN.at) : '—') + '</span></div>' + flt + actH + lgd + '</div>' +
+      (F.view !== 'list' ? planBook(S2, F.view) + '</div>' : '<div class="table-wrap"><table class="t resp prd-tbl pl-tbl"><thead><tr><th>Order</th><th>ติดตั้ง</th><th>ปิดผิว</th><th>สี</th><th>สั่งตัด / สั่งทำ</th>' + PLAN_STAGES.map((s) => '<th>' + esc(s.t) + '</th>').join('') + '<th>ผลิต</th></tr></thead><tbody>' +
       (body || '<tr><td colspan="' + cols + '">' + (all.length ? empty('search', 'ไม่มี Order ตามตัวกรอง', 'ลองเอาตัวกรองออก หรือกด “ล้างตัวกรองทั้งหมด”') : empty('calendar', 'ยังไม่มีแผนผลิต', 'แผนกด “📤 ส่งเข้า App ไลน์ผลิต” ใน Production (V326 ขึ้นไป) — ทุก Order ส่งแผนได้ แม้ไม่มีงาน Support')) + '</td></tr>') +
-      '</tbody></table></div></div>';
+      '</tbody></table></div></div>');
   return { nav: '#/prd/plan', html: head + note + kpis + tbl };
 }
+/* =====================================================================
+   PSN V1.9.1 — 📅 Booking + ส่งออก (ผู้ใช้ 21/11 08:28)
+   “อยากให้เห็นเป็นตาราง Booking ได้ · 2 แบบ: Booking Order งานติดตั้ง กับ Booking งานเริ่มผลิต · ต้องปริ้นได้ · Export Excel ได้
+    · ไม่ได้ก็ cap แล้วกดส่งต่อได้เลย เหมือนแผนงานตัดที่ออกจาก StarStock · ทำให้มันทำได้หลาย ๆ แบบ”
+   มุมมอง (จำในเครื่อง): ☰ รายการ (เดิม) · 📅 Booking ติดตั้ง (ปฏิทินตามวันติดตั้ง) · 🏭 Booking เริ่มผลิต (ปฏิทินตามวันเริ่มผลิต)
+   ตัวกรองชุดเดียวกับรายการ · ช่วง ◀ สัปดาห์นี้ ▶ · แสดง 1 / 2 / 4 / 6 / 8 สัปดาห์ (เลือกสัปดาห์ / วันที่ในตัวกรอง = ไปช่วงนั้น)
+   การ์ด: แถบซ้าย = สถานะผลิต (แดง = ยังไม่จัดแผน) · จุด = งาน Support · ชี้ = รออะไร · แตะ = รายละเอียด + จัดแผน
+   Booking เริ่มผลิต: ลากการ์ดไปวันอื่น / จาก “ยังไม่กำหนดวันเริ่ม” = จองวันเริ่มผลิต (Admin / ฝ่ายผลิต · ทุกเครื่องเห็น)
+   ส่งออก (ตามมุมมอง + ตัวกรองที่เห็น · ไม่มีราคา):
+     🖨 พิมพ์ — A4 แนวนอน (หน้าใหม่ → พิมพ์ / บันทึกเป็น PDF)
+     📊 Excel — .xlsx 3 ชีต (Booking ติดตั้ง · Booking เริ่มผลิต · รายการ Order) · หัวตารางซ้ำทุกหน้า · A4 แนวนอนพอดีกว้าง
+     🖼 ภาพ — PNG (แบบใบแผนของ StarStock) → แชร์ LINE ฯลฯ / ดาวน์โหลด / คัดลอก
+   ===================================================================== */
+const PL_VIEW = { list: ['☰', 'รายการ'], ins: ['📅', 'Booking ติดตั้ง'], start: ['🏭', 'Booking เริ่มผลิต'] };
+const PL_BW = [1, 2, 4, 6, 8];
+const BK_PS = { none: ['ยังไม่จัดแผน', '#DC2626'], wait: ['รอผลิต', '#94A3B8'], doing: ['กำลังผลิต', '#D97706'], done: ['ผลิตเสร็จ', '#16A34A'] };
+const BK_SP = { ok: ['Support พร้อมครบ', '#16A34A'], part: ['Support กำลังทำ', '#F59E0B'], no: ['Support ยังไม่ส่ง', '#DC2626'], nos: ['ไม่มีงาน Support', '#CBD5E1'], unk: ['Support ยังไม่รู้', '#CBD5E1'] };
+const BK_ST = { no: 'ยังไม่ส่ง', sent: 'ยังไม่รับงาน', got: 'รับงานแล้ว', doing: 'กำลังทำ', done: 'เสร็จแล้ว', wood: 'ไม้สำเร็จ', none: 'ไม่มีสี', unk: '—' };
+function bkAdd(k, n) { const d = new Date(k + 'T00:00:00'); d.setDate(d.getDate() + n); return planYmd(d); }
+function bkStartK(x) { const k = prdDueKey((x.plan || {}).d); return k === '9999-99-99' ? '' : k; }
+function bkKey(r, mode) { return mode === 'start' ? bkStartK(r.x) : planIk(r.x); }
+function bkRange() { const F = planF(), n = PL_BW.indexOf(F.bw) >= 0 ? F.bw : 4, k0 = PLAN.bk0 || planWk(planToday()).k; return { k0, k1: bkAdd(k0, n * 7 - 1), n }; }
+function bkDM(k) { return +k.slice(8, 10) + ' ' + PL_MON[+k.slice(5, 7) - 1]; }
+function bkWR(k0) { const k6 = bkAdd(k0, 6); return k0.slice(5, 7) === k6.slice(5, 7) ? +k0.slice(8, 10) + '–' + bkDM(k6) : bkDM(k0) + '–' + bkDM(k6); }
+function bkYY(k) { return String((+k.slice(0, 4) + 543) % 100); }
+function bkRangeT(R) { return 'W' + planIso(R.k0) + (R.n > 1 ? '–W' + planIso(bkAdd(R.k1, -6)) : '') + ' · ' + bkDM(R.k0) + (R.k0.slice(0, 4) !== R.k1.slice(0, 4) ? ' ' + bkYY(R.k0) : '') + ' – ' + bkDM(R.k1) + ' ' + bkYY(R.k1); }
+function bkPs(x) { const p = x.plan || {}; return !p.at ? 'none' : PLAN_PST[p.st] ? p.st : 'wait'; }
+function bkSp(r) { const u = r.u; return !u.n ? (r.x.planIn && r.x.planIn.at ? 'nos' : 'unk') : u.d === u.n ? 'ok' : u.ns ? 'no' : 'part'; }
+function bkSub(r, mode) {
+  const x = r.x, ik = planIk(x), sk = bkStartK(x), p = x.plan || {};
+  if (mode === 'start') {
+    if (!ik) return { t: 'ยังไม่มีวันติดตั้ง', red: false };
+    const lead = sk ? planDiff(sk, ik) : null;
+    return { t: 'ติดตั้ง ' + planDmy(ik) + (lead == null ? '' : lead < 0 ? ' · เริ่มหลังติดตั้ง!' : ' · อีก ' + lead + ' วัน'), red: lead != null && lead < 0 };
+  }
+  if (sk) return { t: 'เริ่ม ' + planDmy(sk) + (ik && sk > ik ? ' · หลังติดตั้ง!' : ''), red: !!(ik && sk > ik) };
+  return p.at ? { t: BK_PS[bkPs(x)][0] + ' · ยังไม่ใส่วันเริ่ม', red: false } : { t: 'ยังไม่จัดแผน', red: true };
+}
+function bkCabs(L) { return L.reduce((s, r) => s + (+(r.x.planIn || {}).cabs || 0), 0); }
+function bkCard(r, mode, drag) {
+  const x = r.x, ps = bkPs(x), sp = bkSp(r), sub = bkSub(r, mode), pi = x.planIn || {};
+  const late = !planDone(x) && planIk(x) && planIk(x) < planToday();
+  return '<div class="bk-c bk-p-' + ps + (late ? ' bk-late' : '') + '" role="button" tabindex="0" data-act="plBk" data-oid="' + esc(x.oid) + '"' + (drag ? ' draggable="true" data-bkdrag="' + esc(x.oid) + '"' : '') + tipA(planWait(x, r.b)) + '>' +
+    '<div class="bk-l1"><b>' + esc(prdOno(x.iid, x.oid)) + '</b>' + (pi.cabs ? '<span class="bk-n">' + pi.cabs + ' ตู้</span>' : '') + '</div>' +
+    '<div class="bk-l2"><i class="bk-dot" style="background:' + BK_SP[sp][1] + '" aria-label="' + esc(BK_SP[sp][0]) + '"></i><span' + (sub.red ? ' class="red"' : '') + '>' + esc(sub.t) + '</span></div></div>';
+}
+/* แบ่งการ์ดเข้า วัน / แถบข้าง / นอกช่วง */
+function bkSplit(L, mode, R) {
+  const t = planToday(), by = {}, late = [], none = [], out = { b: 0, a: 0, bk: '', ak: '' };
+  L.forEach((r) => {
+    const k = bkKey(r, mode);
+    if (!k) { none.push(r); return; }
+    if (mode === 'ins' && k < t && !planDone(r.x)) { late.push(r); return; }
+    if (k < R.k0) { out.b++; if (!out.bk || k > out.bk) out.bk = k; return; }
+    if (k > R.k1) { out.a++; if (!out.ak || k < out.ak) out.ak = k; return; }
+    (by[k] = by[k] || []).push(r);
+  });
+  const other = (r) => (mode === 'start' ? planIk(r.x) : bkStartK(r.x)) || '9999';
+  Object.keys(by).forEach((k) => by[k].sort((a, b) => other(a).localeCompare(other(b)) || String(a.x.oid).localeCompare(String(b.x.oid))));
+  const byIk = (a, b) => (planIk(a.x) || '9999').localeCompare(planIk(b.x) || '9999') || String(a.x.oid).localeCompare(String(b.x.oid));
+  late.sort(byIk); none.sort(byIk);
+  return { by, late, none, out };
+}
+function bkWeeks(R) { const W = []; for (let w = 0; w < R.n; w++) { const k0 = bkAdd(R.k0, w * 7); W.push({ k0, days: [0, 1, 2, 3, 4, 5, 6].map((i) => bkAdd(k0, i)) }); } return W; }
+function bkStrip(title, cls, L, mode, drop, hint) {
+  if (!L.length && !drop) return '';
+  return '<div class="bk-strip ' + cls + '"' + (drop ? ' data-bkday=""' : '') + '><div class="bk-sh"><b>' + esc(title) + '</b> <span class="n">' + L.length + ' Order' + (bkCabs(L) ? ' · ' + bkCabs(L) + ' ตู้' : '') + '</span>' + (hint ? '<span class="xs muted"> · ' + esc(hint) + '</span>' : '') + '</div>' +
+    '<div class="bk-sl">' + (L.length ? L.map((r) => bkCard(r, mode, drop)).join('') : '<span class="xs muted">— ไม่มี —</span>') + '</div></div>';
+}
+function planBook(L, mode) {
+  const R = bkRange(), t = planToday(), can = !!PLAN.can && mode === 'start', P = bkSplit(L, mode, R), W = bkWeeks(R);
+  const nav = '<div class="bk-bar"><div class="bk-nav"><button type="button" class="btn sm" data-act="plBkNav" data-d="-1" aria-label="ช่วงก่อนหน้า">◀</button><button type="button" class="btn sm" data-act="plBkNav" data-d="0">สัปดาห์นี้</button><button type="button" class="btn sm" data-act="plBkNav" data-d="1" aria-label="ช่วงถัดไป">▶</button>' +
+    '<b class="bk-rt">' + esc(bkRangeT(R)) + '</b></div><div class="bk-bw"><span class="xs muted">แสดง</span>' + PL_BW.map((n) => '<button type="button" class="fchip ' + (R.n === n ? 'on' : '') + '" data-act="plBw" data-n="' + n + '">' + n + ' สัปดาห์</button>').join('') + '</div></div>';
+  const outH = (P.out.b || P.out.a) ? '<div class="bk-out">' + (P.out.b ? '<button type="button" class="pl-ac" data-act="plBkGo" data-k="' + P.out.bk + '">◀ ก่อนช่วงนี้ ' + P.out.b + ' Order</button>' : '') + (P.out.a ? '<button type="button" class="pl-ac" data-act="plBkGo" data-k="' + P.out.ak + '">หลังช่วงนี้ ' + P.out.a + ' Order ▶</button>' : '') + '</div>' : '';
+  const top = mode === 'ins' ? bkStrip('⚠ เลยวันติดตั้งแล้ว — ยังผลิตไม่เสร็จ', 'late', P.late, mode, false, '')
+    : bkStrip('ยังไม่กำหนดวันเริ่มผลิต', 'none', P.none, mode, can, can ? 'ลากการ์ดไปวางในปฏิทิน = จองวันเริ่มผลิต · แตะการ์ด = จัดแผน' : 'แตะการ์ด = ดูรายละเอียด');
+  const rows = W.map((w) => {
+    const wl = w.days.reduce((s, k) => s.concat(P.by[k] || []), []);
+    return '<tr><th class="bk-wl' + (w.k0 === planWk(t).k ? ' now' : '') + '" scope="row"><b>W' + planIso(w.k0) + '</b><small>' + esc(bkWR(w.k0)) + '</small><small>' + wl.length + ' Order' + (bkCabs(wl) ? ' · ' + bkCabs(wl) + ' ตู้' : '') + '</small></th>' +
+      w.days.map((k, i) => { const D = P.by[k] || [], c = bkCabs(D);
+        return '<td class="bk-d' + (k === t ? ' today' : '') + (i >= 5 ? ' we' : '') + (k < t ? ' past' : '') + (D.length ? '' : ' empty') + '"' + (can ? ' data-bkday="' + k + '"' : '') + '>' +
+          '<div class="bk-dh"><span class="bk-dn"><span class="bk-dw">' + PL_DOW[(i + 1) % 7] + ' </span>' + (k === t ? '<b>' + bkDM(k) + ' · วันนี้</b>' : bkDM(k)) + '</span>' + (D.length ? '<span class="bk-dc">' + D.length + (c ? ' · ' + c + ' ตู้' : '') + '</span>' : '') + '</div>' +
+          D.map((r) => bkCard(r, mode, can)).join('') + '</td>'; }).join('') + '</tr>';
+  }).join('');
+  const grid = '<div class="bk-gw"><table class="bk-g"><thead><tr><th class="bk-wh">สัปดาห์</th>' + ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'].map((d) => '<th>' + d + '</th>').join('') + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+  const bot = mode === 'ins' ? bkStrip('ยังไม่มีวันติดตั้ง', 'none', P.none, mode, false, 'แผนยังไม่ได้ใส่ 📅 วันติดตั้งใน Production') : '';
+  const lgd = '<div class="bk-lgd"><span>แถบซ้าย = สถานะผลิต</span>' + ['none', 'wait', 'doing', 'done'].map((k) => '<span class="bk-lg"><i style="background:' + BK_PS[k][1] + '"></i>' + BK_PS[k][0] + '</span>').join('') +
+    '<span>· จุด = งาน Support</span>' + ['ok', 'part', 'no', 'nos'].map((k) => '<span class="bk-lg"><i class="r" style="background:' + BK_SP[k][1] + '"></i>' + BK_SP[k][0].replace('Support ', '') + '</span>').join('') + '<span>· ชี้ที่การ์ด = รออะไร</span></div>';
+  return '<div class="bk bk-' + mode + '">' + nav + outH + top + grid + bot + lgd + '</div>';
+}
+function planViewBar(F) {
+  return '<div class="pl-vb"><div class="pl-seg2" role="tablist" aria-label="มุมมอง">' + Object.keys(PL_VIEW).map((k) => '<button type="button" role="tab" aria-selected="' + (F.view === k) + '" class="' + (F.view === k ? 'on' : '') + '" data-act="plView" data-v="' + k + '">' + PL_VIEW[k][0] + ' ' + PL_VIEW[k][1] + '</button>').join('') + '</div>' +
+    '<div class="pl-ex"><span class="xs muted">ส่งออกตามที่เห็น:</span><button type="button" class="btn sm" data-act="plPrint"' + tipA('พิมพ์ A4 แนวนอน — เปิดหน้าใหม่ แล้วกด 🖨 พิมพ์ (บันทึกเป็น PDF ได้)') + '>🖨 พิมพ์</button>' +
+    '<button type="button" class="btn sm" data-act="plXlsx"' + tipA('Excel 3 ชีต: Booking ติดตั้ง · Booking เริ่มผลิต · รายการ Order (ตามตัวกรองที่เลือก)') + '>📊 Excel</button>' +
+    '<button type="button" class="btn sm" data-act="plImg"' + tipA('ภาพแผน (PNG) — แชร์เข้า LINE / ดาวน์โหลด / คัดลอก') + '>🖼 ภาพ / แชร์</button></div></div>';
+}
+/* ── ปุ่ม ── */
+on('plView', (el) => { const F = planF(); F.view = PL_VIEW[el.dataset.v] ? el.dataset.v : 'list'; planFSave(); rerender(); });
+on('plBw', (el) => { const F = planF(); F.bw = PL_BW.indexOf(+el.dataset.n) >= 0 ? +el.dataset.n : 4; planFSave(); rerender(); });
+on('plBkNav', (el) => { const d = +el.dataset.d || 0, R = bkRange(); PLAN.bk0 = d ? bkAdd(R.k0, d * R.n * 7) : planWk(planToday()).k; rerender(); });
+on('plBkGo', (el) => { const k = el.dataset.k || ''; if (PL_YMD.test(k)) { PLAN.bk0 = planWk(k).k; rerender(); } });
+function bkRowOf(oid) { const C = PLAN.cur || {}; return (C.X || []).find((r) => r.x.oid === oid) || null; }
+on('plBk', (el) => { if (PLAN.dragAt && Date.now() - PLAN.dragAt < 400) return; const r = bkRowOf(el.dataset.oid); if (r) bkModal(r); });
+function bkModal(r) {
+  const x = r.x, b = r.b, p = x.plan || {}, pi = x.planIn || {}, I = planWaitI(x, b), st = PLAN_PST[p.st] ? p.st : 'wait', dv = p.d ? prdDueKey(p.d) : '';
+  const kv = (k, v) => '<div><span>' + k + '</span><b>' + v + '</b></div>';
+  const wait = (I.todo.length || I.wait.length) ? '<ul class="bk-mw">' + I.todo.concat(I.wait).map((z) => '<li>' + esc(z) + '</li>').join('') + '</ul>' : '<div class="bk-ok">' + esc(I.sup) + '</div>';
+  const ed = PLAN.can ? '<div class="pl-ed bk-ed" data-oid="' + esc(x.oid) + '">' +
+      '<label class="pl-f"><span>วันเริ่มผลิต</span><input class="input" type="date" data-pl="d" data-inp="plDt" value="' + esc(dv === '9999-99-99' ? '' : dv) + '"><span class="pl-dth">' + (dv && dv !== '9999-99-99' ? '= ' + esc(planDth(dv)) : 'ยังไม่ใส่วัน') + '</span></label>' +
+      '<div class="pl-f"><span>สถานะผลิต</span><div class="pl-seg">' + Object.keys(PLAN_PST).map((k) => '<label class="pl-sg pl-ps-' + k + '"><input type="radio" name="bk-st" data-pl="st" value="' + k + '"' + (k === st ? ' checked' : '') + '> ' + PLAN_PST[k][0] + '</label>').join('') + '</div></div>' +
+      '<label class="pl-f pl-fn"><span>หมายเหตุ</span><input class="input" type="text" maxlength="200" data-pl="n" value="' + esc(p.note || '') + '" placeholder="เช่น เริ่มตัดไม้ก่อน · รอวัสดุ"></label></div>'
+    : '<div class="xs muted">บัญชีนี้ดูอย่างเดียว — Admin / ฝ่ายผลิตจัดแผนได้</div>';
+  modal({ title: '📅 ' + esc(prdOno(x.iid, x.oid)), sub: esc([x.title && x.title !== x.oid ? x.title : '', x.lot ? 'LOT ' + x.lot : ''].filter(Boolean).join(' · ')), size: 'lg',
+    body: '<div class="bk-m"><div class="bk-mg">' + kv('ติดตั้ง', esc(I.ins.replace(/^ติดตั้ง /, ''))) + kv('ตู้ / ชิ้น', esc([pi.cabs ? pi.cabs + ' ตู้' : '', pi.parts ? pi.parts + ' ชิ้น' : ''].filter(Boolean).join(' · ') || '—')) +
+      kv('สถานะผลิต', '<span class="pl-ps pl-ps-' + (I.none ? 'none' : st) + '">' + (I.none ? 'ยังไม่จัดแผน' : PLAN_PST[st][0]) + '</span>') + '</div>' +
+      '<div class="bk-mp"><div><span>ปิดผิว</span>' + planLm(x, b) + '</div><div><span>สี</span>' + planPaint(x, b) + '</div><div><span>สั่งตัด / สั่งทำ</span>' + planMo(x, b) + '</div></div>' +
+      '<div class="bk-mh">รออะไร</div>' + wait + (I.by ? '<div class="xs muted">' + esc(I.by) + '</div>' : '') + '<div class="bk-mh">จัดแผน</div>' + ed + '</div>',
+    foot: '<a class="btn" href="#/prd/o/' + encodeURIComponent(x.oid) + '">เปิดงาน</a>' + (PLAN.can ? ' <button type="button" class="btn primary" data-act="plSave" data-oid="' + esc(x.oid) + '">💾 บันทึก</button>' : '') + ' <button type="button" class="btn" data-act="closeOv">ปิด</button>' });
+}
+/* ── ลากการ์ด = จองวันเริ่มผลิต (Booking เริ่มผลิต) ── */
+async function bkSetStart(oid, k) {
+  const r = bkRowOf(oid); if (!r) return;
+  const x = r.x, p = x.plan || {}, old = Object.assign({}, p);
+  if ((bkStartK(x) || '') === (k || '')) return;
+  x.plan = Object.assign({}, p, { d: k || null, st: PLAN_PST[p.st] ? p.st : 'wait', at: p.at || new Date().toISOString() }); rerender();
+  try {
+    const v = await rpc('cn_prd_plan_set', { p_oid: oid, p_d: k || '', p_st: PLAN_PST[p.st] ? p.st : 'wait', p_note: p.note || '' });
+    x.plan = v || x.plan; toast(k ? 'จองเริ่มผลิต ' + prdOno(x.iid, x.oid) + ' → ' + planDth(k) + ' — ทุกเครื่องเห็น' : 'เอาวันเริ่มผลิตออกแล้ว — ' + prdOno(x.iid, x.oid));
+  } catch (e) { x.plan = old; if (e.code === 'session') { forceLogout(e.message); return; } toast('จองวันไม่สำเร็จ: ' + (e.message || e), 'err'); }
+  rerender();
+}
+document.addEventListener('dragstart', (e) => { const c = e.target && e.target.closest ? e.target.closest('[data-bkdrag]') : null; if (!c) return;
+  PLAN.drag = c.dataset.bkdrag; window.__planEd = true; c.classList.add('drag'); try { e.dataTransfer.setData('text/plain', PLAN.drag); e.dataTransfer.effectAllowed = 'move'; } catch (er) { /* บางเบราว์เซอร์ */ } });
+document.addEventListener('dragend', () => { PLAN.drag = ''; PLAN.dragAt = Date.now(); window.__planEd = !!PLAN.ed; document.querySelectorAll('.bk-over,.bk-c.drag').forEach((z) => z.classList.remove('bk-over', 'drag')); });
+document.addEventListener('dragover', (e) => { if (!PLAN.drag) return; const d = e.target && e.target.closest ? e.target.closest('[data-bkday]') : null; if (!d) return; e.preventDefault();
+  document.querySelectorAll('.bk-over').forEach((z) => { if (z !== d) z.classList.remove('bk-over'); }); d.classList.add('bk-over'); });
+document.addEventListener('drop', (e) => { if (!PLAN.drag) return; const d = e.target && e.target.closest ? e.target.closest('[data-bkday]') : null; if (!d) return; e.preventDefault();
+  const oid = PLAN.drag; PLAN.drag = ''; PLAN.dragAt = Date.now(); window.__planEd = !!PLAN.ed; d.classList.remove('bk-over'); bkSetStart(oid, d.dataset.bkday || ''); });
+/* ── ข้อความสำหรับ พิมพ์ / Excel / ภาพ ── */
+function bkLmTxt(x, b) { const k = planLmK(x, b); return k === 'doing' && b ? 'กำลังทำ ' + prdPct(prdLmC(b), 'doing') + '%' : BK_ST[k] || '—'; }
+function bkPtTxt(x, b) { const k = planPtK(x, b); return k === 'doing' && b ? 'กำลังทำ ' + prdPct(b.paintCnt, 'doing') + '%' : BK_ST[k] || '—'; }
+function bkMoTxt(x, b) {
+  const pi = x.planIn || {}, nn = x.none || {}, out = [], seen = {};
+  Object.keys((b && b.moDeps) || {}).forEach((id) => { const c = prdDepCnt(b, id); if (!+c.n) return; seen[id] = 1; const s = prdStFromCnt(c);
+    out.push(planDepLb(id, b.moDeps[id].name).replace(/^\S+ /, '') + ': ' + (s === 'doing' ? 'กำลังทำ ' + prdPct(c, s) + '%' : BK_ST[s])); });
+  (Array.isArray(pi.deps) ? pi.deps : []).forEach((d) => { if (d && d.id && !seen[d.id]) { seen[d.id] = 1; out.push(planDepLb(d.id, d.label).replace(/^\S+ /, '') + ': ยังไม่ส่ง'); } });
+  if (+pi.miss > 0) out.push('ไม่มีแผนก ' + pi.miss + ' รายการ');
+  return out.length ? out.join(' / ') : (Array.isArray(pi.deps) || +nn.mo > 0 || (b && b.moAt)) ? 'ไม่มี' : '—';
+}
+function bkPsTxt(x) { const p = x.plan || {}; return !p.at ? 'ยังไม่จัดแผน' : PLAN_PST[p.st] ? PLAN_PST[p.st][0].replace('✓ ', '') : 'รอผลิต'; }
+function bkSupTxt(r) { const u = r.u; return u.n ? u.d + '/' + u.n + (u.d === u.n ? ' พร้อม' : '') : (r.x.planIn && r.x.planIn.at ? 'ไม่มี' : '—'); }
+function bkFlt() { const C = PLAN.cur || {}, F = C.F || planF(), a = (C.act || []).slice(); a.unshift(F.show === 'done' ? 'ผลิตเสร็จแล้ว' : F.show === 'all' ? 'ทุกสถานะ' : 'ยังผลิตไม่เสร็จ'); return a.join(' · '); }
+function bkWho() { return (S.user && (S.user.name || S.user.username)) || ''; }
+function bkFileBase(mode) { const R = bkRange(), now = planToday(); return 'แผนผลิต_' + (mode === 'list' ? 'รายการ' : mode === 'ins' ? 'Booking-ติดตั้ง' : 'Booking-เริ่มผลิต') + (mode === 'list' ? '' : '_W' + planIso(R.k0) + (R.n > 1 ? '-W' + planIso(bkAdd(R.k1, -6)) : '')) + '_' + now.slice(8, 10) + '-' + now.slice(5, 7) + '-' + (+now.slice(0, 4) + 543); }
+function bkCardTxt(r, mode) {   /* พิมพ์ / Excel / ภาพ: เลขงาน · วัน (ติดตั้ง หรือ เริ่ม) · สถานะผลิต + Support */
+  const x = r.x, pi = x.planIn || {}, sk = bkStartK(x), ik = planIk(x);
+  const l2 = mode === 'ins' ? (sk ? 'เริ่ม ' + planDmy(sk) + (ik && sk > ik ? ' · หลังติดตั้ง!' : '') : 'ยังไม่ใส่วันเริ่มผลิต') : bkSub(r, mode).t;
+  return [prdOno(x.iid, x.oid) + (pi.cabs ? ' (' + pi.cabs + ' ตู้)' : ''), l2, bkPsTxt(x) + ' · Support ' + bkSupTxt(r)];
+}
+/* ── 🖨 พิมพ์ (A4 แนวนอน) ── */
+function bkPrintDoc() {
+  const C = PLAN.cur || {}, F = C.F || planF(), mode = F.view, E = esc, R = bkRange();
+  const ttl = mode === 'list' ? 'แผนผลิต — รายการ Order' : mode === 'ins' ? 'Booking งานติดตั้ง' : 'Booking งานเริ่มผลิต';
+  const card = (r) => { const z = bkCardTxt(r, mode), ps = bkPs(r.x), sp = bkSp(r); return '<div class="c" style="border-left-color:' + BK_PS[ps][1] + '"><b>' + E(z[0]) + '</b><i class="d" style="background:' + BK_SP[sp][1] + '"></i><div class="s' + (bkSub(r, mode).red ? ' red' : '') + '">' + E(z[1]) + '</div><div class="s' + (ps === 'none' ? ' red' : '') + '">' + E(z[2]) + '</div></div>'; };
+  let body = '';
+  if (mode === 'list') {
+    body = '<table class="t"><thead><tr><th>Order</th><th>ติดตั้ง</th><th>ตู้ / ชิ้น</th><th>ปิดผิว</th><th>สี</th><th>สั่งตัด / สั่งทำ</th><th>Support</th><th>ผลิต</th><th>รออะไร</th></tr></thead><tbody>' +
+      (C.G || []).map((g) => '<tr class="g"><td colspan="9">' + E(g.title) + ' · ' + g.L.length + ' Order</td></tr>' + g.L.map((r) => { const x = r.x, b = r.b, pi = x.planIn || {}, I = planWaitI(x, b), ik = planIk(x), p = x.plan || {};
+        return '<tr><td><b>' + E(prdOno(x.iid, x.oid)) + '</b>' + (x.lot ? '<div class="m">LOT ' + E(x.lot) + '</div>' : '') + '</td><td class="nw">' + (ik ? E(PL_DOW[new Date(ik + 'T00:00:00').getDay()] + ' ' + planDmyF(ik)) : '—') + '</td><td class="nw">' + E([pi.cabs ? pi.cabs + ' ตู้' : '', pi.parts ? pi.parts + ' ชิ้น' : ''].filter(Boolean).join(' · ') || '—') + '</td>' +
+          '<td>' + E(bkLmTxt(x, b)) + '</td><td>' + E(bkPtTxt(x, b)) + '</td><td>' + E(bkMoTxt(x, b)) + '</td><td class="nw">' + E(bkSupTxt(r)) + '</td>' +
+          '<td class="nw' + (I.none ? ' red' : '') + '">' + E(bkPsTxt(x)) + (p.d ? '<div class="m">เริ่ม ' + E(planDmyF(prdDueKey(p.d))) + '</div>' : '') + (p.note ? '<div class="m">' + E(p.note) + '</div>' : '') + '</td>' +
+          '<td class="m">' + E(I.todo.concat(I.wait).join(' · ') || I.sup) + '</td></tr>'; }).join('')).join('') + '</tbody></table>';
+  } else {
+    const P = bkSplit(C.L || [], mode, R), W = bkWeeks(R), t = planToday();
+    const strip = (title, L) => L.length ? '<div class="st"><b>' + E(title) + ' · ' + L.length + ' Order</b><div class="sl">' + L.map(card).join('') + '</div></div>' : '';
+    body = (mode === 'ins' ? strip('⚠ เลยวันติดตั้งแล้ว — ยังผลิตไม่เสร็จ', P.late) : strip('ยังไม่กำหนดวันเริ่มผลิต', P.none)) +
+      '<table class="cal"><thead><tr><th class="w">สัปดาห์</th>' + ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'].map((d) => '<th>' + d + '</th>').join('') + '</tr></thead><tbody>' +
+      W.map((w) => { const wl = w.days.reduce((s, k) => s.concat(P.by[k] || []), []); return '<tr><th class="w">W' + planIso(w.k0) + '<div class="m">' + E(bkWR(w.k0)) + '</div><div class="m">' + wl.length + ' Order' + (bkCabs(wl) ? ' · ' + bkCabs(wl) + ' ตู้' : '') + '</div></th>' +
+        w.days.map((k, i) => { const D = P.by[k] || []; return '<td class="' + (i >= 5 ? 'we' : '') + (k === t ? ' td' : '') + '"><div class="dh">' + E(bkDM(k)) + (D.length ? '<span>' + D.length + (bkCabs(D) ? ' · ' + bkCabs(D) + ' ตู้' : '') + '</span>' : '') + '</div>' + D.map(card).join('') + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>' +
+      (mode === 'ins' ? strip('ยังไม่มีวันติดตั้ง', P.none) : '') +
+      '<div class="lg">แถบซ้าย = สถานะผลิต: ' + ['none', 'wait', 'doing', 'done'].map((k) => '<i style="background:' + BK_PS[k][1] + '"></i>' + BK_PS[k][0]).join(' ') + ' · จุด = Support: ' + ['ok', 'part', 'no', 'nos'].map((k) => '<i class="r" style="background:' + BK_SP[k][1] + '"></i>' + BK_SP[k][0].replace('Support ', '')).join(' ') + '</div>';
+  }
+  const css = '@page{size:A4 landscape;margin:8mm}*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font-family:"Sarabun","Noto Sans Thai",Tahoma,sans-serif;color:#0F172A;margin:0;padding:12px 16px;font-size:11px}' +
+    '.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 10px;margin:-12px -16px 10px;background:#EFF6FF;border-bottom:1px solid #BFDBFE}.bar button{font:inherit;font-size:15px;font-weight:700;padding:8px 16px;border-radius:8px;border:2px solid #2563EB;background:#2563EB;color:#fff;cursor:pointer}' +
+    '.hd{display:flex;justify-content:space-between;gap:12px;border-bottom:2px solid #0F172A;padding-bottom:6px;margin-bottom:8px}.ttl{font-size:19px;font-weight:800}.sub{font-size:11px;color:#334155;margin-top:2px}.kp{text-align:right;font-size:10.5px;color:#475569}' +
+    'table{width:100%;border-collapse:collapse}th,td{border:1px solid #CBD5E1;padding:4px 5px;vertical-align:top;text-align:left}thead th{background:#F1F5F9;font-size:10.5px}thead{display:table-header-group}tr{break-inside:avoid}' +
+    '.t td{font-size:10.5px}.t tr.g td{background:#E0F2FE;font-weight:700}.m{font-size:9.5px;color:#475569}.nw{white-space:nowrap}.red{color:#DC2626;font-weight:700}' +
+    '.cal{table-layout:fixed}.cal th.w{width:74px;background:#E0F2FE;font-size:11px}.cal td{height:56px;width:calc((100% - 64px)/7)}.cal td.we{background:#FFF7ED}.cal td.td{background:#EFF6FF}' +
+    '.dh{display:flex;justify-content:space-between;font-weight:700;font-size:10px;color:#334155;margin-bottom:3px}.dh span{color:#64748B;font-weight:600}' +
+    '.c{border:1px solid #E2E8F0;border-left:4px solid #94A3B8;border-radius:4px;padding:2px 4px;margin-bottom:3px;background:#fff;position:relative}.c b{font-size:10.5px}.c .s{font-size:9px;color:#475569}.c .d{position:absolute;right:4px;top:5px;width:7px;height:7px;border-radius:50%}' +
+    '.st{border:1px solid #FECACA;background:#FEF2F2;border-radius:6px;padding:5px 6px;margin-bottom:8px}.sl{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.sl .c{width:180px;margin:0}' +
+    '.lg{margin-top:8px;font-size:9.5px;color:#475569}.lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 3px 0 8px;vertical-align:-1px}.lg i.r{border-radius:50%}' +
+    '@media print{.bar{display:none}body{padding:0}}';
+  const kpH = mode === 'list' ? '' : '<div>' + E(bkRangeT(R)) + '</div>';
+  return '<!DOCTYPE html><ht' + 'ml lang="th"><he' + 'ad><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + E(bkFileBase(mode)) + '<\/title><style>' + css + '<\/style><\/he' + 'ad><bo' + 'dy>' +
+    '<div class="bar"><button type="button" onclick="window.print()">🖨 พิมพ์</button><span style="font-size:12.5px;color:#334155">A4 แนวนอน · เลือกเครื่องพิมพ์ “บันทึกเป็น PDF” ได้ · ไม่มีราคา</span></div>' +
+    '<div class="hd"><div><div class="ttl">' + E(ttl) + '</div><div class="sub">' + E(bkFlt()) + ' · ' + (C.L || []).length + ' Order</div></div><div class="kp">' + kpH + '<div>Starmark PSN · พิมพ์ ' + E(fmtDT(Date.now())) + (bkWho() ? ' · ' + E(bkWho()) : '') + '</div></div></div>' + body + '<\/bo' + 'dy><\/ht' + 'ml>';
+}
+on('plPrint', () => { if (!PLAN.cur) return; if (!prdOpenDoc(bkPrintDoc())) toast('เปิดหน้าพิมพ์ไม่ได้ — อนุญาตป๊อปอัปของเว็บนี้ก่อน (หรือใช้ 📊 Excel / 🖼 ภาพ)', 'err'); });
+/* ── 📊 Excel (.xlsx เขียนเอง — ไม่ใช้ไลบรารีภายนอก) ── */
+const XL = (() => {
+  const enc = new TextEncoder();
+  const T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  const crc = (u) => { let c = 0xFFFFFFFF; for (let i = 0; i < u.length; i++) c = T[(c ^ u[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  function zip(files) {   /* ZIP แบบเก็บตรง (store) · ชื่อไฟล์ UTF-8 */
+    const parts = [], cen = []; let off = 0;
+    files.forEach((f) => {
+      const nm = enc.encode(f.n), d = typeof f.d === 'string' ? enc.encode(f.d) : f.d, c = crc(d), h = new DataView(new ArrayBuffer(30)), C = new DataView(new ArrayBuffer(46));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(12, 0x21, true); h.setUint32(14, c, true); h.setUint32(18, d.length, true); h.setUint32(22, d.length, true); h.setUint16(26, nm.length, true);
+      C.setUint32(0, 0x02014b50, true); C.setUint16(4, 20, true); C.setUint16(6, 20, true); C.setUint16(8, 0x0800, true); C.setUint16(14, 0x21, true); C.setUint32(16, c, true); C.setUint32(20, d.length, true); C.setUint32(24, d.length, true); C.setUint16(28, nm.length, true); C.setUint32(42, off, true);
+      parts.push(new Uint8Array(h.buffer), nm, d); cen.push(new Uint8Array(C.buffer), nm); off += 30 + nm.length + d.length;
+    });
+    const cs = cen.reduce((s, u) => s + u.length, 0), E = new DataView(new ArrayBuffer(22));
+    E.setUint32(0, 0x06054b50, true); E.setUint16(8, files.length, true); E.setUint16(10, files.length, true); E.setUint32(12, cs, true); E.setUint32(16, off, true);
+    return new Blob(parts.concat(cen, [new Uint8Array(E.buffer)]), { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  }
+  const x = (v) => String(v == null ? '' : v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const col = (i) => { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
+  /* สไตล์: 0 ปกติ · 1 หัวเรื่อง · 2 ข้อมูลย่อ · 3 หัวตาราง · 4 ช่อง (ตัดบรรทัด) · 5 เสาร์-อาทิตย์ · 6 วันนี้ · 7 ป้ายสัปดาห์ · 8 แถบแดง · 9 ตัวเลข · 10 ตัวแดง · 11 แถวกลุ่ม */
+  const STY = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+    '<fonts count="6"><font><sz val="10"/><name val="Tahoma"/></font><font><b/><sz val="10"/><name val="Tahoma"/></font><font><b/><sz val="14"/><name val="Tahoma"/></font><font><sz val="9"/><color rgb="FF64748B"/><name val="Tahoma"/></font><font><b/><sz val="10"/><color rgb="FFDC2626"/><name val="Tahoma"/></font><font><sz val="10"/><color rgb="FFDC2626"/><name val="Tahoma"/></font></fonts>' +
+    '<fills count="8"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>' + ['FFF1F5F9', 'FFFFF7ED', 'FFDBEAFE', 'FFE0F2FE', 'FFFEE2E2', 'FFF8FAFC'].map((c) => '<fill><patternFill patternType="solid"><fgColor rgb="' + c + '"/><bgColor indexed="64"/></patternFill></fill>').join('') + '</fills>' +
+    '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border>' + ['left', 'right', 'top', 'bottom'].map((s) => '<' + s + ' style="thin"><color rgb="FFCBD5E1"/></' + s + '>').join('') + '<diagonal/></border></borders>' +
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="12">' +
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+    '<xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+    '<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+    '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>' +
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
+    '<xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
+    '<xf numFmtId="0" fontId="0" fillId="4" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
+    '<xf numFmtId="0" fontId="1" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
+    '<xf numFmtId="0" fontId="4" fillId="6" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="right" vertical="top"/></xf>' +
+    '<xf numFmtId="0" fontId="5" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>' +
+    '<xf numFmtId="0" fontId="1" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>' +
+    '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+  function sheet(S) {   /* S = { cols:[ความกว้าง], rows:[{ h, c:[{ v, s }] }], merges:['A1:H1'], freeze: แถวหัว } */
+    const rows = S.rows.map((r, ri) => '<row r="' + (ri + 1) + '"' + (r.h ? ' ht="' + Math.min(409, Math.round(r.h)) + '" customHeight="1"' : '') + '>' + (r.c || []).map((c, ci) => {
+      if (c == null) return ''; const ref = col(ci) + (ri + 1), s = c.s ? ' s="' + c.s + '"' : '';
+      if (c.v == null || c.v === '') return '<c r="' + ref + '"' + s + '/>';
+      return typeof c.v === 'number' ? '<c r="' + ref + '"' + s + '><v>' + c.v + '</v></c>' : '<c r="' + ref + '"' + s + ' t="inlineStr"><is><t xml:space="preserve">' + x(c.v) + '</t></is></c>'; }).join('') + '</row>').join('');
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+      '<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><sheetViews><sheetView workbookViewId="0">' + (S.freeze ? '<pane ySplit="' + S.freeze + '" topLeftCell="A' + (S.freeze + 1) + '" activePane="bottomLeft" state="frozen"/>' : '') + '</sheetView></sheetViews>' +
+      '<sheetFormatPr defaultRowHeight="15"/><cols>' + S.cols.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols>' +
+      '<sheetData>' + rows + '</sheetData>' + (S.merges && S.merges.length ? '<mergeCells count="' + S.merges.length + '">' + S.merges.map((m) => '<mergeCell ref="' + m + '"/>').join('') + '</mergeCells>' : '') +
+      '<pageMargins left="0.3" right="0.3" top="0.4" bottom="0.4" header="0.2" footer="0.2"/><pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="0"/>' +
+      '<headerFooter><oddFooter>&amp;L' + x(S.name) + '&amp;Rหน้า &amp;P / &amp;N</oddFooter></headerFooter></worksheet>';
+  }
+  function book(sheets) {
+    const nm = (s, i) => (String(s.name || 'Sheet' + (i + 1)).replace(/[\[\]:*?\/\\]/g, ' ').slice(0, 31));
+    const files = [
+      { n: '[Content_Types].xml', d: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+        sheets.map((s, i) => '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('') + '</Types>' },
+      { n: '_rels/.rels', d: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+      { n: 'xl/workbook.xml', d: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' +
+        sheets.map((s, i) => '<sheet name="' + x(nm(s, i)) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>').join('') + '</sheets><definedNames>' +
+        sheets.map((s, i) => s.freeze ? '<definedName name="_xlnm.Print_Titles" localSheetId="' + i + '">\'' + x(nm(s, i)) + '\'!$' + s.freeze + ':$' + s.freeze + '</definedName>' : '').join('') + '</definedNames></workbook>' },
+      { n: 'xl/_rels/workbook.xml.rels', d: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+        sheets.map((s, i) => '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>').join('') +
+        '<Relationship Id="rId' + (sheets.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' },
+      { n: 'xl/styles.xml', d: STY }
+    ].concat(sheets.map((s, i) => ({ n: 'xl/worksheets/sheet' + (i + 1) + '.xml', d: sheet(s) })));
+    return zip(files);
+  }
+  return { book, crc };
+})();
+function bkXlBook(mode) {   /* ชีต Booking (ปฏิทินสัปดาห์) */
+  const C = PLAN.cur || {}, R = bkRange(), P = bkSplit(C.L || [], mode, R), W = bkWeeks(R), t = planToday();
+  const name = mode === 'ins' ? 'Booking ติดตั้ง' : 'Booking เริ่มผลิต', rows = [], merges = [];
+  const ct = (L) => L.map((r) => bkCardTxt(r, mode).join('\n   ')).join('\n');
+  const lines = (s) => String(s || '').split('\n').length;
+  rows.push({ h: 24, c: [{ v: name + ' — ' + bkRangeT(R), s: 1 }] }); merges.push('A1:H1');
+  rows.push({ c: [{ v: bkFlt() + ' · ' + (C.L || []).length + ' Order · Starmark PSN ส่งออก ' + fmtDT(Date.now()) + (bkWho() ? ' · ' + bkWho() : '') + ' · ไม่มีราคา', s: 2 }] }); merges.push('A2:H2');
+  rows.push({ h: 20, c: ['สัปดาห์', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'].map((v) => ({ v, s: 3 })) });
+  W.forEach((w) => {
+    const wl = w.days.reduce((s, k) => s.concat(P.by[k] || []), []);
+    const cells = w.days.map((k, i) => { const D = P.by[k] || []; return { v: bkDM(k) + ' ' + bkYY(k) + (D.length ? ' — ' + D.length + ' Order' + (bkCabs(D) ? ' · ' + bkCabs(D) + ' ตู้' : '') : '') + (D.length ? '\n' + ct(D) : ''), s: k === t ? 6 : i >= 5 ? 5 : 4 }; });
+    const h = Math.max(3, ...cells.map((c) => bkWrapN(c.v, 27))) * 13.5 + 8;   /* ป้ายสัปดาห์ 3 บรรทัด */
+    rows.push({ h, c: [{ v: 'W' + planIso(w.k0) + '\n' + bkWR(w.k0) + '\n' + wl.length + ' Order' + (bkCabs(wl) ? ' · ' + bkCabs(wl) + ' ตู้' : ''), s: 7 }].concat(cells) });
+  });
+  const strip = (title, L) => { if (!L.length) return; const r = rows.length + 1; rows.push({}); rows.push({ h: Math.max(2, bkWrapN(ct(L), 27 * 7)) * 13.5 + 6, c: [{ v: title + '\n' + L.length + ' Order', s: 8 }, { v: ct(L), s: 4 }] }); merges.push('B' + (r + 1) + ':H' + (r + 1)); };
+  if (mode === 'ins') { strip('เลยวันติดตั้งแล้ว — ยังผลิตไม่เสร็จ', P.late); strip('ยังไม่มีวันติดตั้ง', P.none); } else strip('ยังไม่กำหนดวันเริ่มผลิต', P.none);
+  if (P.out.b || P.out.a) rows.push({ c: [{ v: 'นอกช่วงนี้: ก่อนหน้า ' + P.out.b + ' Order · หลังจากนี้ ' + P.out.a + ' Order (ดูในชีตรายการ Order)', s: 2 }] });
+  return { name, cols: [16, 27, 27, 27, 27, 27, 27, 27], rows, merges, freeze: 3 };
+}
+function bkXlList() {
+  const C = PLAN.cur || {}, rows = [], t = planToday();
+  const H = ['Order', 'Order ID', 'ชื่องาน', 'LOT', 'วันติดตั้ง', 'เหลือ (วัน)', 'ตู้', 'ชิ้น', 'ปิดผิว', 'สี', 'สั่งตัด / สั่งทำ', 'Support พร้อม', 'สถานะผลิต', 'วันเริ่มผลิต', 'รออะไร', 'หมายเหตุ', 'จัดแผนโดย'];
+  rows.push({ h: 24, c: [{ v: 'แผนผลิต — รายการ Order', s: 1 }] });
+  rows.push({ c: [{ v: bkFlt() + ' · ' + (C.L || []).length + ' Order · Starmark PSN ส่งออก ' + fmtDT(Date.now()) + (bkWho() ? ' · ' + bkWho() : '') + ' · ไม่มีราคา', s: 2 }] });
+  rows.push({ h: 30, c: H.map((v) => ({ v, s: 3 })) });
+  (C.G || []).forEach((g) => {
+    rows.push({ c: [{ v: g.title + ' · ' + g.L.length + ' Order', s: 11 }].concat(H.slice(1).map(() => ({ v: '', s: 11 }))) });
+    g.L.forEach((r) => { const x = r.x, b = r.b, pi = x.planIn || {}, p = x.plan || {}, ik = planIk(x), I = planWaitI(x, b), sk = bkStartK(x), wt = I.todo.concat(I.wait).join('\n') || I.sup;
+      rows.push({ c: [
+        { v: prdOno(x.iid, x.oid), s: 4 }, { v: x.oid, s: 4 }, { v: x.title && x.title !== x.oid ? x.title : '', s: 4 }, { v: x.lot || '', s: 4 },
+        { v: ik ? PL_DOW[new Date(ik + 'T00:00:00').getDay()] + ' ' + planDmyF(ik) : '', s: 4 }, { v: ik && !planDone(x) ? planDiff(t, ik) : '', s: ik && !planDone(x) && ik < t ? 10 : 9 },
+        { v: +pi.cabs || '', s: 9 }, { v: +pi.parts || '', s: 9 }, { v: bkLmTxt(x, b), s: 4 }, { v: bkPtTxt(x, b), s: 4 }, { v: bkMoTxt(x, b).replace(/ \/ /g, '\n'), s: 4 }, { v: bkSupTxt(r), s: 4 },
+        { v: bkPsTxt(x), s: I.none ? 10 : 4 }, { v: sk ? planDmyF(sk) : '', s: I.lateS ? 10 : 4 }, { v: wt, s: 4 }, { v: p.note || '', s: 4 }, { v: p.at ? (p.byName || '') + ' ' + fmtDT(p.at) : '', s: 4 }] }); });
+  });
+  const cols = [14, 24, 22, 16, 15, 9, 6, 7, 14, 12, 26, 11, 13, 12, 40, 22, 20];
+  rows.forEach((r, i) => { if (i > 2 && r.c && r.c[0] && r.c[0].s === 4) r.h = Math.max(1, ...r.c.map((c, j) => bkWrapN(c.v, cols[j]))) * 13.5 + 5; });   /* สูงพอให้เห็นทั้งข้อความ */
+  return { name: 'รายการ Order', cols, rows, merges: ['A1:H1', 'A2:Q2'], freeze: 3 };
+}
+function lines2(s) { return String(s || '').split('\n').length; }
+function bkWrapN(v, w) { return String(v == null ? '' : v).split('\n').reduce((n, l) => n + Math.max(1, Math.ceil(l.length / (w * 1.15))), 0); }   /* บรรทัดหลังตัดคำตามความกว้างช่อง (ประมาณ) */
+function bkDl(blob, name) {
+  const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 8000);
+}
+on('plXlsx', () => {
+  if (!PLAN.cur) return;
+  try {
+    const v = (PLAN.cur.F || planF()).view, S3 = { ins: bkXlBook('ins'), start: bkXlBook('start'), list: bkXlList() };
+    const order = v === 'start' ? ['start', 'ins', 'list'] : v === 'list' ? ['list', 'ins', 'start'] : ['ins', 'start', 'list'];
+    const blob = XL.book(order.map((k) => S3[k])); PLAN.lastXl = blob;
+    bkDl(blob, bkFileBase(v) + '.xlsx'); toast('ดาวน์โหลด Excel แล้ว — 3 ชีต (Booking ติดตั้ง · Booking เริ่มผลิต · รายการ Order)');
+  } catch (e) { toast('สร้าง Excel ไม่สำเร็จ: ' + (e.message || e), 'err'); }
+});
+/* ── 🖼 ภาพ (PNG แบบใบแผน) → แชร์ / ดาวน์โหลด / คัดลอก ── */
+function bkFont() { try { return getComputedStyle(document.body).fontFamily || 'sans-serif'; } catch (e) { return 'sans-serif'; } }
+function bkFit(g, s, w) { s = String(s || ''); if (g.measureText(s).width <= w) return s; while (s.length > 1 && g.measureText(s + '…').width > w) s = s.slice(0, -1); return s + '…'; }
+function bkRR(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+const BK_CH = 56;   /* ความสูงการ์ดในภาพ (3 บรรทัด) + ช่องไฟ */
+function bkDrawCard(g, r, mode, x, y, w, ff) {
+  const z = bkCardTxt(r, mode), ps = bkPs(r.x), sp = bkSp(r), r1 = bkSub(r, mode).red, r2 = ps === 'none';
+  g.fillStyle = '#FFFFFF'; bkRR(g, x, y, w, BK_CH - 6, 5); g.fill(); g.strokeStyle = '#E2E8F0'; g.lineWidth = 1; g.stroke();
+  g.fillStyle = BK_PS[ps][1]; g.fillRect(x, y + 1, 4, BK_CH - 8);
+  g.fillStyle = BK_SP[sp][1]; g.beginPath(); g.arc(x + w - 9, y + 10, 4.5, 0, 7); g.fill();
+  g.fillStyle = '#0F172A'; g.font = '700 13px ' + ff; g.fillText(bkFit(g, z[0], w - 26), x + 10, y + 16);
+  g.fillStyle = r1 ? '#DC2626' : '#334155'; g.font = (r1 ? '700 ' : '600 ') + '11px ' + ff; g.fillText(bkFit(g, z[1], w - 14), x + 10, y + 31);
+  g.fillStyle = r2 ? '#DC2626' : '#64748B'; g.font = (r2 ? '700 ' : '') + '11px ' + ff; g.fillText(bkFit(g, z[2], w - 14), x + 10, y + 45);
+}
+function bkImage() {
+  const C = PLAN.cur || {}, F = C.F || planF(), mode = F.view, ff = bkFont(), R = bkRange(), PAD = 24, t = planToday();
+  const ttl = mode === 'list' ? 'แผนผลิต — รายการ Order' : mode === 'ins' ? 'Booking งานติดตั้ง' : 'Booking งานเริ่มผลิต';
+  let Wd, Hd, draw;
+  if (mode === 'list') {
+    const cols = [['Order', 150], ['ติดตั้ง', 130], ['ตู้', 50], ['ปิดผิว', 110], ['สี', 100], ['สั่งตัด / สั่งทำ', 300], ['Support', 80], ['ผลิต', 230]], TW = cols.reduce((s, c) => s + c[1], 0);
+    const items = []; (C.G || []).forEach((g) => { items.push({ g }); g.L.forEach((r) => items.push({ r })); });
+    Wd = TW + PAD * 2; Hd = 96 + 30 + items.reduce((s, it) => s + (it.g ? 28 : 42), 0) + PAD;
+    draw = (g) => { let y = 96; g.fillStyle = '#F1F5F9'; g.fillRect(PAD, y, TW, 30); g.fillStyle = '#334155'; g.font = '700 12px ' + ff; let xx = PAD; cols.forEach((c) => { g.fillText(c[0], xx + 6, y + 19); xx += c[1]; }); y += 30;
+      items.forEach((it) => { if (it.g) { g.fillStyle = '#E0F2FE'; g.fillRect(PAD, y, TW, 28); g.fillStyle = '#075985'; g.font = '700 12.5px ' + ff; g.fillText(it.g.title + ' · ' + it.g.L.length + ' Order', PAD + 6, y + 18); y += 28; return; }
+        const r = it.r, x = r.x, b = r.b, pi = x.planIn || {}, ik = planIk(x), p = x.plan || {}, I = planWaitI(x, b);
+        const v = [[prdOno(x.iid, x.oid), x.lot ? 'LOT ' + x.lot : ''], [ik ? PL_DOW[new Date(ik + 'T00:00:00').getDay()] + ' ' + planDmy(ik) : '—', ik && !planDone(x) ? (planDiff(t, ik) < 0 ? 'เลยมา ' + -planDiff(t, ik) + ' วัน' : 'อีก ' + planDiff(t, ik) + ' วัน') : ''], [pi.cabs ? String(pi.cabs) : '—', ''],
+          [bkLmTxt(x, b), ''], [bkPtTxt(x, b), ''], [bkMoTxt(x, b), ''], [bkSupTxt(r), ''], [bkPsTxt(x) + (p.d ? ' · เริ่ม ' + planDmy(prdDueKey(p.d)) : ''), p.note || '']];
+        g.strokeStyle = '#E2E8F0'; g.beginPath(); g.moveTo(PAD, y + 42); g.lineTo(PAD + TW, y + 42); g.stroke(); let x2 = PAD;
+        v.forEach((c, i) => { const red = (i === 7 && I.none) || (i === 1 && ik && !planDone(x) && ik < t) || /ยังไม่ส่ง/.test(c[0]);
+          g.fillStyle = red ? '#DC2626' : '#0F172A'; g.font = (i === 0 || red ? '700 ' : '') + '12.5px ' + ff; g.fillText(bkFit(g, c[0], cols[i][1] - 10), x2 + 6, y + 17);
+          if (c[1]) { g.fillStyle = '#64748B'; g.font = '11px ' + ff; g.fillText(bkFit(g, c[1], cols[i][1] - 10), x2 + 6, y + 34); } x2 += cols[i][1]; }); y += 42; }); };
+  } else {
+    const P = bkSplit(C.L || [], mode, R), WK = bkWeeks(R), CW = 190, LW = 104, GW = LW + CW * 7, CH = BK_CH;
+    const strips = (mode === 'ins' ? [['⚠ เลยวันติดตั้งแล้ว — ยังผลิตไม่เสร็จ', P.late], ['ยังไม่มีวันติดตั้ง', P.none]] : [['ยังไม่กำหนดวันเริ่มผลิต', P.none]]).filter((s) => s[1].length);
+    const per = Math.floor(GW / (CW + 6)), sH = (L) => 30 + Math.ceil(L.length / per) * CH + 6;
+    const wh = WK.map((w) => 26 + Math.max(1, ...w.days.map((k) => (P.by[k] || []).length)) * CH + 6);
+    Wd = GW + PAD * 2; Hd = 96 + 28 + wh.reduce((s, h) => s + h, 0) + strips.reduce((s, z) => s + sH(z[1]) + 10, 0) + 40 + PAD;
+    draw = (g) => { let y = 96;
+      const stripD = (s) => { const h = sH(s[1]); g.fillStyle = '#FEF2F2'; bkRR(g, PAD, y, GW, h, 8); g.fill(); g.strokeStyle = '#FECACA'; g.stroke(); g.fillStyle = '#B91C1C'; g.font = '700 13px ' + ff; g.fillText(s[0] + ' · ' + s[1].length + ' Order', PAD + 10, y + 20);
+        s[1].forEach((r, i) => bkDrawCard(g, r, mode, PAD + 6 + (i % per) * (CW + 6), y + 30 + Math.floor(i / per) * CH, CW - 6, ff)); y += h + 10; };
+      if (strips[0] && (mode === 'start' || /เลยวัน/.test(strips[0][0]))) stripD(strips.shift());
+      g.fillStyle = '#F1F5F9'; g.fillRect(PAD, y, GW, 28); g.fillStyle = '#334155'; g.font = '700 12.5px ' + ff; g.fillText('สัปดาห์', PAD + 8, y + 18);
+      ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'].forEach((d, i) => g.fillText(d, PAD + LW + i * CW + 8, y + 18)); y += 28;
+      WK.forEach((w, wi) => { const h = wh[wi], wl = w.days.reduce((s, k) => s.concat(P.by[k] || []), []);
+        g.fillStyle = '#E0F2FE'; g.fillRect(PAD, y, LW, h); g.fillStyle = '#075985'; g.font = '800 16px ' + ff; g.fillText('W' + planIso(w.k0), PAD + 8, y + 22);
+        g.font = '11px ' + ff; g.fillText(bkWR(w.k0), PAD + 8, y + 40); g.fillText(wl.length + ' Order' + (bkCabs(wl) ? ' · ' + bkCabs(wl) + ' ตู้' : ''), PAD + 8, y + 56);
+        w.days.forEach((k, i) => { const x = PAD + LW + i * CW, D = P.by[k] || [];
+          g.fillStyle = k === t ? '#EFF6FF' : i >= 5 ? '#FFF7ED' : '#FFFFFF'; g.fillRect(x, y, CW, h);
+          g.fillStyle = k === t ? '#1D4ED8' : '#334155'; g.font = '700 12px ' + ff; g.fillText(bkDM(k) + (k === t ? ' · วันนี้' : ''), x + 6, y + 17);
+          if (D.length) { g.fillStyle = '#64748B'; g.font = '11px ' + ff; const s = D.length + (bkCabs(D) ? ' · ' + bkCabs(D) + ' ตู้' : ''); g.fillText(s, x + CW - 6 - g.measureText(s).width, y + 17); }
+          D.forEach((r, j) => bkDrawCard(g, r, mode, x + 4, y + 24 + j * CH, CW - 8, ff)); });
+        g.strokeStyle = '#CBD5E1'; g.lineWidth = 1; for (let i = 0; i <= 7; i++) { g.beginPath(); g.moveTo(PAD + LW + i * CW + .5, y); g.lineTo(PAD + LW + i * CW + .5, y + h); g.stroke(); }
+        g.beginPath(); g.moveTo(PAD, y + h + .5); g.lineTo(PAD + GW, y + h + .5); g.stroke(); y += h; });
+      y += 10; strips.forEach(stripD);
+      g.font = '11px ' + ff; let lx = PAD; g.fillStyle = '#475569'; g.fillText('แถบซ้าย = สถานะผลิต:', lx, y + 16); lx += g.measureText('แถบซ้าย = สถานะผลิต:').width + 8;
+      ['none', 'wait', 'doing', 'done'].forEach((k) => { g.fillStyle = BK_PS[k][1]; g.fillRect(lx, y + 7, 10, 10); g.fillStyle = '#475569'; g.fillText(BK_PS[k][0], lx + 14, y + 16); lx += g.measureText(BK_PS[k][0]).width + 26; });
+      g.fillText('· จุด = Support:', lx, y + 16); lx += g.measureText('· จุด = Support:').width + 8;
+      ['ok', 'part', 'no', 'nos'].forEach((k) => { g.fillStyle = BK_SP[k][1]; g.beginPath(); g.arc(lx + 5, y + 12, 5, 0, 7); g.fill(); g.fillStyle = '#475569'; const s = BK_SP[k][0].replace('Support ', ''); g.fillText(s, lx + 14, y + 16); lx += g.measureText(s).width + 26; }); };
+  }
+  const sc = Hd * 2 > 14000 ? 1 : 2, cv = document.createElement('canvas'); cv.width = Math.ceil(Wd * sc); cv.height = Math.ceil(Hd * sc);
+  const g = cv.getContext('2d'); g.scale(sc, sc); g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, Wd, Hd); g.textBaseline = 'alphabetic';
+  g.fillStyle = '#0F172A'; g.font = '800 22px ' + ff; g.fillText(ttl + (mode === 'list' ? '' : ' · ' + bkRangeT(R)), PAD, 40);
+  g.fillStyle = '#475569'; g.font = '12.5px ' + ff; g.fillText(bkFit(g, bkFlt() + ' · ' + (C.L || []).length + ' Order', Wd - PAD * 2 - 330), PAD, 64);
+  const st = 'Starmark PSN · ' + fmtDT(Date.now()) + (bkWho() ? ' · ' + bkWho() : ''); g.fillText(st, Wd - PAD - g.measureText(st).width, 64);
+  g.fillStyle = '#0F172A'; g.fillRect(PAD, 78, Wd - PAD * 2, 2);
+  draw(g);
+  return cv;
+}
+on('plImg', async () => {
+  if (!PLAN.cur) return;
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) { /* ไม่มี = ใช้ฟอนต์เครื่อง */ }
+  let cv; try { cv = bkImage(); } catch (e) { toast('สร้างภาพไม่สำเร็จ: ' + (e.message || e), 'err'); return; }
+  const blob = await new Promise((res) => cv.toBlob(res, 'image/png')); if (!blob) { toast('สร้างภาพไม่สำเร็จ', 'err'); return; }
+  const name = bkFileBase((PLAN.cur.F || planF()).view) + '.png', file = (() => { try { return new File([blob], name, { type: 'image/png' }); } catch (e) { return null; } })();
+  let canShare = false; try { canShare = !!file && typeof navigator.share === 'function' && typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] }); } catch (e) { canShare = false; }
+  const canCopy = typeof window.ClipboardItem === 'function' && !!(navigator.clipboard && navigator.clipboard.write);
+  PLAN.img = { blob, name, file }; const url = URL.createObjectURL(blob);
+  modal({ title: '🖼 ภาพแผนผลิต', sub: esc(name) + ' · ' + cv.width + '×' + cv.height + ' px', size: 'lg',
+    body: '<div class="bk-img"><img src="' + url + '" alt="ภาพแผนผลิต"></div><div class="xs muted" style="margin-top:8px">ตามมุมมอง + ตัวกรองที่เห็น · ไม่มีราคา · ส่งต่อเข้า LINE / กลุ่มงานได้เลย</div>',
+    foot: (canShare ? '<button type="button" class="btn primary" data-act="plImgShare">📤 แชร์ (LINE ฯลฯ)</button> ' : '') + '<button type="button" class="btn' + (canShare ? '' : ' primary') + '" data-act="plImgDl">⬇ ดาวน์โหลดภาพ</button>' +
+      (canCopy ? ' <button type="button" class="btn" data-act="plImgCopy">📋 คัดลอกภาพ</button>' : '') + ' <button type="button" class="btn" data-act="closeOv">ปิด</button>' });
+  setTimeout(() => URL.revokeObjectURL(url), 120000);
+});
+on('plImgDl', () => { const I = PLAN.img; if (I) { bkDl(I.blob, I.name); toast('ดาวน์โหลดภาพแล้ว'); } });
+on('plImgShare', () => { const I = PLAN.img; if (!I || !I.file) return; let p; try { p = navigator.share({ files: [I.file], title: I.name }); } catch (e) { bkDl(I.blob, I.name); return; }
+  Promise.resolve(p).then(() => {}, (e) => { if (e && e.name === 'AbortError') return; bkDl(I.blob, I.name); toast('แชร์ไม่ได้ — ดาวน์โหลดภาพแทน'); }); });
+on('plImgCopy', async () => { const I = PLAN.img; if (!I) return; try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': I.blob })]); toast('คัดลอกภาพแล้ว — วางใน LINE / แชทได้เลย'); } catch (e) { toast('คัดลอกภาพไม่ได้ในเครื่องนี้ — ใช้ดาวน์โหลดแทน', 'err'); } });
+(function () {
+  const st = document.createElement('style');
+  st.textContent = '.pl-vb{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}.pl-seg2{display:inline-flex;border:1px solid var(--line-2);border-radius:10px;overflow:hidden;background:var(--surface)}' +
+    '.pl-seg2 button{border:none;background:none;padding:7px 14px;font:inherit;font-size:13.5px;font-weight:700;color:var(--text-2);cursor:pointer;border-right:1px solid var(--line-2)}.pl-seg2 button:last-child{border-right:none}.pl-seg2 button.on{background:var(--action);color:#fff}' +
+    '.pl-ex{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center}' +
+    '.bk{padding:0 14px 14px}.bk-bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin:4px 0 10px}.bk-nav{display:flex;gap:6px;align-items:center}.bk-rt{font-size:15px;margin-left:6px}.bk-bw{display:flex;gap:4px;align-items:center;flex-wrap:wrap}' +
+    '.bk-out{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 8px}' +
+    '.bk-strip{border:1px solid var(--line-2);border-radius:10px;padding:8px 10px;margin-bottom:10px;background:var(--surface-2)}.bk-strip.late,.bk-start .bk-strip.none{border-color:#F2B8B2;background:var(--red-bg)}.bk-sh b{font-size:13.5px}.bk-strip.late .bk-sh b,.bk-start .bk-strip.none .bk-sh b{color:var(--red)}.bk-sh .n{font-size:12.5px;color:var(--text-3)}' +
+    '.bk-sl{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.bk-sl .bk-c{width:190px;margin:0}' +
+    '.bk-gw{overflow-x:auto}.bk-g{width:100%;border-collapse:collapse;table-layout:fixed;min-width:980px}.bk-g th,.bk-g td{border:1px solid var(--line);vertical-align:top}.bk-g thead th{background:var(--surface-2);font-size:12.5px;padding:6px;text-align:left}.bk-g .bk-wh{width:108px}.bk-dw{display:none}' +
+    '.bk-wl{background:var(--action-bg);padding:8px;text-align:left}.bk-wl b{display:block;font-size:17px;color:var(--action-2)}.bk-wl small{display:block;font-size:11.5px;color:var(--text-2);font-weight:600}.bk-wl.now{box-shadow:inset 4px 0 0 var(--action)}' +
+    '.bk-d{padding:4px;min-height:70px;height:70px;background:var(--surface)}.bk-d.we{background:#FFFBF5}.bk-d.today{background:var(--action-bg)}.bk-d.past{background-image:linear-gradient(0deg,rgba(148,163,184,.06),rgba(148,163,184,.06))}.bk-d.bk-over,.bk-strip.bk-over{outline:2px dashed var(--action);outline-offset:-3px;background:var(--action-bg)}' +
+    '.bk-dh{display:flex;justify-content:space-between;gap:4px;font-size:11.5px;color:var(--text-2);margin:0 2px 4px;font-weight:600}.bk-dc{color:var(--text-3);white-space:nowrap}' +
+    '.bk-c{position:relative;background:var(--surface);border:1px solid var(--line-2);border-left:4px solid #94A3B8;border-radius:6px;padding:4px 7px;margin-bottom:4px;cursor:pointer;font-size:12px;line-height:1.35}.bk-c:hover{box-shadow:0 2px 8px rgba(15,23,42,.12)}.bk-c[draggable=true]{cursor:grab}.bk-c.drag{opacity:.4}' +
+    '.bk-p-none{border-left-color:#DC2626}.bk-p-wait{border-left-color:#94A3B8}.bk-p-doing{border-left-color:#D97706}.bk-p-done{border-left-color:#16A34A;opacity:.75}.bk-c.bk-late{background:var(--red-bg)}' +
+    '.bk-l1{display:flex;justify-content:space-between;gap:6px}.bk-l1 b{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bk-n{color:var(--text-3);white-space:nowrap}.bk-l2{display:flex;gap:5px;align-items:center;color:var(--text-2);font-size:11.5px}.bk-l2 span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bk-l2 .red{color:var(--red);font-weight:700}' +
+    '.bk-dot{flex:none;width:8px;height:8px;border-radius:50%;display:inline-block}' +
+    '.bk-lgd{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12px;color:var(--text-2);margin-top:10px}.bk-lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}.bk-lg i.r{border-radius:50%}' +
+    '.bk-m{display:flex;flex-direction:column;gap:10px}.bk-mg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.bk-mg div,.bk-mp>div{background:var(--surface-2);border-radius:8px;padding:8px 10px}.bk-mg span,.bk-mp span{display:block;font-size:11.5px;color:var(--text-3);font-weight:600;margin-bottom:2px}' +
+    '.bk-mp{display:grid;grid-template-columns:1fr 1fr 2fr;gap:8px}.bk-mh{font-weight:800;font-size:13.5px;margin-top:4px}.bk-mw{margin:0;padding-left:18px;color:var(--text-2);font-size:13px}.bk-mw li{margin:2px 0}.bk-ok{color:var(--green);font-weight:700}.bk-ed{background:var(--action-bg);border-radius:10px;padding:10px}' +
+    '.bk-img{max-height:62vh;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff}.bk-img img{display:block;width:100%;height:auto}' +
+    '@media (max-width:760px){.pl-ex{width:100%}.pl-seg2{width:100%}.pl-seg2 button{flex:1;padding:8px 6px;font-size:12.5px}.bk{padding:0 8px 10px}.bk-g{min-width:0}.bk-g thead{display:none}.bk-g,.bk-g tbody,.bk-g tr,.bk-g th,.bk-g td{display:block;width:auto}' +
+    '.bk-g tr{border:1px solid var(--line-2);border-radius:10px;overflow:hidden;margin-bottom:10px}.bk-g th,.bk-g td{border:none;border-bottom:1px solid var(--line)}.bk-d{height:auto;min-height:0}.bk-dw{display:inline}.bk-d.empty{display:none}.bk-wl b{display:inline;margin-right:8px}.bk-wl small{display:inline;margin-right:8px}' +
+    '.bk-mg,.bk-mp{grid-template-columns:1fr}.bk-sl .bk-c{width:100%}}' +
+    '@media print{.side,.topbar,.pl-kpi,.pl-flt,.pl-act,.pl-r1,.pl-ex,.bk-bar .bk-bw{display:none!important}}';
+  document.head.appendChild(st);
+})();
 route(/^\/prd\/plan$/, 'prd', () => { setTimeout(() => planLoad(), 0); setTimeout(() => prdStLoad(), 0); return planPage(); });
 on('plShow', (el) => { planF().show = el.dataset.f || 'todo'; PLAN.qk = ''; planFSave(); rerender(); });
 on('plQk', (el) => { const k = el.dataset.k; PLAN.qk = PLAN.qk === k ? '' : k; if (PLAN.qk) planF().show = 'todo'; rerender(); });
@@ -5426,20 +5898,22 @@ on('plClr', () => { const F = planF(); F.ms = {}; F.d0 = ''; F.d1 = ''; PLAN.qk 
 on('plReload', () => { PLAN.at = 0; planLoad(true); });
 on('plEd', (el) => { const o = el.dataset.oid; PLAN.ed = PLAN.ed === o ? '' : o; window.__planEd = !!PLAN.ed; rerender(); if (PLAN.ed) setTimeout(() => { const i = document.querySelector('.pl-ed [data-pl=d]'); if (i) i.focus(); }, 30); });
 on('plSave', async (el) => {
-  const oid = el.dataset.oid, box = el.closest('.pl-ed'); if (!box || PLAN.saving) return;
+  const oid = el.dataset.oid, inOv = !!el.closest('#overlay'), box = el.closest('.pl-ed') || (inOv ? document.querySelector('#overlay .pl-ed') : null); if (!box || PLAN.saving) return;
   const d = (box.querySelector('[data-pl=d]') || {}).value || '', st = (box.querySelector('[data-pl=st]:checked') || {}).value || 'wait', note = (box.querySelector('[data-pl=n]') || {}).value || '';
   PLAN.saving = oid; el.disabled = true; el.textContent = '⏳ กำลังบันทึก…';
   try {
     const v = await rpc('cn_prd_plan_set', { p_oid: oid, p_d: d, p_st: st, p_note: note });
     const x = (PLAN.rows || []).find((r) => r.oid === oid); if (x) x.plan = v || {};
-    PLAN.ed = ''; window.__planEd = false; toast('บันทึกแผนผลิตแล้ว — ทุกเครื่องเห็น');
+    PLAN.ed = ''; window.__planEd = false; if (inOv) closeOverlay(); toast('บันทึกแผนผลิตแล้ว — ทุกเครื่องเห็น');
   } catch (e) { if (e.code === 'session') { forceLogout(e.message); return; } toast('บันทึกแผนไม่สำเร็จ: ' + (e.message || e), 'err'); }
   finally { PLAN.saving = ''; rerender(); }
 });
 Acts.plQ = (el) => { PLAN.q = el.value; clearTimeout(PLAN.qt);   /* พิมพ์หยุด 0.3 วิ = กรอง (เคอร์เซอร์อยู่ที่เดิม) */
   PLAN.qt = setTimeout(() => { rerender(); const i = document.getElementById('pl-q'); if (i) { i.focus(); const n = i.value.length; try { i.setSelectionRange(n, n); } catch (e) { /* ช่อง search บางเบราว์เซอร์ */ } } }, 300); };
-Acts.plMs = (el) => { const F = planF(), d = el.dataset.d, v = el.dataset.v; let a = (F.ms[d] || []).filter((z) => z !== v); if (el.checked) a.push(v); if (a.length) F.ms[d] = a; else delete F.ms[d]; PLAN.open = d; planFSave(); rerender(); };
-Acts.plRng = (el) => { const F = planF(), k = el.dataset.r === 'd1' ? 'd1' : 'd0', v = PL_YMD.test(el.value || '') ? el.value : ''; F[k] = v; if (F.d0 && F.d1 && F.d0 > F.d1) { const z = F.d0; F.d0 = F.d1; F.d1 = z; } planFSave(); rerender(); };
+Acts.plMs = (el) => { const F = planF(), d = el.dataset.d, v = el.dataset.v; let a = (F.ms[d] || []).filter((z) => z !== v); if (el.checked) a.push(v); if (a.length) F.ms[d] = a; else delete F.ms[d]; PLAN.open = d;
+  if (d === 'wk') { const w = (F.ms.wk || []).filter((z) => PL_YMD.test(z)).sort(); if (w.length) { PLAN.bk0 = w[0]; const n = planDiff(w[0], w[w.length - 1]) / 7 + 1; if (n > F.bw) F.bw = [1, 2, 4, 6, 8].find((z) => z >= n) || 8; } }   /* Booking ไปสัปดาห์ที่เลือก */
+  planFSave(); rerender(); };
+Acts.plRng = (el) => { const F = planF(), k = el.dataset.r === 'd1' ? 'd1' : 'd0', v = PL_YMD.test(el.value || '') ? el.value : ''; F[k] = v; if (F.d0 && F.d1 && F.d0 > F.d1) { const z = F.d0; F.d0 = F.d1; F.d1 = z; } if (F.d0) PLAN.bk0 = planWk(F.d0).k; planFSave(); rerender(); };
 Acts.plSort = (el) => { planF().sort = PL_SORT[el.value] ? el.value : 'ins'; planFSave(); rerender(); };
 Acts.plDt = (el) => { const f = el.closest('.pl-f'), h = f && f.querySelector('.pl-dth'); if (h) h.textContent = el.value ? '= ' + planDth(el.value) : 'ยังไม่ใส่วัน'; };
 Acts.plHome = (el) => { try { kvSet('psn_home', el.checked ? 'plan' : 'orders'); } catch (e) { /* เก็บไม่ได้ = ใช้ได้เฉพาะรอบนี้ */ }
@@ -5462,7 +5936,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && PLAN.ope
     '.pl-doing{background:var(--amber-bg);color:var(--amber)}.pl-done{background:var(--green-bg);color:var(--green)}.pl-wood{background:#F6EBDD;color:#8A5A2B;box-shadow:inset 0 0 0 1px #E2C9A8}' +
     '.pl-due{font-size:11.5px;color:var(--text-3)}.pl-due.late{color:var(--red);font-weight:700}.pl-na{color:var(--text-3);font-size:13px}' +
     '.pl-prod{display:flex;flex-direction:column;align-items:flex-start;gap:3px}.pl-ps{border-radius:8px;padding:2px 9px;font-size:12.5px;font-weight:700;white-space:nowrap}' +
-    '.pl-ps-wait{background:var(--gray-bg);color:var(--gray)}.pl-ps-doing{background:var(--amber-bg);color:var(--amber)}.pl-ps-done{background:var(--green-bg);color:var(--green)}' +
+    '.pl-ps-none{background:var(--red-bg);color:var(--red);box-shadow:inset 0 0 0 1px #F2B8B2;cursor:help}.pl-ps,.pl-rdy{cursor:help}.pl-ps-wait{background:var(--gray-bg);color:var(--gray)}.pl-ps-doing{background:var(--amber-bg);color:var(--amber)}.pl-ps-done{background:var(--green-bg);color:var(--green)}' +
     '.pl-note{font-size:12px;color:var(--text-2);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pl-edb{border:1px solid var(--line-2);background:var(--surface);border-radius:7px;padding:2px 9px;font:inherit;font-size:12px;cursor:pointer;color:var(--action)}' +
     '.pl-edrow td{background:var(--action-bg)}.pl-ed{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-end}.pl-f{display:flex;flex-direction:column;gap:3px;font-size:12.5px;font-weight:600;color:var(--text-2)}.pl-fn{flex:1 1 220px}.pl-fn .input{width:100%}' +
     '.pl-seg{display:inline-flex;gap:4px;flex-wrap:wrap}.pl-sg{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:4px 10px;cursor:pointer;font-weight:700}.pl-fb{display:flex;flex-direction:column;gap:4px}' +
