@@ -1545,6 +1545,32 @@ a.spn-row .sr-p b{font-size:19px;min-width:52px}
 /* PSN V1.9.4: หัวงาน เลขที่เอกสาร / LOT / Item ID ตัวหนาสีดำ */
 .sr-h b.prd-idl,.spn-wt b.prd-idl,b.prd-idl{color:#000;font-weight:700;overflow-wrap:anywhere;word-break:break-word}
 .prd-idl .prd-ids{font-weight:500;color:#000}
+/* V1.9.5: 1 ช่อง (คำนำหน้า + ค่า) = 1 ก้อน — ไม่ตัดกลางค่า เช่น “RE- / 0069-…” · ยาวกว่าจอจริง ๆ ถึงตัดในก้อน */
+.sr-h b.prd-idl,.spn-wt b.prd-idl,b.prd-idl{overflow-wrap:normal;word-break:normal}
+.prd-idl .prd-idp{display:inline-block;max-width:100%;overflow-wrap:anywhere;vertical-align:baseline}
+/* V1.9.5: การ์ดงาน = grid · คอม: วันที่ | หัวงาน / รายละเอียด | > (เหมือนเดิม) · มือถือ (≤ 700 px): หัวงานเต็มความกว้างบนสุด แล้วค่อย วันที่ | รายละเอียด */
+a.spn-row.prd-qc{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:'due head go' 'due body go';row-gap:4px;align-items:start}
+a.spn-row.prd-qc>.spn-due{grid-area:due;align-self:stretch}
+a.spn-row.prd-qc>.sr-h{grid-area:head;min-width:0}
+a.spn-row.prd-qc>.sr-b{grid-area:body;min-width:0}
+a.spn-row.prd-qc>.sr-go{grid-area:go;align-self:center}
+@media (max-width:700px){a.spn-row.prd-qc{grid-template-columns:auto minmax(0,1fr);grid-template-areas:'head head' 'due body';row-gap:8px}a.spn-row.prd-qc>.spn-due{align-self:start}}
+/* V1.9.5: 📐 แบบผลิต + แชร์ บนการ์ดงาน / แผนผลิต */
+.prd-sncw{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
+/* V1.9.5 (ผู้ใช้ 16:34 “เป็นสี ๆ ก็ได้ ให้ดูเด่น ๆ”): แบบผลิต = ฟ้า (น้ำเงิน) ตัวขาว · ผู้ใช้ 16:35 “ไม่เอาม่วง — ฟ้ากับเขียว” · แชร์ลิงก์ = เขียว ตัวขาว · รอลิงก์ = เทาเส้นประ */
+.prd-snc{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;font-weight:700;line-height:1.25;padding:6px 13px;border-radius:999px;border:0;background:#2563EB;color:#fff;cursor:pointer;white-space:nowrap;user-select:none;box-shadow:0 2px 6px rgba(37,99,235,.35)}
+.prd-snc .ico,.prd-snc svg{color:#fff}
+.prd-snc:hover,.prd-snc:focus-visible{background:#1D4ED8;outline:none;box-shadow:0 0 0 3px #BFDBFE}
+.prd-snc.sh{background:#16A34A;box-shadow:0 2px 6px rgba(22,163,74,.35)}
+.prd-snc.sh:hover,.prd-snc.sh:focus-visible{background:#15803D;box-shadow:0 0 0 3px #BBF7D0}
+.prd-snc.off{border:1px dashed #CBD5E1;background:#F8FAFC;color:#64748B;font-weight:500;font-size:12.5px;padding:4px 10px;box-shadow:none}
+.prd-snc.off .ico,.prd-snc.off svg{color:#64748B}
+.btn.prd-sn{background:#2563EB;border-color:#2563EB;color:#fff;font-weight:700}.btn.prd-sn:hover{background:#1D4ED8;border-color:#1D4ED8;color:#fff}.btn.prd-sn .ico,.btn.prd-sn svg{color:#fff}
+.btn.prd-snsh{white-space:nowrap;background:#16A34A;border-color:#16A34A;color:#fff;font-weight:700}.btn.prd-snsh:hover{background:#15803D;border-color:#15803D;color:#fff}.btn.prd-snsh .ico,.btn.prd-snsh svg{color:#fff}
+.sr-st{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
+.prd-lot1.pl-lotsn{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+/* V1.9.5: คำนำหน้า (เลขที่ / LOT / Item ID) — ตัวอักษรปกติ สีดำ เล็กกว่าค่านิดหน่อย */
+.prd-idl .prd-idk{font-family:var(--font);font-weight:600;font-size:.86em;color:#000;letter-spacing:0;white-space:nowrap}
 .prd-lot1{margin:0 0 3px}
 #tipbox{background:#FFFFFF;color:#0F172A;box-shadow:0 6px 20px rgba(15,23,42,.18);border:1px solid #CBD5E1}
 .wh-step .ws-n{background:#DBEAFE;color:#1E3A8A}
@@ -1847,7 +1873,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.4' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.5' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -2677,6 +2703,23 @@ function appShareBox() {
 function appShareCopy() {
   return copyText(APP_URL).then((ok) => { if (ok) toast('คัดลอกลิงก์โปรแกรมแล้ว — วางส่งใน LINE / ข้อความได้เลย'); else appShareBox(); });
 }
+/* PSN V1.9.5: 📐 แบบผลิต — เปิด / แชร์ (หน้าต่างแชร์ของเครื่อง · แชร์ไม่ได้ = คัดลอกลิงก์) */
+on('prdSnGo', (el) => {
+  const u = (el && el.dataset.u) || '';
+  if (!prdSnOk(u)) { toast('ยังไม่มีลิงก์แบบผลิตของ Order นี้ — แผนกด 📤 ส่ง Order นี้จาก Production อีกครั้ง'); return; }
+  try { window.open(u, '_blank', 'noopener,noreferrer'); } catch (e) { location.href = u; }
+});
+on('prdSnShare', (el) => {
+  const u = (el && el.dataset.u) || ''; if (!prdSnOk(u)) return;
+  const n = (el.dataset.n || '').slice(0, 80), d = { title: 'แบบผลิต ' + n, text: '📐 แบบผลิต ' + n + ' (StarNexus)', url: u };
+  const copy = () => copyText(u).then((ok) => { if (ok) toast('คัดลอกลิงก์แบบผลิตแล้ว — วางส่งต่อได้เลย'); else toast('คัดลอกอัตโนมัติไม่ได้ — ลิงก์: ' + u, 'err'); });
+  let can = false;
+  try { can = typeof navigator.share === 'function' && (typeof navigator.canShare !== 'function' || navigator.canShare(d)); } catch (e) { can = false; }
+  if (!can) { copy(); return; }
+  let p; try { p = navigator.share(d); } catch (e) { copy(); return; }
+  Promise.resolve(p).then(() => {}, (e) => { if (e && e.name === 'AbortError') return; copy(); });
+});
+document.addEventListener('keydown', (e) => { const t = e.target; if ((e.key === 'Enter' || e.key === ' ') && t && t.classList && t.classList.contains('prd-snc')) { e.preventDefault(); t.click(); } });
 on('appShare', () => {
   const d = { title: APP_NAME, text: SHARE_TEXT, url: APP_URL };
   let can = false;
@@ -3223,7 +3266,7 @@ on('snbUse', (el) => {   /* V7.10.1: ใช้ค่าจาก StarNexus แ�
 /* ในแท็บของ Production: ลิงก์ภายใน (#/…) แทนที่ประวัติ ไม่ดันปุ่ม Back ของหน้าแม่ */
 if (FRAMED) document.addEventListener('click', (e) => {
   const a = e.target.closest && e.target.closest('a[href^="#/"]');
-  if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || a.target || a.dataset.act) return;
+  if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || a.target || a.dataset.act || e.target.closest('.prd-snc')) return;   /* V1.9.5: ปุ่มแบบผลิตบนการ์ด = ไม่เข้าหน้างาน */
   e.preventDefault(); const h = a.getAttribute('href'); if (location.hash === h) render(); else location.replace(location.href.split('#')[0] + h);
 }, true);
 snbInit();
@@ -4372,9 +4415,11 @@ function prdQty(n) { const v = Math.round((+n || 0) * 100) / 100; return v.toLoc
 function prdM2(n) { return (Math.round((+n || 0) * 100) / 100).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 const prdQ = (b) => [b.oid, b.title, b.iid, b.lot || '', b.pno || ''].join(' ').toUpperCase();   /* V1.8.6: + LOT · V1.9.4: + เลขที่งานสี */
 /* PSN V1.9.4 (ผู้ใช้ 23/11 15:18 “เลขที่เอกสาร / LOT / Item ID บรรทัดเดียวกันทั้งหมด สีดำเข้ม”): ไม่มีค่าไหน = ข้าม · Item ID ไม่มี = เลข Order */
-function prdIdl(no, lot, id) {
-  const a = [no, lot, id].map((x) => String(x == null ? '' : x).trim()).filter((x, i, L) => x && L.indexOf(x) === i);
-  return a.length ? '<b class="mono prd-idl">' + a.map(esc).join('<span class="prd-ids"> / </span>') + '</b>' : '';
+/* V1.9.5 (ผู้ใช้ 23/11 16:16 “ให้ขึ้นคำข้างหน้าด้วย เช่น lot re.... / Item id re....”): คำนำหน้า เลขที่ · LOT · Item ID (ไม่มี Item ID = Order) */
+function prdIdl(no, lot, iid, oid) {
+  const v = (x) => String(x == null ? '' : x).trim(), id = v(iid), seen = [];
+  const a = [['เลขที่', v(no)], ['LOT', v(lot)], id ? ['Item ID', id] : ['Order', v(oid)]].filter((x) => x[1] && seen.indexOf(x[1]) < 0 && seen.push(x[1]));
+  return a.length ? '<b class="mono prd-idl">' + a.map((x) => '<span class="prd-idp"><span class="prd-idk">' + x[0] + '</span> ' + esc(x[1]) + '</span>').join('<span class="prd-ids"> / </span>') + '</b>' : '';   /* แต่ละช่องไม่ตัดกลางค่า (มือถือขึ้นบรรทัดใหม่ที่ “ / ”) */
 }
 function prdLotH(lot) { return lot ? '<span class="prd-lot" title="LOT ที่แผนใส่ในใบสั่งตัด / สั่งทำ (Production)">LOT <b>' + esc(lot) + '</b></span>' : ''; }
 /* SPN V1.7.1 (ผู้ใช้ 17/11 09:53 “เลข Order ในแอปให้ดึงจาก Item Id Set — เงื่อนไขเดียวกับเอกสารต่าง ๆ”): เลข Order ที่โชว์ = Item Id Set · ไม่มี = เลข Order เดิม
@@ -4383,9 +4428,18 @@ const prdOno = (iid, oid) => String(iid || '').trim() || String(oid || '');
 /* PSN V1.9.3 (ผู้ใช้ 21/11 13:50–13:53): 📐 ดูแบบผลิตทั้ง Order (StarNexus ?view=<รหัสทั้ง Order> — ไม่ใช่รายชิ้น) */
 const PRD_SN_RE = /^https:\/\/[A-Za-z0-9.-]{3,120}(\/[A-Za-z0-9._~-]{1,80}){0,8}\/?\?view=[A-Za-z0-9_-]{4,40}$/;
 function prdSnOk(u) { return typeof u === 'string' && u.length >= 20 && u.length <= 300 && PRD_SN_RE.test(u); }
+/* PSN V1.9.5 (ผู้ใช้ 23/11 16:27 “ให้ขึ้นในนี้ด้วยทุกสถานะ ตรงแผนผลิตด้วย” · 16:28 “กดแชร์ลิงก์แบบผลิตได้ด้วย”) */
+function prdSnOf(b) { return b && prdSnOk(b.snUrl) ? b.snUrl : ''; }
+/* การ์ดงาน (อยู่ในลิงก์การ์ด — ใช้ span + data-act ไม่ใช่ <a> ซ้อน · แตะแล้วไม่เข้าหน้างาน) */
+function prdSnChip(u, n) {
+  if (!u) return '<span class="prd-sncw"><span class="prd-snc off" role="button" tabindex="0" data-act="prdSnGo" data-u=""' + tipA('📐 **ยังไม่มีลิงก์แบบผลิต** ของ Order นี้\nแผนกด 📤 ส่ง Order นี้จาก Production (V329 ขึ้นไป) อีกครั้ง') + '>' + icon('drawing', 'xs') + ' แบบผลิต: รอลิงก์</span></span>';
+  return '<span class="prd-sncw"><span class="prd-snc" role="button" tabindex="0" data-act="prdSnGo" data-u="' + esc(u) + '"' + tipA('📐 **ดูแบบผลิตทั้ง Order** (StarNexus) — เปิดในแท็บใหม่') + '>' + icon('drawing', 'xs') + ' แบบผลิต</span>' +
+    '<span class="prd-snc sh" role="button" tabindex="0" data-act="prdSnShare" data-u="' + esc(u) + '" data-n="' + esc(n || '') + '" aria-label="แชร์ลิงก์แบบผลิต"' + tipA('แชร์ลิงก์แบบผลิต (LINE / แอปอื่น) · เครื่องที่แชร์ไม่ได้ = คัดลอกลิงก์ให้') + '>' + icon('share', 'xs') + ' แชร์ลิงก์</span></span>';
+}
 function prdSnBtn(o) {
   const u = o && prdSnOk(o.snUrl) ? o.snUrl : '';
-  if (u) return '<a class="btn sm prd-sn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer"' + tipA('📐 **ดูแบบผลิตทั้ง Order** (StarNexus)\nเปิดแบบ 3D / แบบผลิตของทั้ง Order ในแท็บใหม่ — ไม่ใช่รายชิ้น') + '>' + icon('drawing', 'sm') + ' ดูแบบผลิต</a>';
+  if (u) return '<a class="btn sm prd-sn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer"' + tipA('📐 **ดูแบบผลิตทั้ง Order** (StarNexus)\nเปิดแบบ 3D / แบบผลิตของทั้ง Order ในแท็บใหม่ — ไม่ใช่รายชิ้น') + '>' + icon('drawing', 'sm') + ' ดูแบบผลิต</a>'
+    + '<button type="button" class="btn sm prd-snsh" data-act="prdSnShare" data-u="' + esc(u) + '" data-n="' + esc(prdOno(o.iid, o.oid)) + '"' + tipA('แชร์ลิงก์แบบผลิตของ Order นี้ (LINE / แอปอื่น) · เครื่องที่แชร์ไม่ได้ = คัดลอกลิงก์ให้') + '>' + icon('share', 'sm') + ' แชร์ลิงก์</button>';   /* V1.9.5 */
   return '<span class="prd-sn-off xs" tabindex="0"' + tipA('📐 **ยังไม่มีลิงก์แบบผลิต** ของ Order นี้\nแผนกด 📤 ส่ง Order นี้จาก Production (V329 ขึ้นไป) อีกครั้ง → ปุ่ม “ดูแบบผลิต” จะขึ้นที่นี่') + '>' + icon('drawing', 'xs') + ' แบบผลิต: รอลิงก์</span>';
 }
 const prdOnoH = (iid, oid, cls) => { const n = prdOno(iid, oid); return '<span class="mono' + (cls ? ' ' + cls : '') + '">' + esc(n) + '</span>' + (n !== String(oid || '') ? ' <span class="xs muted mono prd-oid0">' + esc(oid) + '</span>' : ''); };
@@ -4590,13 +4644,13 @@ function prdUnits(k) {
   if (k === 'lm') {
     if (!PRD.lq.open) return null;
     return PRD.lq.open.concat(PRD.lq.done || []).map((d) => { const h = d.head || {};
-      return { k, ref: d.id, oid: d.oid, no: d.no, docNo: d.no, lot: LOTS[d.oid] || h.lot || '', job: d.oid, iid: d.iid || '', title: name(d.oid, d.title), due: prdLmDue(d, d.adm === true), dueL: 'กำหนดเสร็จ', cnt: d.cnt || prdCnt0, st: d.st, adm: d.adm === true,
+      return { k, ref: d.id, oid: d.oid, no: d.no, docNo: d.no, lot: LOTS[d.oid] || h.lot || '', sn: prdSnOf(prdBrief(d.oid)), job: d.oid, iid: d.iid || '', title: name(d.oid, d.title), due: prdLmDue(d, d.adm === true), dueL: 'กำหนดเสร็จ', cnt: d.cnt || prdCnt0, st: d.st, adm: d.adm === true,
         meta: d.lines.length + ' รายการ · แผนส่ง ' + fmtDT(d.issuedAt), note: d.note || '',   /* V1.9.4: LOT อยู่หัวงาน */
         warn: d.st !== 'sent' && d.gotAt && d.at && new Date(d.at) > new Date(d.gotAt) ? 'แผนแก้ใบหลังรับงาน ' + fmtDT(d.at) : '', pq: [d.no, d.oid, d.title, d.iid, h.lot].join(' ').toUpperCase() }; });
   }
   return L.filter((b) => prdIn(k, b)).map((b) => {
     const st = prdStOf(b, k), cnt = prdCntOf(b, k), pd = prdHasPaint(b);
-    const u = { k, ref: b.oid, oid: b.oid, no: prdOno(b.iid, b.oid), lot: b.lot || '', job: b.oid, iid: b.iid || '', title: name(b.oid, b.title), cnt, st, adm: !!b.adm, pq: prdQ(b), warn: '', note: '', hold: st !== 'done' ? prdHoldOf(b, k) : null };   /* V1.8.0: + ป้ายรอ */
+    const u = { k, ref: b.oid, oid: b.oid, no: prdOno(b.iid, b.oid), lot: b.lot || '', sn: prdSnOf(b), job: b.oid, iid: b.iid || '', title: name(b.oid, b.title), cnt, st, adm: !!b.adm, pq: prdQ(b), warn: '', note: '', hold: st !== 'done' ? prdHoldOf(b, k) : null };   /* V1.8.0: + ป้ายรอ */
     if (k === 'cut') Object.assign(u, { due: (pd && prdPaintD(b)) || b.due || '', dueL: pd && prdPaintD(b) ? prdPaintL(b, 1) : 'กำหนดเสร็จ',
       meta: 'ไม้ ' + (+b.cutMats || 0) + ' รหัส · ' + prdQty(b.cutAll) + ' ชิ้น' + (pd ? ' · มีชิ้นทำสี ' + prdQty(b.cutPcs) + ' ชิ้น' : ' · ไม่มีงานสี'),
       warn: pd && st !== 'done' ? 'มีชิ้นทำสี — ตัดเสร็จแล้วส่งแผนกสี' : '' });
@@ -4898,7 +4952,7 @@ route(/^\/prd\/orders$/, 'prd', () => {
     body = '<div class="prd-flt"><div class="chips">' + chips + '</div><span class="xs muted">เรียงตามวันกำหนด (ใกล้สุดก่อน)' + (f === 'todo' ? ' · แบ่งกลุ่ม เลยกำหนด / วันนี้–พรุ่งนี้ / 7 วัน' : '') + ' · แตะเพื่อดูรายการและติ๊กสถานะ</span></div>' +
       '<div class="spn-list">' + (rows.length ? rows.map((u, ix) => { const done = prdUnitDone(u), gk = f === 'todo' ? prdDg(u) : '';   /* V1.8.5: หัวกลุ่มวันกำหนด */
         return (gk && (!ix || prdDg(rows[ix - 1]) !== gk) ? prdDgHead(gk, rows) : '') + '<a class="spn-row prd-qc st-' + (done ? 'done' : (u.st || 'sent')) + (u.hold ? ' st-hold' : '') + '" href="' + prdWHref(u.k, u.ref) + '" data-pq="' + esc(u.pq) + '"' + (gk ? ' data-g="' + gk + '"' : '') + '>' + prdDueBox(u, done) +
-          '<span class="sr-b"><span class="sr-h">' + prdIdl(u.docNo, u.lot, prdOno(u.iid, u.job)) + folMark(u.oid) + prdBadge(u.k, u.st) + '</span>' +   /* V1.9.4: เลขที่เอกสาร / LOT / Item ID */
+          '<span class="sr-h">' + prdIdl(u.docNo, u.lot, u.iid, u.job) + folMark(u.oid) + '<span class="sr-st">' + prdBadge(u.k, u.st) + prdSnChip(u.sn, prdOno(u.iid, u.job)) + '</span></span><span class="sr-b">' +   /* V1.9.5: หัวงานเป็นลูกตรงของการ์ด (จัดวางด้วย grid) · 📐 แบบผลิต + แชร์ */   /* V1.9.4: เลขที่เอกสาร / LOT / Item ID */
             '<span class="sr-j">' + esc(u.title) + (!u.iid || u.iid === u.job ? '' : (u.title ? ' · ' : '') + '<span class="xs muted mono prd-oid0">' + esc(u.job) + '</span>') + (u.adm ? ' ' + prdAdmTag() : '') + '</span>' +
             '<span class="sr-m">' + esc(u.meta) + '</span>' + (u.note ? '<span class="prd-anote small">' + icon('edit', 'xs') + ' ' + esc(u.note) + '</span>' : '') +
             (u.warn ? '<span class="sr-w">' + esc(u.warn) + '</span>' : '') + prdHoldSum(u.hold) +
@@ -4997,7 +5051,7 @@ route(/^\/prd\/w\/(lm|cut|paint|mo|d\.[a-z0-9]{1,24})\/(.+)$/, 'prd', (m) => {
       (S.user.role === 'admin' ? '<button class="btn sm" data-act="prdDropUndo" data-oid="' + esc(oid) + '" data-key="' + esc(i.key) + '">' + icon('undo', 'sm') + ' กู้คืน</button>' : '') + '</div>').join('') +
     (S.user.role === 'admin' ? '' : '<div class="xs muted" style="margin-top:6px">กดผิด → ติดต่อ Admin ให้กู้คืน</div>') + '</div></div>' : '';
   const head = '<div class="card spn-wh st-' + (W.st || 'sent') + '"><div class="card-b">' +
-    '<div class="spn-wt"><div>' + prdIdl(W.docNo, W.lot, prdOno(D.order.iid, oid)) + ' ' + prdBadge(k, W.st) + (W.off ? ' <span class="badge t-gray">ยกเลิก / ไม่อยู่ในรอบล่าสุด</span>' : '') + '<div class="small">' + esc(W.title && W.title !== oid ? W.title : '') + (D.order.iid && D.order.iid !== oid ? (W.title && W.title !== oid ? ' · ' : '') + '<span class="xs muted mono prd-oid0">' + esc(oid) + '</span>' : '') + '</div><div class="xs muted">' + esc(W.meta) + '</div></div>' +
+    '<div class="spn-wt"><div>' + prdIdl(W.docNo, W.lot, D.order.iid, oid) + ' ' + prdBadge(k, W.st) + (W.off ? ' <span class="badge t-gray">ยกเลิก / ไม่อยู่ในรอบล่าสุด</span>' : '') + '<div class="small">' + esc(W.title && W.title !== oid ? W.title : '') + (D.order.iid && D.order.iid !== oid ? (W.title && W.title !== oid ? ' · ' : '') + '<span class="xs muted mono prd-oid0">' + esc(oid) + '</span>' : '') + '</div><div class="xs muted">' + esc(W.meta) + '</div></div>' +
       '<span class="spn-wa">' + folBtn(oid) + (k !== 'cut' ? '<button type="button" class="btn sm prd-jobb" data-act="prdJobPrint" data-oid="' + esc(oid) + '" data-k="' + esc(k) + '" data-ref="' + esc(ref) + '"' + tipA('เปิดใบงานนี้ในแท็บใหม่ — ดู / พิมพ์ซ้ำได้ (เผื่อใบกระดาษหาย)') + '>' + icon('print', 'sm') + ' ดู / พิมพ์ใบงาน</button>' : '') + '<a class="btn sm" href="#/prd/o/' + encodeURIComponent(oid) + '" data-act="prdGoDoc" data-oid="' + esc(oid) + '" data-t="' + k + '"' + tipA(spnTip('doc')) + '>' + icon('file', 'sm') + ' เอกสารทั้งงาน</a></span></div>' +
     '<div class="spn-wd">' + prdDueBox(u, W.st === 'done') + '<div class="spn-wp"><div class="spn-wp-h"><span>ความคืบหน้า · เสร็จ <b class="n">' + W.cnt.done + '/' + W.cnt.n + '</b> รายการ' + tipI(spnTip('prog'), 'ความคืบหน้า') + '</span><b>' + prdPct(W.cnt, W.st) + '%</b></div>' + prdBar(W.cnt, true, nHold) +
       '<div class="spn-lg"><span><i class="b-done"></i>เสร็จ <b>' + W.cnt.done + '</b></span><span><i class="b-doing"></i>กำลังทำ <b>' + W.cnt.doing + '</b></span><span><i class="b-got"></i>รับงาน <b>' + W.cnt.got + '</b></span><span><i class="b-none"></i>ยังไม่รับ <b>' + (W.cnt.n - W.cnt.done - W.cnt.doing - W.cnt.got) + '</b></span>' + (nHold ? '<span class="lg-hold"><i class="b-hold"></i>⏸ รอ <b>' + nHold + '</b></span>' : '') + '</div></div></div>' +
@@ -5494,7 +5548,7 @@ function planRow(x, B) {
   const left = ik && open ? '<div class="pl-left ' + (n < 0 ? 'late' : n <= 3 ? 'soon' : n <= 7 ? 'near' : '') + '">' + (n < 0 ? '🔴 เลยมา ' + -n + ' วัน' : n === 0 ? '🔴 วันนี้' : 'อีก ' + n + ' วัน') + '</div>' : '';
   const meta = [pi.cabs ? pi.cabs + ' ตู้' : '', pi.parts ? pi.parts + ' ชิ้น' : ''].filter(Boolean).join(' · ');
   return '<tr class="pl-row' + (open ? '' : ' pl-off') + '" data-pq="' + esc([x.oid, x.iid, x.title, x.lot].join(' ').toLowerCase()) + '">' +
-    '<td class="main" data-l="Order">' + (x.lot ? '<div class="prd-lot1">' + prdLotH(x.lot) + '</div>' : '') + '<a href="#/prd/o/' + encodeURIComponent(x.oid) + '" class="mono strong">' + esc(prdOno(x.iid, x.oid)) + '</a>' +   /* V1.9.4: LOT บนสุด */
+    '<td class="main" data-l="Order"><div class="prd-lot1 pl-lotsn">' + prdLotH(x.lot) + prdSnChip(prdSnOk(x.snUrl) ? x.snUrl : prdSnOf(prdBrief(x.oid)), prdOno(x.iid, x.oid)) + '</div><a href="#/prd/o/'   /* V1.9.5: LOT + 📐 แบบผลิต + แชร์ลิงก์ บรรทัดแรก */ + encodeURIComponent(x.oid) + '" class="mono strong">' + esc(prdOno(x.iid, x.oid)) + '</a>' +   /* V1.9.4: LOT บนสุด */
       (x.title && [x.oid, x.iid].indexOf(x.title) < 0 && String(x.title).replace(/\s+/g, '_') !== x.oid ? '<div class="sub">' + esc(x.title) + '</div>' : '') + (x.iid && x.iid !== x.oid ? '<div class="sub mono prd-oid0">' + esc(x.oid) + '</div>' : '') +
       (meta ? '<div class="sub">' + esc(meta) + '</div>' : '') + '</td>' +
     '<td data-l="ติดตั้ง" class="pl-ins">' + (ik ? '<b>' + esc(dw + ' ' + prdIso(x.install)) + '</b>' + left : '<span class="pl-na" title="แผนยังไม่ได้ใส่ 📅 วันติดตั้งใน Production">ยังไม่มีวัน</span>') + '</td>' +
@@ -6607,7 +6661,7 @@ function prdPaintHtml(oid, D) {
   const face = (v) => v ? '<span class="prd-cc">' + prdSw(v) + '<span class="mono">' + esc(v) + '</span></span>' : '<span class="muted">—</span>';
   const side = (p) => p.top && p.bot ? (p.top === p.bot ? '2 หน้า' : 'บน / ล่าง ต่างสี') : p.top ? 'หน้าบน' : 'หน้าล่าง';
   return prdCutAdm(oid, D) + prdSent(o.cutAt, o.cutBy, c.paintOnly ? 'แผนส่งงานสี' : 'แผนส่งใบสั่งตัดไม้ + งานสี (เดิม)') + prdStageCard('paint', oid, x, prdEditedAfter(D, 'paint'), Object.values(prdHoldMap(D, 'paint', ''))) +
-    '<div class="card prd-paint"><div class="card-h"><h2><span>ใบส่งทำสี ' + (prdPnoOk(o.pno) ? '<b class="mono prd-idl">' + esc(prdPnoOk(o.pno)) + '</b> ' : '') + '— ' + prdQty(c.pcs) + ' ชิ้น · ' + C.length + ' สี · รวม <span class="prd-big">' + prdM2(c.total) + '</span> ตร.ม.</span></h2>' +
+    '<div class="card prd-paint"><div class="card-h"><h2><span>ใบส่งทำสี ' + (prdPnoOk(o.pno) ? prdIdl(prdPnoOk(o.pno)) + ' ' : '') + '— ' + prdQty(c.pcs) + ' ชิ้น · ' + C.length + ' สี · รวม <span class="prd-big">' + prdM2(c.total) + '</span> ตร.ม.</span></h2>' +
       '<button class="btn primary" data-act="prdPaintPrint" data-oid="' + esc(oid) + '">' + icon('print', 'sm') + ' พิมพ์ใบส่งทำสี</button></div><div class="card-b">' +
       '<div class="table-wrap"><table class="t resp prd-lines"><thead><tr><th>รหัสสี</th><th>ชื่อสี</th><th class="r">ชิ้น</th><th class="r">ตร.ม.</th><th>สเปกไม้</th></tr></thead><tbody>' +
         C.map((y) => '<tr><td class="main">' + face(y.code) + '</td><td data-l="ชื่อสี">' + esc(y.short || '') + (y.name ? ' <span class="small muted">' + esc(y.name) + '</span>' : '') + '</td>' +
