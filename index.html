@@ -1881,7 +1881,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.8' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.9' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -2650,6 +2650,13 @@ function navRefresh() {
 }
 /* V7.12: ปุ่มย้อนกลับ (ข้างรูปบ้าน) — จำหน้าที่เปิดในโปรแกรมนี้เอง ไม่ใช้ปุ่ม Back ของเบราว์เซอร์ / หน้าแม่ */
 const NAVH = [];
+/* V1.9.9: แถบฟ้าที่เมนูตามส่วนที่อยู่ — หน้าเอกสาร (#/prd/o/ · #/prd/w/) = ส่วนที่เปิดเข้ามา (ภาพรวมทุกงาน / แผนผลิต · อื่น ๆ = งาน Support เหมือนเดิม) */
+function prdNavSec(nav) {
+  const h = location.hash.split('?')[0];
+  if (h === '#/prd/orders' || h === '#/prd/all' || h === '#/prd/plan') { S.prdSec = h; return nav; }
+  if (nav === '#/prd/orders' && /^#\/prd\/[ow]\//.test(h) && (S.prdSec === '#/prd/all' || S.prdSec === '#/prd/plan')) return S.prdSec;
+  return nav;
+}
 function navTrack(h) { const bk = S.backing; S.backing = ''; if (bk && bk === h) return; if (NAVH[NAVH.length - 1] !== h) { NAVH.push(h); if (NAVH.length > 50) NAVH.shift(); } }
 function backTarget() { return NAVH.length > 1 ? NAVH[NAVH.length - 2] : (S.user && location.hash.split('?')[0] !== ROLES[S.user.role].home ? ROLES[S.user.role].home : ''); }
 /* V7.16.2: Admin ที่เข้าไปดูหน้าจอแผนกอื่น — ปุ่มกลับหน้า Admin ที่แถบซ้าย (ข้างปุ่มย้อนกลับ) + แถบบนมือถือ */
@@ -2789,7 +2796,7 @@ function render(opts) {
   }
   const out = m.r.fn(m.x.slice(1));
   S.navJump = '';   /* ใช้ได้กับการวาดหน้าครั้งถัดไปเท่านั้น */
-  if (m.r.area) { navTrack(location.hash.split('?')[0]); S.navArea = m.r.area; S.navActive = out.nav; }
+  if (m.r.area) { out.nav = prdNavSec(out.nav); navTrack(location.hash.split('?')[0]); S.navArea = m.r.area; S.navActive = out.nav; }
   app.innerHTML = m.r.area ? shell(m.r.area, out.nav, out.html) : out.html;
   hydrate(app);
   try { pushAfter(path); } catch (e) { /* V7.15: กล่องแจ้งเตือน / เลขบนไอคอน — ไม่ขวางหน้าเว็บ */ }
@@ -5312,7 +5319,7 @@ function prdOverview(r, all, tb, sub) {
   if (r === 'admin') setTimeout(() => prdRmLoad(), 0);
   const nRm = PRD.rm ? PRD.rm.L.reduce((n, x) => n + prdRmCount(x), 0) : 0;
   const rmBtn = r === 'admin' ? '<button class="btn sm" data-act="prdRm" title="รายการที่ Admin ลบ (ซ่อน) — กู้คืนได้">' + icon('trash', 'sm') + ' รายการที่ลบ' + (nRm ? ' <span class="badge t-red">' + nRm + '</span>' : '') + '</button>' : '';
-  return { nav: '#/prd/orders', after: () => prdQApply(),
+  return { nav: '#/prd/all', after: () => prdQApply(),   /* V1.9.9: เดิม '#/prd/orders' → แถบฟ้าไปอยู่ที่งาน Support */
     html: pageHead('ภาพรวมทุกงาน', 'ทุกงานในไลน์ผลิต — ติ๊กเลือกสถานี / สถานะที่อยากดู · แตะช่องสถานะ = เปิดเอกสารส่วนนั้น · 📄 เปิดเอกสาร = ทุกใบของงาน', rmBtn + (SNB_FRAMED ? '<button class="btn sm" data-act="prdSyncNow">' + icon('refresh', 'sm') + ' ดึงจาก Production</button>' : '')) +
       prdSyncNote() + prdChaseBar(all) +
       '<div class="card" style="margin-top:12px"><div class="card-b">' +
