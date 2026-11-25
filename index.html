@@ -1335,7 +1335,7 @@ h1 .tip-i{width:24px;height:24px;margin-left:8px;transform:translateY(-2px)}
 .fchip-hold.on{background:var(--amber-bg)!important;border-color:#E0A33A!important;color:#7a4d05!important}
 .prd-seg.prd-dtn{flex-wrap:wrap;max-width:none}.prd-seg.prd-dtn button{flex:1 1 30%}
 .prd-hcap{margin-bottom:6px}
-.pu-st{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 12px}
+.pu-st{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 12px}.pu-role .check{margin:2px 0;font-weight:400}.pu-role .check b{font-weight:700}.pu-sum{margin:8px 0 0;padding:8px 10px;border-radius:8px;background:var(--surface-2,#F7F9FB);border:1px solid var(--line,#DFE4EA);font-size:13px;line-height:1.7}.pu-ok{color:#15803D;font-weight:700}.pu-no{color:#B91C1C;font-weight:700}.pu-warn{color:#B45309}.pu-gw{margin-top:10px}.pu-gt{font-size:12px;font-weight:600;color:var(--text-2,#334155);margin:0 0 4px}.pu-gd{width:100%;border-collapse:collapse;font-size:12.5px;line-height:1.45}.pu-gd th{text-align:left;font-weight:700;padding:6px 8px;border-bottom:1px solid var(--line-2,#C9D1DB);white-space:nowrap}.pu-gd td{padding:6px 8px;border-bottom:1px solid var(--line,#DFE4EA);vertical-align:top}.pu-gd .c{text-align:center}.pu-gd tr.on td{background:#EFF6FF}.pu-gd tr.on td:first-child{box-shadow:inset 3px 0 0 #2563EB;font-weight:600}.pu-me{display:none;margin-left:6px;font-size:11px;font-weight:700;color:#2563EB;white-space:nowrap}.pu-gd tr.on .pu-me{display:inline}.pu-y,.pu-n{font-size:16px;line-height:1}.pu-y{color:#15803D}.pu-n{color:#94A3B8}@media (max-width:560px){.pu-gd{font-size:11.5px}.pu-gd th{white-space:normal}.pu-gd th,.pu-gd td{padding:5px 4px}.pu-gd td:nth-child(2){white-space:nowrap}}
 /* ===== SPN V1.8.1: รายการเบิก + วัตถุดิบที่ใช้ (ดูอย่างเดียว · Production V302) ===== */
 .prd-wd{border-bottom:1px solid var(--line);background:var(--surface-2)}
 .prd-wd-h,.prd-wd-h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;padding:10px 18px 6px}
@@ -1881,7 +1881,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.7' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.8' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -6360,13 +6360,44 @@ on('puForm', (el) => {
       '<div class="field c12"><label>แผนก / ส่วนงานของบัญชีนี้ <span class="req">*</span></label><div class="xs muted" style="margin:0 0 6px">เห็นและติ๊กเฉพาะงานของส่วนงานที่ติ๊ก · “ภาพรวมทุกงาน” เห็นทุกส่วน</div><div class="pu-st" role="group" aria-label="แผนก / ส่วนงาน">' +
         '<label class="check pu-all"><input type="checkbox" name="stall" data-chg="puAll"' + (u.st.length ? '' : ' checked') + '> <b>ทุกส่วนงาน</b> (ไม่จำกัด)</label>' +
         prdStOpts(u.st).map((x) => '<label class="check"><input type="checkbox" name="st" value="' + esc(x[0]) + '" data-chg="puSt"' + (u.st.indexOf(x[0]) >= 0 ? ' checked' : '') + '> ' + esc(x[1]) + '</label>').join('') + '</div></div>' +
-      '<div class="c12"><label class="check pu-mgrc"><input type="checkbox" name="mgr"' + (u.mgr ? ' checked' : '') + '> <span><b>ผู้จัดการผลิต</b> — จัดแผนผลิตได้: ลากวันใน Booking ติดตั้ง / Booking เริ่มผลิต · ✎ จัดแผน (นอกจาก Admin มีแค่บัญชีที่ติ๊กช่องนี้)</span></label></div>' +
-      '<div class="c12"><label class="check"><input type="checkbox" name="ro"' + (u.ro ? ' checked' : '') + '> <span><b>ติดตามอย่างเดียว</b> — ดูงานและสถานะได้ แต่ติ๊กสถานะ / ติดป้ายรอ / ลบรายการไม่ได้ (ติ๊กคู่กับผู้จัดการผลิตได้ = จัดแผนได้ แต่ไม่ติ๊กสถานะงาน)</span></label></div>' +
+      '<div class="field c12 pu-role"><label>สิทธิ์ของบัญชีนี้</label>' +   /* V1.9.8: คำสั้นลง + สรุปสด + ตาราง “ติ๊กยังไง” */
+        '<label class="check pu-mgrc"><input type="checkbox" name="mgr" data-chg="puRole"' + (u.mgr ? ' checked' : '') + '> <span><b>ผู้จัดการผลิต</b> — จัดแผนได้ (ลากวันใน Booking / ✎ จัดแผน)</span></label>' +
+        '<label class="check"><input type="checkbox" name="ro" data-chg="puRole"' + (u.ro ? ' checked' : '') + '> <span><b>ติดตามอย่างเดียว</b> — ดูได้อย่างเดียว เปลี่ยนสถานะงานไม่ได้</span></label>' +
+        '<div class="pu-sum" id="puSum" aria-live="polite">' + puSumHtml(u.st, u.mgr, u.ro) + '</div>' +
+        puGuideHtml(puRoleRow(u.mgr, u.ro)) + '</div>' +
       '<div class="c12"><label class="check"><input type="checkbox" name="active"' + (u.active ? ' checked' : '') + '> เปิดใช้งานบัญชี</label></div></div>',
     foot: '<button class="btn" data-act="closeOv">ยกเลิก</button><button class="btn primary" data-act="puSave" data-id="' + esc(u.id || '') + '">' + icon('check', 'sm') + ' บันทึก</button>' });
 });
-Acts.puAll = (el) => { if (el.checked) $$('#pu [name=st]').forEach((x) => { x.checked = false; }); };
-Acts.puSt = () => { const a = $('#pu [name=stall]'); if (a) a.checked = !$$('#pu [name=st]').some((x) => x.checked); };
+Acts.puAll = (el) => { if (el.checked) $$('#pu [name=st]').forEach((x) => { x.checked = false; }); puRoleUpd(); };
+Acts.puSt = () => { const a = $('#pu [name=stall]'); if (a) a.checked = !$$('#pu [name=st]').some((x) => x.checked); puRoleUpd(); };
+/* V1.9.8: ตาราง “ติ๊กยังไง” + สรุปสิทธิ์สด ในหน้าต่างบัญชีฝ่ายผลิต (คำอธิบายเท่านั้น · ไม่เปลี่ยนค่า / ไม่บันทึกเอง) */
+const PU_GUIDE = [
+  ['พนักงานที่เปลี่ยนสถานะงาน Support', 'แผนกของตัวเอง', 0, 0],
+  ['ผู้จัดการ: จัดแผน + เปลี่ยนสถานะได้', 'ทุกส่วนงาน', 1, 0],
+  ['ผู้จัดการ: จัดแผนได้ แต่เปลี่ยนสถานะไม่ได้', 'ทุกส่วนงาน', 1, 1],
+  ['คนดูอย่างเดียว เช่น ฝ่ายขาย', 'ทุกส่วนงาน', 0, 1]];
+function puRoleRow(mgr, ro) { return mgr ? (ro ? 2 : 1) : (ro ? 3 : 0); }
+function puGuideHtml(on) {
+  const b = (v) => v ? '<span class="pu-y" aria-label="ติ๊ก">☑</span>' : '<span class="pu-n" aria-label="ไม่ติ๊ก">☐</span>';
+  return '<div class="pu-gw"><div class="pu-gt">ติ๊กยังไง — ดูแถวที่ตรงกับหน้าที่ของคนนี้ (แถวฟ้า = ที่ติ๊กอยู่ตอนนี้)</div>' +
+    '<table class="pu-gd" id="puGd"><thead><tr><th>คนนี้ทำอะไร</th><th>แผนก / ส่วนงาน</th><th class="c">ผู้จัดการผลิต</th><th class="c">ติดตามอย่างเดียว</th></tr></thead><tbody>' +
+    PU_GUIDE.map((r, i) => '<tr' + (i === on ? ' class="on"' : '') + ' data-pur="' + i + '"><td>' + esc(r[0]) + '<span class="pu-me">◀ บัญชีนี้</span></td><td>' + esc(r[1]) + '</td><td class="c">' + b(r[2]) + '</td><td class="c">' + b(r[3]) + '</td></tr>').join('') +
+    '</tbody></table></div>';
+}
+function puSumHtml(st, mgr, ro) {
+  const dep = st === null ? '<b class="pu-warn">ยังไม่ได้เลือกแผนก</b>' : (st.length ? esc(st.map(prdStName).join(' · ')) : 'ทุกส่วนงาน');
+  const ok = (t) => '<span class="pu-ok">✓</span> ' + t, no = (t) => '<span class="pu-no">✗</span> ' + t;
+  return '<b>บัญชีนี้:</b> ' + (ro ? no('เปลี่ยนสถานะงานไม่ได้ (ดูได้อย่างเดียว · ' + dep + ')') : ok('เปลี่ยนสถานะงานได้: ' + dep)) +
+    '<br>' + (mgr ? ok('จัดแผน / ลากวันใน Booking ได้') : no('จัดแผนไม่ได้ (ดูแผนได้)'));
+}
+function puRoleUpd() {
+  const g = (n) => $('#pu [name=' + n + ']'); if (!g('mgr') || !g('ro')) return;
+  const mgr = g('mgr').checked, ro = g('ro').checked, all = !!(g('stall') && g('stall').checked);
+  const st = $$('#pu [name=st]').filter((x) => x.checked).map((x) => x.value);
+  const s = $('#puSum'); if (s) s.innerHTML = puSumHtml(all ? [] : (st.length ? st : null), mgr, ro);
+  const on = puRoleRow(mgr, ro); $$('#puGd tbody tr').forEach((r) => r.classList.toggle('on', +r.dataset.pur === on));
+}
+Acts.puRole = () => puRoleUpd();
 on('puPwGen', () => { const f = $('#pu [name=password]'); const cs = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'; const a = new Uint32Array(10); crypto.getRandomValues(a); f.type = 'text'; f.value = Array.from(a, (x) => cs[x % cs.length]).join(''); });
 on('puSave', async (el) => {
   const g = (n) => $('#pu [name=' + n + ']'), isNew = !el.dataset.id, u0 = isNew ? null : prdUsers().find((x) => x.id === el.dataset.id);
