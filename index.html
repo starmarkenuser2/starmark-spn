@@ -1569,6 +1569,14 @@ a.spn-row.prd-qc>.sr-go{grid-area:go;align-self:center}
 .btn.prd-snsh{white-space:nowrap;background:#16A34A;border-color:#16A34A;color:#fff;font-weight:700}.btn.prd-snsh:hover{background:#15803D;border-color:#15803D;color:#fff}.btn.prd-snsh .ico,.btn.prd-snsh svg{color:#fff}
 .sr-st{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
 .prd-lot1.pl-lotsn{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+/* V1.9.6: เลื่อนวันติดตั้ง */
+.bk-l3{margin-top:3px}.bk-mv{display:inline-block;margin-left:0;font-size:11px;font-weight:700;line-height:1.3;padding:1px 7px;border-radius:999px;background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;white-space:nowrap}
+.pl-ins-ed{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0 6px}.pl-ins-ed .input{width:auto;min-width:160px}.pl-ins-ed .xs{flex-basis:100%}
+.bk-ins-d{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;font-size:15px;margin-bottom:6px}.bk-ins-d .was{color:#64748B;text-decoration:line-through;font-weight:600}.bk-ins-d .now{color:#1D4ED8;font-size:18px}.bk-ins-d .arr{color:#64748B}
+.bk-ins-dl{font-weight:800;color:#92400E;background:#FEF3C7;border-radius:6px;padding:1px 8px;font-size:13px}
+.bk-it td,.bk-it th{padding:6px 8px;font-size:13.5px}.bk-it tr.late td{background:#FEF2F2}
+.bk-it-late{color:#B91C1C;font-weight:700;font-size:12.5px}.bk-it-fix{color:#6B21A8;font-size:12px;font-weight:600}.bk-it-ok{color:#15803D;font-weight:700}
+.bk-ins-sh{display:flex;gap:8px;align-items:center;margin:10px 0 4px;font-weight:600}.bk-ins-n{margin-top:8px;display:block}
 /* V1.9.5: คำนำหน้า (เลขที่ / LOT / Item ID) — ตัวอักษรปกติ สีดำ เล็กกว่าค่านิดหน่อย */
 .prd-idl .prd-idk{font-family:var(--font);font-weight:600;font-size:.86em;color:#000;letter-spacing:0;white-space:nowrap}
 .prd-lot1{margin:0 0 3px}
@@ -1873,7 +1881,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.5' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.7' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -4299,6 +4307,17 @@ async function prdGonePush(force) {
   try { await snbCall('prdgone', { v: 1, at: Date.now(), m }, 15000); PRDS.goneSig = sig; PRDS.gonePush = Date.now(); }
   catch (e) { if (/ไม่รู้จักคำสั่ง/.test(e.message || '')) PRDS.goneOff = Date.now() + 600000; }
 }
+/* PSN V1.9.6: วันติดตั้งที่เลื่อนใน PSN (cn_prd_ins) → Production (คำสั่ง prdins · Production เก็บในเครื่อง ไม่เขียนไฟล์กลาง) · ไม่มี SQL 52 / Production รุ่นเก่า = พัก 10 นาที */
+async function prdInsPush(force) {
+  if (!SNB_FRAMED || Date.now() < (PRDS.insOff || 0)) return;
+  let m = null;
+  try { m = (await rpc('cn_prd_ins')) || {}; }
+  catch (e) { if (e.code === 'session') throw e; if (e.code === 'PGRST202' || e.status === 404 || /cn_prd_ins\b/.test(e.message || '')) PRDS.insOff = Date.now() + 600000; return; }
+  const sig = JSON.stringify(m);
+  if (!force && sig === PRDS.insSig && Date.now() - (PRDS.insPush || 0) < 300000) return;
+  try { await snbCall('prdins', { v: 1, at: Date.now(), m }, 15000); PRDS.insSig = sig; PRDS.insPush = Date.now(); }
+  catch (e) { if (/ไม่รู้จักคำสั่ง/.test(e.message || '')) PRDS.insOff = Date.now() + 600000; }
+}
 function prdGoneSoon() { PRDS.goneSig = ''; PRDS.goneAt = 0; clearTimeout(PRDS.goneT); PRDS.goneT = setTimeout(() => { prdGonePush(true).catch(() => {}); }, 400); }
 async function prdSync(force) {
   if (PRDS.busy && force) PRDS.again = true;   /* SPN V1.7: Production กดส่งระหว่างที่กำลังส่งรอบก่อน → ส่งต่ออีกรอบทันทีหลังจบ (เดิมรอรอบ 30 วิ) */
@@ -4353,6 +4372,7 @@ async function prdSync(force) {
     if (n) await prdKick();   /* V1.9.4 */
     if (pn && !n) { await refresh(); if (/^\/prd\//.test(curPath()) && !isEditing() && !$('#overlay.on')) rerender(); }
     if (n || force || Date.now() - (PRDS.goneAt || 0) > 60000) { PRDS.goneAt = Date.now(); await prdGonePush(); }   /* SPN V1.8.9: งานที่ลบ → Production */
+    if (n || force || Date.now() - (PRDS.insAt || 0) > 60000) { PRDS.insAt = Date.now(); await prdInsPush(); }   /* PSN V1.9.6: วันติดตั้งที่เลื่อนใน PSN → Production (ป้าย + ใช้วันนี้) */
     PRDS.last = { at: Date.now(), n };
     if (PRDS.depNew && typeof prdStLoad === 'function') { PRDS.depNew = false; await prdStLoad(true); }   /* แท็บแผนกใหม่ขึ้นทันที */
     if (n) { await refresh(); if (/^\/prd\//.test(curPath()) && !isEditing() && !$('#overlay.on')) rerender(); }
@@ -5551,7 +5571,7 @@ function planRow(x, B) {
     '<td class="main" data-l="Order"><div class="prd-lot1 pl-lotsn">' + prdLotH(x.lot) + prdSnChip(prdSnOk(x.snUrl) ? x.snUrl : prdSnOf(prdBrief(x.oid)), prdOno(x.iid, x.oid)) + '</div><a href="#/prd/o/'   /* V1.9.5: LOT + 📐 แบบผลิต + แชร์ลิงก์ บรรทัดแรก */ + encodeURIComponent(x.oid) + '" class="mono strong">' + esc(prdOno(x.iid, x.oid)) + '</a>' +   /* V1.9.4: LOT บนสุด */
       (x.title && [x.oid, x.iid].indexOf(x.title) < 0 && String(x.title).replace(/\s+/g, '_') !== x.oid ? '<div class="sub">' + esc(x.title) + '</div>' : '') + (x.iid && x.iid !== x.oid ? '<div class="sub mono prd-oid0">' + esc(x.oid) + '</div>' : '') +
       (meta ? '<div class="sub">' + esc(meta) + '</div>' : '') + '</td>' +
-    '<td data-l="ติดตั้ง" class="pl-ins">' + (ik ? '<b>' + esc(dw + ' ' + prdIso(x.install)) + '</b>' + left : '<span class="pl-na" title="แผนยังไม่ได้ใส่ 📅 วันติดตั้งใน Production">ยังไม่มีวัน</span>') + '</td>' +
+    '<td data-l="ติดตั้ง" class="pl-ins">' + (ik ? '<b>' + esc(dw + ' ' + prdIso(x.install)) + '</b>' + left : '<span class="pl-na" title="แผนยังไม่ได้ใส่ 📅 วันติดตั้งใน Production">ยังไม่มีวัน</span>') + bkMvTag(x) + '</td>' +
     '<td data-l="ปิดผิว">' + planLm(x, b) + '</td><td data-l="สี">' + planPaint(x, b) + '</td><td data-l="สั่งตัด / สั่งทำ">' + planMo(x, b) + '</td>' +
     PLAN_STAGES.map((s) => '<td data-l="' + esc(s.t) + '">' + s.cell(x, b) + '</td>').join('') +
     '<td data-l="ผลิต">' + planProd(x, b) + '</td></tr>' + (PLAN.ed === x.oid && PLAN.can ? planEditor(x) : '');
@@ -5597,7 +5617,7 @@ function planPage() {
   const srt = '<label class="pl-sort"' + tipA('เรียงตาม — วันติดตั้ง = แบ่งเป็นสัปดาห์ (W) · แบบอื่น = รายการเดียว') + '><span aria-hidden="true">↕</span><select class="input" data-chg="plSort" aria-label="เรียงตาม">' + Object.keys(PL_SORT).map((k) => '<option value="' + k + '"' + (F.sort === k ? ' selected' : '') + '>' + PL_SORT[k] + '</option>').join('') + '</select></label>';
   const lgd = F.view !== 'list' ? '' : '<div class="pl-lgd"><span class="xs muted">สถานะงาน Support:</span><span class="pl-chip pl-no">ยังไม่ส่ง</span><span class="pl-chip pl-sent">ยังไม่รับงาน</span><span class="pl-chip pl-got">รับงานแล้ว</span><span class="pl-chip pl-doing">กำลังทำ</span><span class="pl-chip pl-done">✓ เสร็จแล้ว</span><span class="pl-chip pl-wood">🪵 ไม้สำเร็จ</span><span class="xs muted">· แตะชิป = เปิดงานนั้น</span></div>';
   const home = psnHome() === '#/prd/plan';
-  const head = pageHead('แผนผลิต', 'ทุก Order ที่แผนกด 📤 ส่งเข้ามา (รวม Order ที่ไม่มีงาน Support) เรียงตามวันติดตั้ง แบ่งสัปดาห์ · กรองได้ทุกหัวข้อแบบ StarStock · แตะชิปสถานะ = เปิดงานส่วนนั้น' + (PLAN.can ? ' · ✎ จัดแผน = วันเริ่มผลิต / สถานะ / หมายเหตุ' : ' · บัญชีนี้ดูอย่างเดียว'),
+  const head = pageHead('แผนผลิต', 'ทุก Order ที่แผนกด 📤 ส่งเข้ามา (รวม Order ที่ไม่มีงาน Support) เรียงตามวันติดตั้ง แบ่งสัปดาห์ · กรองได้ทุกหัวข้อแบบ StarStock · แตะชิปสถานะ = เปิดงานส่วนนั้น' + (PLAN.can ? ' · ✎ จัดแผน = วันเริ่มผลิต / สถานะ / หมายเหตุ' : ' · บัญชีนี้ดูแผนอย่างเดียว (จัดแผน / ลากวันได้เฉพาะ Admin และผู้จัดการผลิต)'),
     '<label class="pl-home"' + tipA('เปิดแอปแล้วเข้าหน้านี้ก่อน (จำในเครื่องนี้)') + '><input type="checkbox" data-chg="plHome"' + (home ? ' checked' : '') + '> 📌 เปิดหน้านี้เป็นหน้าแรก</label> <button class="btn sm" data-act="plReload"' + (PLAN.busy ? ' disabled' : '') + '>' + icon('refresh', 'sm') + ' โหลดใหม่</button>');
   const note = PLAN.err ? notice('danger', esc(PLAN.err)) : '';
   const kpis = PLAN.rows == null ? '' : '<div class="grid g4 prd-kpi pl-kpi">' + kp + '</div>';
@@ -5653,7 +5673,7 @@ function bkCard(r, mode, drag) {
   const late = !planDone(x) && planIk(x) && planIk(x) < planToday();
   return '<div class="bk-c bk-p-' + ps + (late ? ' bk-late' : '') + '" role="button" tabindex="0" data-act="plBk" data-oid="' + esc(x.oid) + '"' + (drag ? ' draggable="true" data-bkdrag="' + esc(x.oid) + '"' : '') + tipA(planWait(x, r.b)) + '>' +
     '<div class="bk-l1"><b>' + esc(prdOno(x.iid, x.oid)) + '</b>' + (pi.cabs ? '<span class="bk-n">' + pi.cabs + ' ตู้</span>' : '') + '</div>' +
-    '<div class="bk-l2"><i class="bk-dot" style="background:' + BK_SP[sp][1] + '" aria-label="' + esc(BK_SP[sp][0]) + '"></i><span' + (sub.red ? ' class="red"' : '') + '>' + esc(sub.t) + '</span></div></div>';
+    '<div class="bk-l2"><i class="bk-dot" style="background:' + BK_SP[sp][1] + '" aria-label="' + esc(BK_SP[sp][0]) + '"></i><span' + (sub.red ? ' class="red"' : '') + '>' + esc(sub.t) + '</span></div>' + (mode === 'ins' && bkMvTag(x) ? '<div class="bk-l3">' + bkMvTag(x) + '</div>' : '') + '</div>';   /* V1.9.6: ป้ายเลื่อนใน PSN บรรทัดของมันเอง (ไม่บังชื่อ) */
 }
 /* แบ่งการ์ดเข้า วัน / แถบข้าง / นอกช่วง */
 function bkSplit(L, mode, R) {
@@ -5673,17 +5693,17 @@ function bkSplit(L, mode, R) {
   return { by, late, none, out };
 }
 function bkWeeks(R) { const W = []; for (let w = 0; w < R.n; w++) { const k0 = bkAdd(R.k0, w * 7); W.push({ k0, days: [0, 1, 2, 3, 4, 5, 6].map((i) => bkAdd(k0, i)) }); } return W; }
-function bkStrip(title, cls, L, mode, drop, hint) {
+function bkStrip(title, cls, L, mode, drop, hint, dragC) {   /* V1.9.6: dragC = การ์ดลากได้ (แถบไม่รับวาง) */
   if (!L.length && !drop) return '';
   return '<div class="bk-strip ' + cls + '"' + (drop ? ' data-bkday=""' : '') + '><div class="bk-sh"><b>' + esc(title) + '</b> <span class="n">' + L.length + ' Order' + (bkCabs(L) ? ' · ' + bkCabs(L) + ' ตู้' : '') + '</span>' + (hint ? '<span class="xs muted"> · ' + esc(hint) + '</span>' : '') + '</div>' +
-    '<div class="bk-sl">' + (L.length ? L.map((r) => bkCard(r, mode, drop)).join('') : '<span class="xs muted">— ไม่มี —</span>') + '</div></div>';
+    '<div class="bk-sl">' + (L.length ? L.map((r) => bkCard(r, mode, drop || !!dragC)).join('') : '<span class="xs muted">— ไม่มี —</span>') + '</div></div>';
 }
 function planBook(L, mode) {
-  const R = bkRange(), t = planToday(), can = !!PLAN.can && mode === 'start', P = bkSplit(L, mode, R), W = bkWeeks(R);
+  const R = bkRange(), t = planToday(), can = !!PLAN.can, P = bkSplit(L, mode, R), W = bkWeeks(R);   /* V1.9.6: Booking ติดตั้งลากได้ด้วย · V1.9.7: can = Admin / ผู้จัดการผลิต (Server ตัดสิน · SQL 53) */
   const nav = '<div class="bk-bar"><div class="bk-nav"><button type="button" class="btn sm" data-act="plBkNav" data-d="-1" aria-label="ช่วงก่อนหน้า">◀</button><button type="button" class="btn sm" data-act="plBkNav" data-d="0">สัปดาห์นี้</button><button type="button" class="btn sm" data-act="plBkNav" data-d="1" aria-label="ช่วงถัดไป">▶</button>' +
     '<b class="bk-rt">' + esc(bkRangeT(R)) + '</b></div><div class="bk-bw"><span class="xs muted">แสดง</span>' + PL_BW.map((n) => '<button type="button" class="fchip ' + (R.n === n ? 'on' : '') + '" data-act="plBw" data-n="' + n + '">' + n + ' สัปดาห์</button>').join('') + '</div></div>';
   const outH = (P.out.b || P.out.a) ? '<div class="bk-out">' + (P.out.b ? '<button type="button" class="pl-ac" data-act="plBkGo" data-k="' + P.out.bk + '">◀ ก่อนช่วงนี้ ' + P.out.b + ' Order</button>' : '') + (P.out.a ? '<button type="button" class="pl-ac" data-act="plBkGo" data-k="' + P.out.ak + '">หลังช่วงนี้ ' + P.out.a + ' Order ▶</button>' : '') + '</div>' : '';
-  const top = mode === 'ins' ? bkStrip('⚠ เลยวันติดตั้งแล้ว — ยังผลิตไม่เสร็จ', 'late', P.late, mode, false, '')
+  const top = mode === 'ins' ? bkStrip('⚠ เลยวันติดตั้งแล้ว — ยังผลิตไม่เสร็จ', 'late', P.late, mode, false, can ? 'ลากไปวันใหม่ = เลื่อนวันติดตั้ง' : '', can)
     : bkStrip('ยังไม่กำหนดวันเริ่มผลิต', 'none', P.none, mode, can, can ? 'ลากการ์ดไปวางในปฏิทิน = จองวันเริ่มผลิต · แตะการ์ด = จัดแผน' : 'แตะการ์ด = ดูรายละเอียด');
   const rows = W.map((w) => {
     const wl = w.days.reduce((s, k) => s.concat(P.by[k] || []), []);
@@ -5694,7 +5714,7 @@ function planBook(L, mode) {
           D.map((r) => bkCard(r, mode, can)).join('') + '</td>'; }).join('') + '</tr>';
   }).join('');
   const grid = '<div class="bk-gw"><table class="bk-g"><thead><tr><th class="bk-wh">สัปดาห์</th>' + ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'].map((d) => '<th>' + d + '</th>').join('') + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
-  const bot = mode === 'ins' ? bkStrip('ยังไม่มีวันติดตั้ง', 'none', P.none, mode, false, 'แผนยังไม่ได้ใส่ 📅 วันติดตั้งใน Production') : '';
+  const bot = mode === 'ins' ? bkStrip('ยังไม่มีวันติดตั้ง', 'none', P.none, mode, can, can ? 'ลากการ์ดไปวางในปฏิทิน = ตั้ง / เลื่อนวันติดตั้ง (กำหนดจบทุกแผนกขยับตาม) · ลากการ์ดที่เลื่อนใน PSN มาวางที่นี่ = คืนวันจาก Production' : 'แผนยังไม่ได้ใส่ 📅 วันติดตั้งใน Production') : '';
   const lgd = '<div class="bk-lgd"><span>แถบซ้าย = สถานะผลิต</span>' + ['none', 'wait', 'doing', 'done'].map((k) => '<span class="bk-lg"><i style="background:' + BK_PS[k][1] + '"></i>' + BK_PS[k][0] + '</span>').join('') +
     '<span>· จุด = งาน Support</span>' + ['ok', 'part', 'no', 'nos'].map((k) => '<span class="bk-lg"><i class="r" style="background:' + BK_SP[k][1] + '"></i>' + BK_SP[k][0].replace('Support ', '') + '</span>').join('') + '<span>· ชี้ที่การ์ด = รออะไร</span></div>';
   return '<div class="bk bk-' + mode + '">' + nav + outH + top + grid + bot + lgd + '</div>';
@@ -5720,17 +5740,110 @@ function bkModal(r) {
       '<label class="pl-f"><span>วันเริ่มผลิต</span><input class="input" type="date" data-pl="d" data-inp="plDt" value="' + esc(dv === '9999-99-99' ? '' : dv) + '"><span class="pl-dth">' + (dv && dv !== '9999-99-99' ? '= ' + esc(planDth(dv)) : 'ยังไม่ใส่วัน') + '</span></label>' +
       '<div class="pl-f"><span>สถานะผลิต</span><div class="pl-seg">' + Object.keys(PLAN_PST).map((k) => '<label class="pl-sg pl-ps-' + k + '"><input type="radio" name="bk-st" data-pl="st" value="' + k + '"' + (k === st ? ' checked' : '') + '> ' + PLAN_PST[k][0] + '</label>').join('') + '</div></div>' +
       '<label class="pl-f pl-fn"><span>หมายเหตุ</span><input class="input" type="text" maxlength="200" data-pl="n" value="' + esc(p.note || '') + '" placeholder="เช่น เริ่มตัดไม้ก่อน · รอวัสดุ"></label></div>'
-    : '<div class="xs muted">บัญชีนี้ดูอย่างเดียว — Admin / ฝ่ายผลิตจัดแผนได้</div>';
+    : '<div class="xs muted">บัญชีนี้ดูแผนอย่างเดียว — จัดแผนได้เฉพาะ Admin / ผู้จัดการผลิต</div>';
   modal({ title: '📅 ' + esc(prdOno(x.iid, x.oid)), sub: esc([x.title && x.title !== x.oid ? x.title : '', x.lot ? 'LOT ' + x.lot : ''].filter(Boolean).join(' · ')), size: 'lg',
     body: '<div class="bk-m"><div class="bk-mg">' + kv('ติดตั้ง', esc(I.ins.replace(/^ติดตั้ง /, ''))) + kv('ตู้ / ชิ้น', esc([pi.cabs ? pi.cabs + ' ตู้' : '', pi.parts ? pi.parts + ' ชิ้น' : ''].filter(Boolean).join(' · ') || '—')) +
       kv('สถานะผลิต', '<span class="pl-ps pl-ps-' + (I.none ? 'none' : st) + '">' + (I.none ? 'ยังไม่จัดแผน' : PLAN_PST[st][0]) + '</span>') + '</div>' +
       '<div class="bk-mp"><div><span>ปิดผิว</span>' + planLm(x, b) + '</div><div><span>สี</span>' + planPaint(x, b) + '</div><div><span>สั่งตัด / สั่งทำ</span>' + planMo(x, b) + '</div></div>' +
-      '<div class="bk-mh">รออะไร</div>' + wait + (I.by ? '<div class="xs muted">' + esc(I.by) + '</div>' : '') + '<div class="bk-mh">จัดแผน</div>' + ed + '</div>',
+      '<div class="bk-mh">รออะไร</div>' + wait + (I.by ? '<div class="xs muted">' + esc(I.by) + '</div>' : '') + bkInsEd(x) + '<div class="bk-mh">จัดแผน</div>' + ed + '</div>',
     foot: '<a class="btn" href="#/prd/o/' + encodeURIComponent(x.oid) + '">เปิดงาน</a>' + (PLAN.can ? ' <button type="button" class="btn primary" data-act="plSave" data-oid="' + esc(x.oid) + '">💾 บันทึก</button>' : '') + ' <button type="button" class="btn" data-act="closeOv">ปิด</button>' });
 }
+/* ══ PSN V1.9.6: เลื่อนวันติดตั้ง (Booking ติดตั้ง ลากการ์ด / หน้าต่างการ์ด) ══════════════════════════════════════════
+   วันติดตั้งใน PSN = ที่เลื่อนใน PSN (prd_orders.adm.install) > 📅 Production > วันเริ่มงานใน CN · กำหนดจบทุกส่วน = วันติดตั้ง − n วัน (ค่าใน Production)
+   ส่วนที่ Production ตั้งกำหนดจบเองเป็นราย Order / วันงานสีที่ Admin แก้ = ไม่ขยับ · Production กดเปลี่ยนวันติดตั้งทีหลัง = ใช้ของ Production (ใหม่สุดชนะ · SQL 52) */
+function bkMvTag(x) {
+  const a = prdDueKey(x && x.installAdm); if (a === '9999-99-99') return '';
+  const o = prdDueKey(x.installOrig || x.installProd);
+  return '<span class="bk-mv" title="' + esc('เลื่อนวันติดตั้งใน PSN' + (o !== '9999-99-99' ? ' — เดิม (Production) ' + prdIso(o) : ' — Production ยังไม่มีวันติดตั้ง')) + '">↔ เลื่อนใน PSN</span>';
+}
+function bkInsEd(x) {
+  if (!PLAN.can) return '';
+  const ik = planIk(x), adm = prdDueKey(x.installAdm) !== '9999-99-99';
+  return '<div class="bk-mh">วันติดตั้ง</div><div class="pl-ins-ed"><input class="input" type="date" data-pl="ins" value="' + esc(ik) + '" aria-label="วันติดตั้งใหม่">' +
+    '<button type="button" class="btn sm primary" data-act="plInsEd" data-oid="' + esc(x.oid) + '">📅 เลื่อนวันติดตั้ง…</button>' +
+    (adm ? '<button type="button" class="btn sm" data-act="plInsEd" data-oid="' + esc(x.oid) + '" data-clear="1">↺ คืนวันจาก Production</button>' : '') +
+    '<div class="xs muted">กำหนดจบทุกแผนกขยับตามค่าที่ตั้งใน Production · ไม่แก้ใน Production (Production ขึ้นป้ายให้กด “ใช้วันนี้”)</div></div>';
+}
+on('plInsEd', (el) => {
+  const oid = el.dataset.oid; if (el.dataset.clear) { bkInsAsk(oid, ''); return; }
+  const box = el.closest('.pl-ins-ed'), v = box ? ((box.querySelector('[data-pl=ins]') || {}).value || '') : '';
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) { toast('เลือกวันติดตั้งใหม่ก่อน', 'err'); return; }
+  bkInsAsk(oid, v);
+});
+/* ส่วนงานของ Order: ปิดผิว · งานสี · แต่ละแผนก — กำหนดจบเดิม / ใหม่ · ตั้งเอง (ไม่ขยับ) · เสร็จแล้ว */
+function bkInsSecs(b, nk) {
+  if (!b) return [];
+  const b2 = Object.assign({}, b, { install: nk }), out = [], P = b.pdue || {};
+  const lmN = (b.lmL && +b.lmL.n) || +b.lm || 0;
+  if (lmN) { const ov = !!((P.lm || {}).ov); out.push({ k: 'lm', t: 'ปิดผิว (ใบปิดผิว)', o: prdDueOf(b, 'lm') || '', n: prdDueOf(b2, 'lm') || '', fix: ov, done: +b.lm > 0 && +b.lmDone >= +b.lm }); }
+  if (+b.cutNColors > 0) { const pd = prdPaintDue(b), pd2 = prdPaintDue(b2); out.push({ k: 'paint', t: 'งานสี (ใบส่งทำสี)', o: pd.d || '', n: pd2.d || '', fix: pd.src === 'adm' || !!((P.paint || {}).ov), done: b.paintSt === 'done' }); }
+  Object.keys(b.moDeps || {}).forEach((id) => { const m = b.moDeps[id] || {}; if (!+m.n) return; const ov = !!(((P.deps || {})[id] || {}).ov);
+    out.push({ k: 'd:' + id, t: m.name || prdDepName(id) || 'สั่งตัด / สั่งทำ', o: prdDueOf(b, id) || b.install || '', n: prdDueOf(b2, id) || nk || '', fix: ov, done: +m.done >= +m.n }); });
+  return out;
+}
+function bkInsAsk(oid, k) {
+  const r = bkRowOf(oid); if (!r) return;
+  if (!PLAN.can) { toast('บัญชีนี้ดูแผนอย่างเดียว — เลื่อนวันติดตั้งได้เฉพาะ Admin / ผู้จัดการผลิต', 'err'); return; }
+  const x = r.x, b = r.b || prdBrief(oid), old = planIk(x), adm = prdDueKey(x.installAdm) !== '9999-99-99', orig = prdDueKey(x.installOrig || x.installProd);
+  let nk = k, clear = false;
+  if (!k) {
+    if (!adm) { toast('วันติดตั้งนี้มาจาก Production — ลากไปวันอื่นแทน (เอาวันออกใน PSN ไม่ได้)', 'err'); return; }
+    clear = true; nk = orig === '9999-99-99' ? '' : orig;
+  }
+  if (!clear && nk === old) return;
+  const t = planToday(), delta = old && nk ? planDiff(old, nk) : 0, sk = bkStartK(x), p = x.plan || {};
+  const secs = bkInsSecs(b, nk), sk2 = sk && delta ? bkAdd(sk, delta) : '';
+  const dd = (a) => a ? esc(planDth(a)) : '—', chg = (a, z) => (a || '') !== (z || '');
+  const rows = secs.map((z) => { const late = !z.done && z.n && prdDueKey(z.n) < t, moved = chg(z.o, z.n);
+    return '<tr' + (late ? ' class="late"' : '') + '><td>' + esc(z.t) + '</td><td>' + dd(z.o) + '</td><td><b>' + dd(z.n) + '</b>' +
+      (z.fix ? ' <span class="bk-it-fix">ตั้งเอง — ไม่ขยับ</span>' : '') + (late ? ' <span class="bk-it-late">⚠ เลยวันนี้แล้ว</span>' : '') + '</td><td>' +
+      (z.done ? '<span class="bk-it-ok">✓ เสร็จแล้ว</span>' : moved ? '🔔 แจ้งแผนก' : '<span class="xs muted">ไม่เปลี่ยน</span>') + '</td></tr>'; }).join('');
+  const notify = secs.filter((z) => !z.done && (chg(z.o, z.n) || chg(old, nk)));
+  PLAN.insAsk = { oid, k: nk, clear, delta, sk, sk2, dues: notify.map((z) => ({ k: z.k, d: z.n || '', n: z.t })) };
+  const sLate = sk && nk && ((sk2 || sk) > nk);
+  modal({ title: '📅 ' + (clear ? 'คืนวันติดตั้งจาก Production' : 'เลื่อนวันติดตั้ง') + ' · ' + esc(prdOno(x.iid, x.oid)), sub: esc([x.title && x.title !== x.oid ? x.title : '', x.lot ? 'LOT ' + x.lot : ''].filter(Boolean).join(' · ')), size: 'lg',
+    body: '<div class="bk-ins">' +
+      '<div class="bk-ins-d"><span>วันติดตั้ง</span><b class="was">' + dd(old) + '</b><span class="arr">→</span><b class="now">' + (nk ? dd(nk) : 'ไม่มีวันติดตั้ง') + '</b>' +
+        (delta ? '<span class="bk-ins-dl">' + (delta > 0 ? '+' : '') + delta + ' วัน</span>' : '') + (nk && prdDueKey(nk) < t ? '<span class="bk-it-late">⚠ วันที่ผ่านมาแล้ว</span>' : '') + '</div>' +
+      (clear ? '<div class="xs muted">เอาวันที่เลื่อนใน PSN ออก — กลับไปใช้วันติดตั้งจาก Production' + (nk ? '' : ' (Production ยังไม่มีวันติดตั้ง)') + '</div>' : '') +
+      (secs.length ? '<div class="bk-mh">กำหนดจบใหม่ (คิดจากค่าที่ตั้งใน Production)</div><div class="table-wrap"><table class="t bk-it"><thead><tr><th>ส่วนงาน</th><th>เดิม</th><th>ใหม่</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+        : '<div class="xs muted">Order นี้ยังไม่มีงาน Support ในไลน์ผลิต — เลื่อนเฉพาะวันติดตั้ง</div>') +
+      (sk ? '<label class="bk-ins-sh"><input type="checkbox" data-pl="insSh"' + (delta && p.st !== 'done' ? ' checked' : ' disabled') + '> เลื่อนวันเริ่มผลิตตามด้วย ' +
+        (delta && p.st !== 'done' ? '(' + dd(sk) + ' → ' + dd(sk2) + ')' : '(' + dd(sk) + (p.st === 'done' ? ' · ผลิตเสร็จแล้ว' : '') + ')') + '</label>' : '') +
+      (sLate ? '<div class="bk-it-late">⚠ วันเริ่มผลิตอยู่หลังวันติดตั้ง</div>' : '') +
+      '<label class="pl-f bk-ins-n"><span>หมายเหตุ (เหตุผลที่เลื่อน · แจ้งแผนกด้วย)</span><input class="input" type="text" maxlength="200" data-pl="insN" placeholder="เช่น ลูกค้าขอเลื่อน · รอหน้างาน"></label>' +
+      (notify.length ? '<div class="xs muted">🔔 แจ้งเตือน: ' + esc(notify.map((z) => z.t).join(' · ')) + '</div>' : '') + '</div>',
+    foot: '<button type="button" class="btn" data-act="closeOv">ยกเลิก</button> <button type="button" class="btn primary" data-act="plInsGo">✓ ' + (clear ? 'คืนวันจาก Production' : 'เลื่อนวันติดตั้ง') + '</button>' });
+}
+on('plInsGo', async (el) => {
+  const A = PLAN.insAsk; if (!A || PLAN.saving) return;
+  const ov = document.querySelector('#overlay'), sh = ov && ov.querySelector('[data-pl=insSh]'), note = ((ov && ov.querySelector('[data-pl=insN]')) || {}).value || '';
+  const shift = !!(sh && sh.checked && !sh.disabled && A.delta), r = bkRowOf(A.oid), lb = r ? prdOno(r.x.iid, r.x.oid) : A.oid;
+  PLAN.saving = A.oid; el.disabled = true; el.textContent = '⏳ กำลังบันทึก…';
+  let ok = false, msg = '';
+  try {
+    const v = await rpc('cn_prd_install_set', { p_oid: A.oid, p_d: A.clear ? '' : A.k, p_note: note, p_shift: shift ? A.delta : 0, p_dues: A.dues });
+    ok = true; msg = (A.clear ? 'คืนวันติดตั้งจาก Production แล้ว — ' + lb : 'เลื่อนวันติดตั้ง ' + lb + ' → ' + planDth(A.k)) + ' — ทุกเครื่องเห็น' + (v && +v.n ? ' · แจ้ง ' + v.n + ' แผนก' : '');
+  } catch (e) {
+    if (e.code === 'session') { forceLogout(e.message); return; }
+    const miss = e.code === 'PGRST202' || e.status === 404 || /cn_prd_install_set/.test(e.message || '');
+    if (miss && S.user && S.user.role === 'admin') {   /* ยังไม่ได้รัน SQL ส่วน 52 — Admin ใช้ช่องแก้เดิม (ไม่มีแจ้งเตือนแผนก) */
+      try {
+        await rpc('cn_prd_adm_edit', { p_kind: 'order', p_oid: A.oid, p_ref: null, p_patch: { install: A.clear ? '' : A.k } });
+        if (shift && A.sk2 && r) { const p = r.x.plan || {}; await rpc('cn_prd_plan_set', { p_oid: A.oid, p_d: A.sk2, p_st: PLAN_PST[p.st] ? p.st : 'wait', p_note: p.note || '' }); }
+        ok = true; msg = 'เลื่อนวันติดตั้งแล้ว (ยังไม่ได้รัน SQL ส่วน 52 — ยังไม่แจ้งเตือนแผนก)';
+      } catch (e2) { msg = 'เลื่อนวันไม่สำเร็จ: ' + (e2.message || e2); }
+    } else msg = miss ? 'ต้องรัน SQL ส่วน 52 (PSN V1.9.6) ก่อน — Admin รันไฟล์ SQL ล่าสุดใน Supabase' : 'เลื่อนวันไม่สำเร็จ: ' + (e.message || e);
+  }
+  PLAN.saving = ''; PLAN.insAsk = null;
+  if (ok) { closeOverlay(); toast(msg); try { await refresh(); } catch (e) { /* โหลดรอบหน้า */ } await planLoad(true); if (SNB_FRAMED) prdInsPush(true).catch(() => {}); }
+  else { el.disabled = false; el.textContent = '✓ ลองอีกครั้ง'; toast(msg, 'err'); }
+  rerender();
+});
 /* ── ลากการ์ด = จองวันเริ่มผลิต (Booking เริ่มผลิต) ── */
 async function bkSetStart(oid, k) {
   const r = bkRowOf(oid); if (!r) return;
+  if (!PLAN.can) { toast('บัญชีนี้ดูแผนอย่างเดียว — จองวันเริ่มผลิตได้เฉพาะ Admin / ผู้จัดการผลิต', 'err'); return; }   /* V1.9.7 */
   const x = r.x, p = x.plan || {}, old = Object.assign({}, p);
   if ((bkStartK(x) || '') === (k || '')) return;
   x.plan = Object.assign({}, p, { d: k || null, st: PLAN_PST[p.st] ? p.st : 'wait', at: p.at || new Date().toISOString() }); rerender();
@@ -5746,7 +5859,7 @@ document.addEventListener('dragend', () => { PLAN.drag = ''; PLAN.dragAt = Date.
 document.addEventListener('dragover', (e) => { if (!PLAN.drag) return; const d = e.target && e.target.closest ? e.target.closest('[data-bkday]') : null; if (!d) return; e.preventDefault();
   document.querySelectorAll('.bk-over').forEach((z) => { if (z !== d) z.classList.remove('bk-over'); }); d.classList.add('bk-over'); });
 document.addEventListener('drop', (e) => { if (!PLAN.drag) return; const d = e.target && e.target.closest ? e.target.closest('[data-bkday]') : null; if (!d) return; e.preventDefault();
-  const oid = PLAN.drag; PLAN.drag = ''; PLAN.dragAt = Date.now(); window.__planEd = !!PLAN.ed; d.classList.remove('bk-over'); bkSetStart(oid, d.dataset.bkday || ''); });
+  const oid = PLAN.drag; PLAN.drag = ''; PLAN.dragAt = Date.now(); window.__planEd = !!PLAN.ed; d.classList.remove('bk-over'); (planF().view === 'ins' ? bkInsAsk : bkSetStart)(oid, d.dataset.bkday || ''); });   /* V1.9.6 */
 /* ── ข้อความสำหรับ พิมพ์ / Excel / ภาพ ── */
 function bkLmTxt(x, b) { const k = planLmK(x, b); return k === 'doing' && b ? 'กำลังทำ ' + prdPct(prdLmC(b), 'doing') + '%' : BK_ST[k] || '—'; }
 function bkPtTxt(x, b) { const k = planPtK(x, b); return k === 'doing' && b ? 'กำลังทำ ' + prdPct(b.paintCnt, 'doing') + '%' : BK_ST[k] || '—'; }
@@ -6209,7 +6322,7 @@ on('prdStn', async (el) => {
    สร้าง / แก้ / ปิด / ลบบัญชี = Edge Function cn-users เดิม (ประเภท ฝ่ายผลิต) · แผนก + ติดตามอย่างเดียว = cn_prd_set_user (Server เช็ก Admin) · รหัสผ่านไม่มีใครเห็น */
 function prdUsers() {
   const S2 = PRD.stn && Array.isArray(PRD.stn.users) ? PRD.stn.users : [], by = {}; S2.forEach((u) => { by[u.id] = u; });
-  return liveUsers().filter((u) => u.role === 'production').map((u) => Object.assign({}, u, { st: (by[u.id] || {}).st || [], ro: !!(by[u.id] || {}).ro }));
+  return liveUsers().filter((u) => u.role === 'production').map((u) => Object.assign({}, u, { st: (by[u.id] || {}).st || [], ro: !!(by[u.id] || {}).ro, mgr: !!(by[u.id] || {}).mgr }));   /* V1.9.7: + ผู้จัดการผลิต */
 }
 function prdStOpts(cur) {   /* ปิดผิว · ทำสี · (ตัดไม้เดิม) · แผนกตามตั้งค่า Production (เพิ่มที่ Production = มีให้เลือกเอง) · สั่งทำทุกแผนก */
   const L = [['lm', 'ปิดผิว'], ['paint', 'ทำสี']];
@@ -6225,7 +6338,7 @@ route(/^\/prd\/users$/, 'prd', () => {
   if (S.user.role !== 'admin') return { nav: '#/prd/users', html: pageHead('บัญชีผู้ใช้', '') + '<div class="card"><div class="card-b">' + notice('info', 'เฉพาะ Admin') + '</div></div>' };
   const U = prdUsers(), ld = !(PRD.stn && Array.isArray(PRD.stn.users));
   const rows = U.map((u) => '<tr><td class="main"><b>' + esc(u.name) + '</b><div class="sub">' + esc(u.phone || '') + '</div></td><td data-l="Username" class="mono">' + esc(u.username) + '</td>' +
-    '<td data-l="แผนก / ส่วนงาน">' + (ld ? '<span class="xs muted">กำลังโหลด…</span>' : prdStChips(u.st) + (u.ro ? ' <span class="badge t-gray">' + icon('eye', 'xs') + ' ติดตามอย่างเดียว</span>' : '')) + '</td>' +
+    '<td data-l="แผนก / ส่วนงาน">' + (ld ? '<span class="xs muted">กำลังโหลด…</span>' : (u.mgr ? '<span class="badge t-green pu-mgr">' + icon('calendar', 'xs') + ' ผู้จัดการผลิต</span> ' : '') + prdStChips(u.st) + (u.ro ? ' <span class="badge t-gray">' + icon('eye', 'xs') + ' ติดตามอย่างเดียว</span>' : '')) + '</td>' +
     '<td data-l="สถานะ">' + (u.active ? '<span class="badge t-green">ใช้งาน</span>' : '<span class="badge t-gray">ปิดใช้งาน</span>') + '</td>' +
     '<td class="r"><span class="row" style="justify-content:flex-end;gap:4px"><button class="btn xs" data-act="puForm" data-id="' + esc(u.id) + '">' + icon('edit', 'xs') + ' แก้ไข</button>' +
     '<button class="btn xs" data-act="puToggle" data-id="' + esc(u.id) + '">' + (u.active ? 'ปิดใช้งาน' : 'เปิดใช้งาน') + '</button><button class="btn xs danger" data-act="puDel" data-id="' + esc(u.id) + '" aria-label="ลบ ' + esc(u.username) + '">' + icon('trash', 'xs') + '</button></span></td></tr>').join('');
@@ -6235,7 +6348,7 @@ route(/^\/prd\/users$/, 'prd', () => {
     '<div style="margin-top:12px">' + notice('secret', 'Admin เข้าแอปนี้ด้วย Username / รหัสเดียวกับ CN (บัญชี Admin จัดการใน CN) · บัญชีฝ่ายผลิตจัดการที่หน้านี้เท่านั้น (CN ไม่แสดงแล้ว) · รหัสผ่านเก็บเข้ารหัส ไม่มีใครเห็นรหัสจริง — แจ้ง Username / รหัสให้ผู้ใช้เอง · แผนกมาจากตั้งค่าแผนกใน Production') + '</div>' };
 });
 on('puForm', (el) => {
-  const u = el.dataset.id ? prdUsers().find((x) => x.id === el.dataset.id) : { username: '', name: '', phone: '', active: true, st: [], ro: false };
+  const u = el.dataset.id ? prdUsers().find((x) => x.id === el.dataset.id) : { username: '', name: '', phone: '', active: true, st: [], ro: false, mgr: false };
   if (!u) return;
   const isNew = !el.dataset.id;
   modal({ title: icon('key') + (isNew ? ' เพิ่มบัญชีฝ่ายผลิต' : ' แก้ไขบัญชีฝ่ายผลิต'), sub: isNew ? '' : esc(u.username),
@@ -6247,7 +6360,8 @@ on('puForm', (el) => {
       '<div class="field c12"><label>แผนก / ส่วนงานของบัญชีนี้ <span class="req">*</span></label><div class="xs muted" style="margin:0 0 6px">เห็นและติ๊กเฉพาะงานของส่วนงานที่ติ๊ก · “ภาพรวมทุกงาน” เห็นทุกส่วน</div><div class="pu-st" role="group" aria-label="แผนก / ส่วนงาน">' +
         '<label class="check pu-all"><input type="checkbox" name="stall" data-chg="puAll"' + (u.st.length ? '' : ' checked') + '> <b>ทุกส่วนงาน</b> (ไม่จำกัด)</label>' +
         prdStOpts(u.st).map((x) => '<label class="check"><input type="checkbox" name="st" value="' + esc(x[0]) + '" data-chg="puSt"' + (u.st.indexOf(x[0]) >= 0 ? ' checked' : '') + '> ' + esc(x[1]) + '</label>').join('') + '</div></div>' +
-      '<div class="c12"><label class="check"><input type="checkbox" name="ro"' + (u.ro ? ' checked' : '') + '> <b>ติดตามอย่างเดียว</b> (หัวหน้าผลิต) — ดูงานและสถานะได้ แต่ติ๊กสถานะ / ติดป้ายรอ / ลบรายการไม่ได้</label></div>' +
+      '<div class="c12"><label class="check pu-mgrc"><input type="checkbox" name="mgr"' + (u.mgr ? ' checked' : '') + '> <span><b>ผู้จัดการผลิต</b> — จัดแผนผลิตได้: ลากวันใน Booking ติดตั้ง / Booking เริ่มผลิต · ✎ จัดแผน (นอกจาก Admin มีแค่บัญชีที่ติ๊กช่องนี้)</span></label></div>' +
+      '<div class="c12"><label class="check"><input type="checkbox" name="ro"' + (u.ro ? ' checked' : '') + '> <span><b>ติดตามอย่างเดียว</b> — ดูงานและสถานะได้ แต่ติ๊กสถานะ / ติดป้ายรอ / ลบรายการไม่ได้ (ติ๊กคู่กับผู้จัดการผลิตได้ = จัดแผนได้ แต่ไม่ติ๊กสถานะงาน)</span></label></div>' +
       '<div class="c12"><label class="check"><input type="checkbox" name="active"' + (u.active ? ' checked' : '') + '> เปิดใช้งานบัญชี</label></div></div>',
     foot: '<button class="btn" data-act="closeOv">ยกเลิก</button><button class="btn primary" data-act="puSave" data-id="' + esc(u.id || '') + '">' + icon('check', 'sm') + ' บันทึก</button>' });
 });
@@ -6258,7 +6372,7 @@ on('puSave', async (el) => {
   const g = (n) => $('#pu [name=' + n + ']'), isNew = !el.dataset.id, u0 = isNew ? null : prdUsers().find((x) => x.id === el.dataset.id);
   if (!isNew && !u0) return;
   const d = { name: g('name').value.trim(), phone: g('phone').value.trim(), username: g('username').value.trim().toLowerCase(), password: g('password').value, role: 'production', cid: '', active: g('active').checked };
-  const st = $$('#pu [name=st]').filter((x) => x.checked).map((x) => x.value), ro = g('ro').checked;
+  const st = $$('#pu [name=st]').filter((x) => x.checked).map((x) => x.value), ro = g('ro').checked, mgr = !!(g('mgr') && g('mgr').checked);
   if (!d.name || !/^[a-z0-9._-]{3,32}$/.test(d.username)) { toast('กรอกชื่อ และ Username (a-z, 0-9, . _ - ยาว 3–32 ตัว)', 'err'); return; }
   if (liveUsers().some((u) => u.username === d.username && u.id !== el.dataset.id)) { toast('Username นี้มีผู้ใช้แล้ว (รวมบัญชีใน CN)', 'err'); return; }
   if ((isNew || d.password) && d.password.length < 8) { toast('Password อย่างน้อย 8 ตัวอักษร', 'err'); return; }
@@ -6270,7 +6384,14 @@ on('puSave', async (el) => {
   if (!nu) { closeOverlay(); toast('บันทึกบัญชีแล้ว แต่ยังหาไม่เจอ — กดโหลดใหม่ แล้วตั้งแผนกอีกครั้ง', 'err'); rerender(); return; }
   try { PRD.stn = await rpc('cn_prd_set_user', { p_user: nu.id, p_st: st, p_ro: ro }); PRD.stnAt = Date.now(); }
   catch (e) { closeOverlay(); toast('บันทึกบัญชีแล้ว แต่ตั้งแผนกไม่สำเร็จ: ' + e.message + ' — กดแก้ไขอีกครั้ง', 'err'); rerender(); return; }
-  closeOverlay(); toast((isNew ? 'เพิ่มบัญชี ' : 'บันทึก ') + d.username + ' แล้ว · ' + (st.length ? st.map(prdStName).join(' · ') : 'ทุกส่วนงาน') + (ro ? ' · ติดตามอย่างเดียว' : '')); rerender();
+  if (mgr !== !!(u0 && u0.mgr)) {   /* V1.9.7: ผู้จัดการผลิต (SQL ส่วน 53) — เปลี่ยนเมื่อติ๊กต่างจากเดิมเท่านั้น */
+    try { PRD.stn = await rpc('cn_prd_set_mgr', { p_user: nu.id, p_mgr: mgr }); PRD.stnAt = Date.now(); }
+    catch (e) {
+      const miss = e.code === 'PGRST202' || e.status === 404 || /cn_prd_set_mgr/.test(e.message || '');
+      closeOverlay(); toast('บันทึกบัญชี / แผนกแล้ว แต่ตั้งผู้จัดการผลิตไม่สำเร็จ: ' + (miss ? 'ต้องรัน SQL ส่วน 53 (PSN V1.9.7) ก่อน — Admin รันไฟล์ SQL ล่าสุดใน Supabase' : (e.message || e)), 'err'); rerender(); return;
+    }
+  }
+  closeOverlay(); toast((isNew ? 'เพิ่มบัญชี ' : 'บันทึก ') + d.username + ' แล้ว · ' + (mgr ? 'ผู้จัดการผลิต · ' : '') + (st.length ? st.map(prdStName).join(' · ') : 'ทุกส่วนงาน') + (ro ? ' · ติดตามอย่างเดียว' : '')); rerender();
 });
 on('puToggle', async (el) => {
   const u = prdUsers().find((x) => x.id === el.dataset.id); if (!u) return;
@@ -6427,7 +6548,7 @@ function prdCntK(x) {   /* นับรายการจากสถานะ�
 /* ---------- V7.17.2 Admin จัดการรายการไลน์ผลิต (ผู้ใช้ 16:00) ----------
    แก้ = ทับเฉพาะในแอป (Production ไม่เปลี่ยน · แผนส่งซ้ำ ค่าที่แก้ไม่หาย · “คืนค่าจาก Production” ได้)
    ลบ = ซ่อนจากทุกคน (ไม่ลบใน Production · ส่งซ้ำก็ยังซ่อน · ไม่แจ้งเตือน) จนกว่า Admin กู้คืน — Server ตรวจสิทธิ์ Admin ทุกครั้ง */
-function prdAdmTag(t) { return '<span class="badge t-violet prd-admtag" title="' + esc(t || 'Admin แก้ข้อมูลในแอป (ไม่แก้ใน Production)') + '">' + icon('edit', 'xs') + ' Admin แก้</span>'; }
+function prdAdmTag(t) { return '<span class="badge t-violet prd-admtag" title="' + esc(t || 'แก้ข้อมูลในแอป PSN (Admin แก้ / เลื่อนวันติดตั้ง) — ไม่แก้ใน Production') + '">' + icon('edit', 'xs') + ' แก้ใน PSN</span>'; }   /* V1.9.6: ฝ่ายผลิตเลื่อนวันติดตั้งได้ → ไม่ใช่ Admin อย่างเดียว */
 function prdAdmWho(a) { return a && a.by ? ' <span class="xs muted">— ' + esc(a.by) + (a.at ? ' ' + fmtDT(a.at) : '') + '</span>' : ''; }
 function prdRmNote(at, by, kind, oid, ref, what) {
   return notice('danger', '<b>' + what + 'นี้ถูกลบแล้ว (ซ่อนจากทุกคน)</b> — โดย ' + esc(by || 'Admin') + ' ' + fmtDT(at) + '<div class="small">แผนส่งซ้ำจาก Production ก็ยังซ่อน · ข้อมูลไม่หาย กู้คืนได้</div>' +
