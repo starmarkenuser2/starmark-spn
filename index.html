@@ -471,6 +471,7 @@ tr.hidden{display:none}
 .thumb .tf{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text-3)}
 .pdfv{width:100%;height:62vh;border:1px solid var(--line);border-radius:8px;background:#fff}
 .fview .paper-doc img{max-height:70vh;object-fit:contain}
+.addon .addon-btn.pw-eye{border-radius:0;color:var(--muted);padding:0 10px}.addon .addon-btn.pw-eye.on{color:var(--action);background:#EEF4FF}   /* PSN V2.0.4 */
 .addon .addon-btn{border:1px solid var(--line-2);border-left:0;border-radius:0 var(--r-sm) var(--r-sm) 0;background:var(--surface-2);padding:0 12px;cursor:pointer;font-size:13px;color:var(--action);font-weight:600}
 .pay-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .pay-opt{position:relative;display:flex;gap:10px;align-items:flex-start;border:2px solid var(--line);border-radius:12px;padding:11px 12px;cursor:pointer;background:#fff}
@@ -1874,14 +1875,17 @@ function timeAgo(v) {
   if (ms < DAY) return Math.round(ms / HOUR) + ' ชม.ที่แล้ว';
   return Math.round(ms / DAY) + ' วันที่แล้ว';
 }
-function initials(n) { return String(n || '?').replace(/^(คุณ|บริษัท|หจก\.)\s*/, '').trim().slice(0, 1); }
+function initials(n) {   /* PSN V2.0.4 (ผู้ใช้ 26/11 13:52 “ทำไมโลโก้แผนกเป็นแบบนี้”): ชื่อขึ้นต้นด้วยสระหน้า (เ แ โ ใ ไ) → พยัญชนะตัวแรก (แผนกสีโพลี → ผ) */
+  const t = String(n || '?').replace(/^(คุณ|บริษัท|หจก\.)\s*/, '').trim(), m = /^[\u0E40-\u0E44]?([\u0E01-\u0E2E])/.exec(t);
+  return m ? m[1] : (t.slice(0, 1) || '?');
+}
 function shortCo(n) { return String(n || '').replace(/^(บริษัท|หจก\.|ห้างหุ้นส่วนจำกัด)\s*/, '').replace(/\s*(จำกัด|\(มหาชน\))\s*$/g, '').trim(); }
 function fmtBytes(b) { b = Number(b) || 0; return b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(0) + ' KB' : (b / 1048576).toFixed(1) + ' MB'; }
 function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.3' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.4' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -2022,6 +2026,7 @@ async function authed(path, opt, retry) {
   return r;
 }
 async function rpc(fn, args) {
+  if (kickFn202(fn)) selfMark204(args);   /* PSN V2.0.4: ก่อนส่ง (แจ้งเตือนมาถึงก่อนคำตอบได้) */
   const r = await authed('/rest/v1/rpc/' + fn, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(args || {}) });
   const d = await bodyOf(r);
   if (!r.ok) {
@@ -2050,6 +2055,18 @@ function kick202(retry) {
       }
     }, 300);
   } catch (e) { /* ปลุกไม่ได้ = รอรอบตามเวลา (ไม่กระทบงานที่บันทึกแล้ว) */ }
+}
+/* PSN V2.0.4 (ผู้ใช้ 26/11 13:43 “เอา แก้มาเลย” — คนกดเองได้รับแจ้งเตือนด้วย · SQL ส่วน 55): เครื่องที่กดเองไม่เด้งซ้ำ
+   จดเลขงานที่เพิ่งกด (ติ๊ก · ป้ายรอ · จัดแผน …) ใน Cache Storage “cn-cfg” → sw.js ข้ามแจ้งเตือนของงานนั้น 2 นาที ขณะหน้าแอปเปิดอยู่ (เครื่องอื่นเด้งตามปกติ) · เก็บไม่ได้ = เด้งตามเดิม */
+var SELF204 = { L: [] };
+function selfKey204() { return (typeof PUSH === 'object' && PUSH && PUSH.reg ? PUSH.reg.scope : location.href.split('#')[0].replace(/[^/]*$/, '')) + 'cn-self'; }
+function selfMark204(args) {
+  try {
+    const o = args && typeof args.p_oid === 'string' ? args.p_oid : ''; if (!o || typeof caches === 'undefined') return;
+    const now = Date.now(); SELF204.L = SELF204.L.filter((x) => now - x.t < 120000 && x.o !== o).concat([{ o: o, t: now }]).slice(-30);
+    const body = JSON.stringify(SELF204.L);
+    caches.open('cn-cfg').then((c) => c.put(selfKey204(), new Response(body))).catch(() => {});
+  } catch (e) { /* */ }
 }
 /* PSN V2.0.2: แจ้งเตือนเข้าเครื่องที่เปิดแอปอยู่ (sw.js บอก) → ดึงข้อมูลใหม่ทันที ไม่รอรอบ 20 วิ */
 var P202 = { t: 0, n: 0 };
@@ -3727,6 +3744,7 @@ const PUSH_TOPICS_ALL = {
   /* SPN V1.7 (ผู้ใช้ 17/11 09:18–09:19 “แก้คำแจ้งเตือนให้สอดคล้องกับโปรแกรมล่าสุด เช่น ตัด ต้องเป็น ตัด (สโตร์) · ให้มีหัวข้อแจ้งเตือน Order เข้ามาใหม่”)
      + f_new Order ใหม่ · งานสั่งตัด / สั่งทำ = แท็บแผนก (ตัด (สโตร์) · สั่งทำ (แผนกเหล็ก …)) · ใบสั่งตัดไม้ (f_cut*) ไม่ส่งแล้วตั้งแต่ Production V279 = ซ่อน (ค่าที่ตั้งไว้ไม่หาย) */
   production: [['f_new', 'Order ใหม่เข้าไลน์ผลิต', 'Order ที่ส่งเข้าไลน์ผลิตครั้งแรก (Item Id Set · ชื่องาน)'],
+    ['f_plan', 'แผนผลิต: จัดแผน / สถานะผลิต', 'วันเริ่มผลิต · รอผลิต / กำลังผลิต / ผลิตเสร็จ · หมายเหตุ (✎ จัดแผน · Booking เริ่มผลิต) (V2.0.4)'],   /* PSN V2.0.4: SQL ส่วน 55 */
     ['f_lm', 'ปิดผิว: งานใหม่ / แก้ไข', '“ใบปิดผิวใหม่ / มีการแก้ไข” · แจ้ง “Order นี้ไม่มีงานปิดผิว” ด้วย'],
     ['f_lm_got', 'ปิดผิว: รับงานแล้ว', 'เพื่อนร่วมไลน์ติ๊ก “รับงานแล้ว” (ค่าเริ่มต้นปิด)'], ['f_lm_doing', 'ปิดผิว: กำลังทำ', 'เพื่อนร่วมไลน์ติ๊ก “กำลังทำ” (ค่าเริ่มต้นปิด)'], ['f_lm_done', 'ปิดผิว: เสร็จแล้ว', 'ไม้ปิดผิวครบทุกรายการ — พร้อมตัด'],
     ['f_lm_hold', 'ปิดผิว: ⏸ รายการรอ / ของมาแล้ว', 'เพื่อนร่วมไลน์ติดป้ายรอ (รอวัตถุดิบ ฯลฯ) หรือกด “ของมาแล้ว ทำต่อ” (V1.8.0)'],
@@ -6422,7 +6440,7 @@ on('puForm', (el) => {
       '<div class="field c6"><label>ชื่อ-นามสกุล <span class="req">*</span></label><input class="input" name="name" value="' + esc(u.name) + '"></div>' +
       '<div class="field c6"><label>เบอร์โทร</label><input class="input" name="phone" value="' + esc(u.phone || '') + '"></div>' +
       '<div class="field c6"><label>Username <span class="req">*</span></label><input class="input mono" name="username" value="' + esc(u.username) + '" autocomplete="off" autocapitalize="off"></div>' +
-      '<div class="field c6"><label>' + (isNew ? 'Password <span class="req">*</span>' : 'ตั้ง Password ใหม่') + '</label><div class="addon"><input class="input mono" name="password" type="password" placeholder="' + (isNew ? 'อย่างน้อย 4 ตัวอักษร' : 'เว้นว่าง = ไม่เปลี่ยน') + '" autocomplete="new-password"><button type="button" class="addon-btn" data-act="puPwGen">สุ่ม</button></div></div>' +
+      '<div class="field c6"><label>' + (isNew ? 'Password <span class="req">*</span>' : 'ตั้ง Password ใหม่') + '</label><div class="addon"><input class="input mono" name="password" type="password" placeholder="' + (isNew ? 'อย่างน้อย 4 ตัวอักษร' : 'เว้นว่าง = ไม่เปลี่ยน') + '" autocomplete="new-password"><button type="button" class="addon-btn pw-eye" data-act="puPwEye" title="ดู / ซ่อนรหัสที่พิมพ์" aria-label="ดูรหัส">' + icon('eye', 'sm') + '</button><button type="button" class="addon-btn" data-act="puPwGen">สุ่ม</button></div></div>' +
       '<div class="field c12"><label>แผนก / ส่วนงานของบัญชีนี้ <span class="req">*</span></label><div class="xs muted" style="margin:0 0 6px">เห็นและติ๊กเฉพาะงานของส่วนงานที่ติ๊ก · “ภาพรวมทุกงาน” เห็นทุกส่วน</div><div class="pu-st" role="group" aria-label="แผนก / ส่วนงาน">' +
         '<label class="check pu-all"><input type="checkbox" name="stall" data-chg="puAll"' + (u.st.length ? '' : ' checked') + '> <b>ทุกส่วนงาน</b> (ไม่จำกัด)</label>' +
         prdStOpts(u.st).map((x) => '<label class="check"><input type="checkbox" name="st" value="' + esc(x[0]) + '" data-chg="puSt"' + (u.st.indexOf(x[0]) >= 0 ? ' checked' : '') + '> ' + esc(x[1]) + '</label>').join('') + '</div></div>' +
@@ -6464,7 +6482,8 @@ function puRoleUpd() {
   const on = puRoleRow(mgr, ro); $$('#puGd tbody tr').forEach((r) => r.classList.toggle('on', +r.dataset.pur === on));
 }
 Acts.puRole = () => puRoleUpd();
-on('puPwGen', () => { const f = $('#pu [name=password]'); const cs = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'; const a = new Uint32Array(10); crypto.getRandomValues(a); f.type = 'text'; f.value = Array.from(a, (x) => cs[x % cs.length]).join(''); });
+on('puPwEye', (el) => { const f = $('#pu [name=password]'); if (!f) return; const on = f.type === 'password'; f.type = on ? 'text' : 'password'; el.classList.toggle('on', on); el.title = on ? 'ซ่อนรหัส' : 'ดู / ซ่อนรหัสที่พิมพ์'; try { f.focus(); } catch (e) { /* */ } });   /* PSN V2.0.4 (ผู้ใช้ 26/11 13:47 “ตอนตั้งรหัสใหม่ผมมองไม่เห็น ไม่มีรูปตาให้กดดู”) */
+on('puPwGen', () => { const e9 = $('#pu .pw-eye'); if (e9) e9.classList.add('on'); const f = $('#pu [name=password]'); const cs = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'; const a = new Uint32Array(10); crypto.getRandomValues(a); f.type = 'text'; f.value = Array.from(a, (x) => cs[x % cs.length]).join(''); });
 on('puSave', async (el) => {
   const g = (n) => $('#pu [name=' + n + ']'), isNew = !el.dataset.id, u0 = isNew ? null : prdUsers().find((x) => x.id === el.dataset.id);
   if (!isNew && !u0) return;
