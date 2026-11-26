@@ -1881,7 +1881,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.1' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.2' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -2028,7 +2028,38 @@ async function rpc(fn, args) {
     const m = (d && (d.message || d.msg)) || 'เกิดข้อผิดพลาด (' + r.status + ')';
     throw new ApiError(m, r.status, /เข้าสู่ระบบใหม่/.test(m) ? 'session' : d && d.code);
   }
+  if (kickFn202(fn)) kick202();   /* PSN V2.0.2: บันทึกที่สร้างแจ้งเตือน → ปลุกตัวส่งซ้ำหลังบันทึกเสร็จ */
   return d;
+}
+/* PSN V2.0.2 (ผู้ใช้ 26/11 11:35–11:36 “เหมือนมันดีเล · ให้มัน real time กดแล้วเด้งเลย”):
+   Server ปลุกตัวส่งแจ้งเตือนระหว่างบันทึก — ปลุกไม่ติด / ตัวส่งเพิ่งทำงาน = ค้างรอรอบ 10 นาที → ปลุกซ้ำหลังบันทึกเสร็จ (แบบ V1.9.4 ที่ทำหลังส่งเอกสาร)
+   รวมที่ติดกันเป็นครั้งเดียว (0.3 วิ) · ยังค้าง + ตัวส่งกำลังทำงาน (kick = false) = ลองอีก 1 ครั้งหลัง 4 วิ · ยังไม่มี cn_prd_kick (SQL ส่วน 50) = พัก 10 นาที */
+function kickFn202(fn) { return /^cn_prd_(ist|hold|prog|mo_drop|install_set|plan_set|adm_edit|adm_remove|restore)$/.test(String(fn || '')); }
+var K202 = { t: 0, again: 0, n: 0, last: null };
+function kick202(retry) {
+  try {
+    if (!K202 || (typeof PRDS === 'object' && PRDS && Date.now() < (PRDS.kickOff || 0))) return;
+    clearTimeout(K202.t);
+    K202.t = setTimeout(async () => {
+      K202.t = 0;
+      try {
+        const g = await rpc('cn_prd_kick'); K202.n++; K202.last = g;
+        if (g && +g.pending > 0 && !g.kick && !retry && !K202.again) { K202.again = setTimeout(() => { K202.again = 0; kick202(true); }, 4000); }
+      } catch (e) {
+        if (e && (e.code === 'PGRST202' || e.status === 404 || /cn_prd_kick/.test(e.message || '')) && typeof PRDS === 'object' && PRDS) PRDS.kickOff = Date.now() + 600000;
+      }
+    }, 300);
+  } catch (e) { /* ปลุกไม่ได้ = รอรอบตามเวลา (ไม่กระทบงานที่บันทึกแล้ว) */ }
+}
+/* PSN V2.0.2: แจ้งเตือนเข้าเครื่องที่เปิดแอปอยู่ (sw.js บอก) → ดึงข้อมูลใหม่ทันที ไม่รอรอบ 20 วิ */
+var P202 = { t: 0, n: 0 };
+function swMsg202(d) {
+  d = d || {};
+  if (d.type === 'cn-nav' && typeof d.hash === 'string' && d.hash.charAt(0) === '#') { location.hash = d.hash; return; }
+  if (d.type === 'cn-push') {
+    clearTimeout(P202.t);
+    P202.t = setTimeout(() => { P202.t = 0; P202.n++; try { poll(); } catch (e) { /* รอรอบ 20 วิ */ } try { if (typeof pushBadge === 'function') pushBadge(); } catch (e) { /* */ } }, 500);
+  }
 }
 async function callFn(name, body) {
   const r = await authed('/functions/v1/' + name, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
@@ -3599,7 +3630,7 @@ function sameKey(sub, key) { try { const a = new Uint8Array(sub.options.applicat
   if (!document.querySelector('meta[name="theme-color"]')) add('meta', { name: 'theme-color', content: '#14233B' });
   window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); PUSH.inst = e; pushCardRefresh(); });
   window.addEventListener('appinstalled', () => { PUSH.inst = null; PUSH.installed = true; pushCardRefresh(); });
-  navigator.serviceWorker.addEventListener('message', (e) => { const d = e.data || {}; if (d.type === 'cn-nav' && typeof d.hash === 'string' && d.hash.charAt(0) === '#') location.hash = d.hash; });
+  navigator.serviceWorker.addEventListener('message', (e) => { swMsg202(e.data || {}); });   /* PSN V2.0.2: + cn-push = ดึงข้อมูลใหม่ทันที */
   navigator.serviceWorker.register('sw.js', { scope: './' }).then(async (reg) => { PUSH.reg = reg; await soundLoad(); PUSH.ready = true; return pushSync(); }).catch(() => { PUSH.ready = true; pushCardRefresh(); });
 })();
 
