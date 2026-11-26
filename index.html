@@ -1881,7 +1881,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.2' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.3' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -4317,6 +4317,7 @@ function prdClean(x) {   /* ส่งเฉพาะช่องที่กำ�
   const pick = (o, ks) => { const r = {}; ks.forEach((k) => { if (o && o[k] != null && typeof o[k] !== 'object') r[k] = o[k]; }); return r; };
   const arr = (v, n) => (Array.isArray(v) ? v : []).slice(0, n);
   const out = pick(x, ['oid', 'title', 'itemIdSet', 'sig']);
+  if (typeof x.renFrom === 'string' && x.renFrom.length < 1200) out.renFrom = x.renFrom;   /* PSN V2.0.3 (Production V379): ชื่อเดิมของ Order ที่ Rename (คั่นบรรทัด) → Server ย้ายงาน + สถานะที่ติ๊กไปชื่อใหม่ (SQL ส่วน 54) */
   if (prdSnOk(x.sn)) out.sn = x.sn;   /* V1.9.3: ลิงก์แบบผลิตทั้ง Order (StarNexus) จาก Production V329 */
   if (x.lm && typeof x.lm === 'object') out.lm = Object.assign(pick(x.lm, ['at', 'by']), { docs: arr(x.lm.docs, 200).filter((d) => d && (!d.type || d.type === 'lm')).map((d) => Object.assign(pick(d, ['no', 'type', 'at', 'cancel', 'orders']), { head: pick(d.head, PRD_HEAD),
     lines: arr(d.lines, 400).map((l) => Object.assign(pick(l, ['code', 'name', 'qty', 'unit', 'loc', 'pool']), Array.isArray(l.bom) ? { bom: l.bom.slice(0, 30).map((b) => pick(b, ['code', 'name', 'qty', 'unit'])) } : {})) })) });
@@ -4393,7 +4394,7 @@ async function prdSync(force) {
     let n = 0, r0 = null; const done = {};   /* V1.9.4: r0 = คำตอบรอบแรก (pnos) · done = Order ที่ส่งขึ้นรอบนี้ */
     for (let round = 0; round < 10; round++) {
       let r;
-      try { r = await snbCall('prd', { have: PRDS.sigs }, 30000); }
+      try { r = await snbCall('prd', { have: PRDS.sigs, ren: 1 }, 30000); }   /* PSN V2.0.3: ren = รับ Order ที่ Rename (renFrom) */
       catch (e) { if (/ไม่รู้จักคำสั่ง/.test(e.message)) PRDS.off = Date.now() + 600000; throw e; }   /* Production รุ่นก่อน V270 */
       if (!(r && r.v >= 2)) { PRDS.last = { at: Date.now(), n: 0, old: true }; return; }   /* Production รุ่นก่อน V272 (ส่งเอง) — ไม่รับ รอแผนกดส่งจาก V272 */
       if (round === 0 && Array.isArray(r.deps) && r.depsSig && r.depsSig !== PRDS.depSig) {   /* V1.3: แผนก (แท็บงานสั่งตัด / สั่งทำ) จาก Production V279 */
