@@ -1881,7 +1881,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.0' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.1' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -4337,6 +4337,22 @@ async function prdInsPush(force) {
   catch (e) { if (/ไม่รู้จักคำสั่ง/.test(e.message || '')) PRDS.insOff = Date.now() + 600000; }
 }
 function prdGoneSoon() { PRDS.goneSig = ''; PRDS.goneAt = 0; clearTimeout(PRDS.goneT); PRDS.goneT = setTimeout(() => { prdGonePush(true).catch(() => {}); }, 400); }
+/* PSN V2.0.1 (ผู้ใช้ 26/11 09:06–09:09 “แบบผลิตขึ้นรอลิงก์”): ลิงก์แบบผลิตของ Order ที่ส่งก่อน Production V329 — r.sns จากปุ่ม 📐 ใน Production V373
+   ไม่อยู่ในลายเซ็น (เอกสาร / สถานะไม่เปลี่ยน) · cn_prd_sn แก้เฉพาะแถวที่มี (Order ที่ลบถาวรไม่กลับมา) · ส่งค่าเดิมครั้งเดียวต่อรอบเปิดแอป */
+async function prdSnPush(m) {
+  if (!m || typeof m !== 'object' || Array.isArray(m) || Date.now() < (PRDS.snOff || 0)) return 0;
+  const sent = PRDS.snSent || (PRDS.snSent = {}), L = [];
+  Object.keys(m).slice(0, 3000).forEach((o) => { const v = typeof m[o] === 'string' ? m[o].trim() : '', k = String(o).trim().slice(0, 160);
+    if (!k || !prdSnOk(v) || sent[k] === v) return; L.push({ oid: k, sn: v }); });
+  let n = 0;
+  for (let i = 0; i < L.length && i < 400; i += 40) {
+    const part = L.slice(i, i + 40); let g;
+    try { g = await rpc('cn_prd_sn', { p_rows: part }); }
+    catch (e) { if (e.code === 'session') throw e; if (e.code === 'PGRST202' || e.status === 404 || /cn_prd_sn/.test(e.message || '')) PRDS.snOff = Date.now() + 600000; return n; }   /* ยังไม่ได้รัน SQL ส่วน 49 */
+    n += +(g && g.n) || 0; part.forEach((x) => { sent[x.oid] = x.sn; });
+  }
+  return n;
+}
 async function prdSync(force) {
   if (PRDS.busy && force) PRDS.again = true;   /* SPN V1.7: Production กดส่งระหว่างที่กำลังส่งรอบก่อน → ส่งต่ออีกรอบทันทีหลังจบ (เดิมรอรอบ 30 วิ) */
   if (!snsOk() || PRDS.busy || (!force && (Date.now() - PRDS.at < 30000 || Date.now() < PRDS.off))) return;
@@ -4386,7 +4402,7 @@ async function prdSync(force) {
       }
       if (!(r && r.more)) break;
     }
-    const pn = r0 && r0.pnos ? await prdPnoPush(r0.pnos, done) : 0;   /* V1.9.4 */
+    const pn = (r0 && r0.pnos ? await prdPnoPush(r0.pnos, done) : 0) + (r0 && r0.sns ? await prdSnPush(r0.sns) : 0);   /* V1.9.4 · V2.0.1: ลิงก์แบบผลิต Order เก่า */
     if (n) await prdKick();   /* V1.9.4 */
     if (pn && !n) { await refresh(); if (/^\/prd\//.test(curPath()) && !isEditing() && !$('#overlay.on')) rerender(); }
     if (n || force || Date.now() - (PRDS.goneAt || 0) > 60000) { PRDS.goneAt = Date.now(); await prdGonePush(); }   /* SPN V1.8.9: งานที่ลบ → Production */
