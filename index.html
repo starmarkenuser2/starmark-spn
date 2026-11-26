@@ -1881,7 +1881,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V1.9.9' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.0' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -1975,9 +1975,20 @@ async function http(path, opt) {
 }
 async function bodyOf(r) { const t = await r.text(); try { return t ? JSON.parse(t) : null; } catch (e) { return { message: t }; } }
 function setSession(d) { AUTH.s = { access: d.access_token, refresh: d.refresh_token, exp: d.expires_at || Math.floor(Date.now() / 1000) + (d.expires_in || 3600), uid: d.user && d.user.id }; saveAuth(); }
+/* V2.0.0 (ผู้ใช้ 26/11 08:20 “Password ขั้นต่ำ 4 ตัวอักษรพอ”): รหัสสั้น 4–7 ตัว (แบบ PIN) — Supabase Auth รับขั้นต่ำ 6 ตัวขึ้นไป
+   จึงต่อท้ายคำคงที่ให้ยาวพอ ทั้งตอนตั้ง (บัญชีฝ่ายผลิต) และตอนเข้าระบบ · รหัส 8 ตัวขึ้นไปเหมือนเดิม · คำต่อท้ายไม่ใช่ความลับ */
+const PW200_PAD = '#Spn-Pin-1';
+function pwStore(pw) { pw = String(pw == null ? '' : pw); return pw && pw.length < 8 ? pw + PW200_PAD : pw; }
 async function signIn(username, pw) {
-  const r = await http('/auth/v1/token?grant_type=password', { method: 'POST', headers: { apikey: CN.key, 'Content-Type': 'application/json' }, body: JSON.stringify({ email: username + '@' + CN.domain, password: pw }) });
-  const d = await bodyOf(r);
+  pw = String(pw == null ? '' : pw);
+  const tok = (p) => http('/auth/v1/token?grant_type=password', { method: 'POST', headers: { apikey: CN.key, 'Content-Type': 'application/json' }, body: JSON.stringify({ email: username + '@' + CN.domain, password: p }) });
+  const L = pw.length;
+  let r = await tok(L > 0 && L < 6 ? pw + PW200_PAD : pw);
+  let d = await bodyOf(r);
+  if (!r.ok && L >= 6 && L < 8 && r.status === 400 && !/banned/i.test(JSON.stringify(d || {}))) {   /* 6–7 ตัว: บัญชีเก่าตั้งตรง ๆ / บัญชีใหม่ตั้งแบบต่อท้าย */
+    const r2 = await tok(pw + PW200_PAD);
+    if (r2.ok || r2.status === 429) { r = r2; d = await bodyOf(r2); }
+  }
   if (!r.ok) {
     const t = JSON.stringify(d || {});
     if (/banned/i.test(t)) throw new ApiError('บัญชีนี้ยังเข้าระบบไม่ได้ — รอ Admin อนุมัติการลงทะเบียน หรือบัญชีถูกปิดใช้งาน กรุณาติดต่อ Admin', r.status);
@@ -6363,7 +6374,7 @@ on('puForm', (el) => {
       '<div class="field c6"><label>ชื่อ-นามสกุล <span class="req">*</span></label><input class="input" name="name" value="' + esc(u.name) + '"></div>' +
       '<div class="field c6"><label>เบอร์โทร</label><input class="input" name="phone" value="' + esc(u.phone || '') + '"></div>' +
       '<div class="field c6"><label>Username <span class="req">*</span></label><input class="input mono" name="username" value="' + esc(u.username) + '" autocomplete="off" autocapitalize="off"></div>' +
-      '<div class="field c6"><label>' + (isNew ? 'Password <span class="req">*</span>' : 'ตั้ง Password ใหม่') + '</label><div class="addon"><input class="input mono" name="password" type="password" placeholder="' + (isNew ? 'อย่างน้อย 8 ตัวอักษร' : 'เว้นว่าง = ไม่เปลี่ยน') + '" autocomplete="new-password"><button type="button" class="addon-btn" data-act="puPwGen">สุ่ม</button></div></div>' +
+      '<div class="field c6"><label>' + (isNew ? 'Password <span class="req">*</span>' : 'ตั้ง Password ใหม่') + '</label><div class="addon"><input class="input mono" name="password" type="password" placeholder="' + (isNew ? 'อย่างน้อย 4 ตัวอักษร' : 'เว้นว่าง = ไม่เปลี่ยน') + '" autocomplete="new-password"><button type="button" class="addon-btn" data-act="puPwGen">สุ่ม</button></div></div>' +
       '<div class="field c12"><label>แผนก / ส่วนงานของบัญชีนี้ <span class="req">*</span></label><div class="xs muted" style="margin:0 0 6px">เห็นและติ๊กเฉพาะงานของส่วนงานที่ติ๊ก · “ภาพรวมทุกงาน” เห็นทุกส่วน</div><div class="pu-st" role="group" aria-label="แผนก / ส่วนงาน">' +
         '<label class="check pu-all"><input type="checkbox" name="stall" data-chg="puAll"' + (u.st.length ? '' : ' checked') + '> <b>ทุกส่วนงาน</b> (ไม่จำกัด)</label>' +
         prdStOpts(u.st).map((x) => '<label class="check"><input type="checkbox" name="st" value="' + esc(x[0]) + '" data-chg="puSt"' + (u.st.indexOf(x[0]) >= 0 ? ' checked' : '') + '> ' + esc(x[1]) + '</label>').join('') + '</div></div>' +
@@ -6413,7 +6424,8 @@ on('puSave', async (el) => {
   const st = $$('#pu [name=st]').filter((x) => x.checked).map((x) => x.value), ro = g('ro').checked, mgr = !!(g('mgr') && g('mgr').checked);
   if (!d.name || !/^[a-z0-9._-]{3,32}$/.test(d.username)) { toast('กรอกชื่อ และ Username (a-z, 0-9, . _ - ยาว 3–32 ตัว)', 'err'); return; }
   if (liveUsers().some((u) => u.username === d.username && u.id !== el.dataset.id)) { toast('Username นี้มีผู้ใช้แล้ว (รวมบัญชีใน CN)', 'err'); return; }
-  if ((isNew || d.password) && d.password.length < 8) { toast('Password อย่างน้อย 8 ตัวอักษร', 'err'); return; }
+  if ((isNew || d.password) && d.password.length < 4) { toast('Password อย่างน้อย 4 ตัวอักษร', 'err'); return; }   /* V2.0.0: เดิม 8 */
+  if (d.password) d.password = pwStore(d.password);   /* V2.0.0: 4–7 ตัว = ต่อท้ายให้ยาวพอสำหรับระบบล็อกอิน (เข้าระบบพิมพ์แค่ 4–7 ตัว) */
   if (!st.length && !g('stall').checked) { toast('เลือกแผนก / ส่วนงานอย่างน้อย 1 อย่าง หรือ “ทุกส่วนงาน”', 'err'); return; }
   if (!isNew) d.id = u0.id;
   await callFn('cn-users', { action: isNew ? 'create' : 'update', user: d });
