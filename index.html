@@ -1231,6 +1231,8 @@ a.spn-row.hidden{display:none}
 .spn-dr{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;flex-wrap:wrap}
 .spn-act{position:sticky;bottom:0;z-index:15;background:#fff;border:1px solid var(--line);border-radius:14px 14px 0 0;padding:10px 12px 12px;margin:14px -4px 0;box-shadow:0 -8px 22px rgba(20,35,59,.10);display:flex;flex-direction:column;gap:8px}
 .spn-act-h{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--text-2);flex-wrap:wrap}.spn-act-h b{color:var(--ink-text)}
+/* PSN V2.0.7: แถบบนแผงติ๊ก — ลากที่จับปรับขนาด · ย่อ / ขยาย (ทุกเครื่องเหมือนกัน) */
+.spn-actbar{display:flex;align-items:center;gap:8px;margin:-4px 0 -2px;font-size:12.5px;color:var(--text-2)}.spn-grip{display:inline-flex;align-items:center;justify-content:center;width:64px;height:20px;border-radius:999px;background:#E2E8F0;color:#475569;font-weight:900;letter-spacing:2px;cursor:ns-resize;touch-action:none;user-select:none;-webkit-user-select:none}.spn-grip:hover{background:#CBD5E1}.spn-actz{font-variant-numeric:tabular-nums;font-weight:700;min-width:36px}.spn-actsp{flex:1}.spn-actmin{font:inherit;font-size:13px;font-weight:700;border:1px solid #94A3B8;background:#fff;color:#1E293B;border-radius:999px;padding:3px 12px;cursor:pointer}.spn-actmin:hover{border-color:#2563EB;color:#1D4ED8}.spn-act.min{gap:6px;padding-top:8px;padding-bottom:8px}.spn-act.min .spn-act-h,.spn-act.min .spn-tgs,.spn-act.min .spn-hrow{display:none}.spn-act.min .spn-next{min-height:44px;padding:4px 12px;font-size:16px}.spn-act.min .spn-next .sub{font-size:13px}.drush{display:inline-block;margin-top:2px;padding:0 7px;border-radius:999px;background:#FEF3C7;color:#92400E;border:1px solid #F59E0B;font-size:11.5px;font-weight:800;white-space:nowrap}.spn-due .drush{display:block;margin:3px auto 0;width:max-content}
 .spn-tgs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .spn-tg{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:78px;border-radius:12px;border:2px solid #9AA6B4;background:#fff;color:var(--ink-text);cursor:pointer;padding:6px 4px;font:inherit}
 .spn-tg b{font-size:15.5px;line-height:1.2}.spn-tg .sub{font-size:12px;color:var(--text-2)}
@@ -1461,6 +1463,7 @@ a.spn-row .sr-p b{font-size:19px;min-width:52px}
 .av-btn{border:0;padding:0;margin:0;background:none;cursor:pointer;border-radius:50%;flex:none;line-height:0;position:relative}.av-btn:focus-visible{outline:2px solid #60A5FA;outline-offset:2px}
 .av-btn::after{content:'';position:absolute;right:-2px;bottom:-2px;width:12px;height:12px;border-radius:50%;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.4'%3E%3Cpath d='M4 8h3l2-3h6l2 3h3v11H4z'/%3E%3Ccircle cx='12' cy='13' r='3.5'/%3E%3C/svg%3E") center/9px no-repeat;box-shadow:0 0 0 1px #CBD5E1}
 .av.av-img,.av-g.av-img{color:transparent!important}
+.av.av-ic,.av-g.av-ic{font-size:18px!important;font-weight:400;line-height:1;font-family:'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif}.av-g.lg.av-ic{font-size:38px!important}   /* V2.0.7 ไอคอนแผนก */
 .av-g{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;flex:none}
 .av-g.lg{width:72px;height:72px;font-size:28px}
 .pu-nm{display:flex;align-items:center;gap:10px;min-width:0}.pu-nm>span:last-child{min-width:0}
@@ -1899,7 +1902,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.6' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.7' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -2665,6 +2668,70 @@ function psnUserReset() {
   try { Object.assign(PLAN, { rows: null, can: false, today: '', at: 0, busy: false, err: '', open: '', ed: '', saving: '' }); } catch (e) { /* ยังไม่โหลด */ }
   try { PRD_OVKC = { a: null, s: null, t: null, v: [] }; } catch (e) { /* ยังไม่โหลด */ }
 }
+/* PSN V2.0.7 (ผู้ใช้ 27/11 09:23 · 09:33): แผงติ๊กสถานะด้านล่างหน้างาน — ลากที่จับ ⋯ ปรับขนาด 50–100% · ▾ ย่อ / ▴ ขยาย
+   ทุกเครื่องเหมือนกัน: settings.prd_ui.act.{d จอกว้าง | m มือถือ} (SQL ส่วน 57) · เครื่องอื่นได้ตอนเปิด / ทุกรอบดึงข้อมูล
+   ยังไม่มีฟังก์ชันบน Server = จำเฉพาะเครื่องนี้ (localStorage psn_act207) */
+const UIA = { v: null, at: 0, busy: false, off: 0, loc: null, drag: null, warned: false };
+function uiaF() { try { return window.matchMedia && window.matchMedia('(max-width:760px)').matches ? 'm' : 'd'; } catch (e) { return 'd'; } }
+function uiaLoc() { if (!UIA.loc) { try { UIA.loc = JSON.parse(localStorage.getItem('psn_act207') || '{}') || {}; } catch (e) { UIA.loc = {}; } } return UIA.loc; }
+function uiaZ(z) { z = +z; return isFinite(z) && z > 0 ? Math.max(0.5, Math.min(1, Math.round(z * 100) / 100)) : 1; }
+function uiaGet() {
+  const f = uiaF(), sv = UIA.v && UIA.v.act && typeof UIA.v.act === 'object' ? UIA.v.act[f] : null, lv = uiaLoc()[f];
+  const x = (Date.now() >= UIA.off && sv && typeof sv === 'object') ? sv : (lv || {});
+  return { z: uiaZ(x.z == null ? 1 : x.z), min: !!x.min };
+}
+function uiaBar(U) {
+  return '<div class="spn-actbar"><span class="spn-grip" role="separator" aria-label="ลากเพื่อปรับขนาดแผง"' + tipA('ลากลง = แผงเล็กลง · ลากขึ้น = ใหญ่ขึ้น (50–100%)\nดับเบิลคลิก = 100%\nทุกเครื่องเห็นขนาดนี้' + (Date.now() < UIA.off ? ' (ตอนนี้จำเฉพาะเครื่องนี้ — ยังไม่ได้รัน SQL ส่วน 57)' : '')) + '>⋯</span>' +
+    '<span class="spn-actz">' + Math.round(U.z * 100) + '%</span><span class="spn-actsp"></span>' +
+    '<button type="button" class="spn-actmin" data-act="actMin"' + tipA(U.min ? 'แสดงติ๊กให้ทั้งใบ + ติดป้ายรอ (ทุกเครื่อง)' : 'ย่อเหลือปุ่มขั้นต่อไปแถบเดียว (ทุกเครื่อง)') + '>' + (U.min ? '▴ ขยายแผง' : '▾ ย่อแผง') + '</button></div>';
+}
+function uiaApply() {   /* ค่าใหม่ (เครื่องอื่นตั้ง / กดเอง) → แผงที่เปิดอยู่ ไม่ต้องวาดทั้งหน้า */
+  const U = uiaGet();
+  document.querySelectorAll('.spn-act').forEach((p) => {
+    if (UIA.drag && UIA.drag.el === p) return;
+    p.style.zoom = U.z; p.classList.toggle('min', U.min);
+    const t = p.querySelector('.spn-actz'); if (t) t.textContent = Math.round(U.z * 100) + '%';
+    const b = p.querySelector('.spn-actmin'); if (b) b.textContent = U.min ? '▴ ขยายแผง' : '▾ ย่อแผง';
+  });
+}
+async function uiaLoad(force) {
+  if (UIA.busy || !AUTH.s || Date.now() < UIA.off || (!force && Date.now() - UIA.at < 15000)) return;
+  UIA.busy = true; const g0 = PSU.g;
+  try {
+    const d = await rpc('cn_prd_ui_get'); if (g0 !== PSU.g) return;
+    const was = JSON.stringify(uiaGet()); UIA.v = d && typeof d === 'object' ? d : {}; UIA.at = Date.now();
+    if (JSON.stringify(uiaGet()) !== was) uiaApply();
+  } catch (e) {
+    UIA.at = Date.now();
+    if (e && (e.code === 'PGRST202' || e.status === 404 || /cn_prd_ui_get/.test(e.message || ''))) UIA.off = Date.now() + 600000;
+  } finally { UIA.busy = false; }
+}
+async function uiaSet(p) {
+  const f = uiaF(), cur = uiaGet(), nv = { z: uiaZ(p.z != null ? p.z : cur.z), min: p.min != null ? !!p.min : cur.min };
+  const L = uiaLoc(); L[f] = nv; try { localStorage.setItem('psn_act207', JSON.stringify(L)); } catch (e) { /* */ }
+  UIA.v = UIA.v && typeof UIA.v === 'object' ? UIA.v : {}; UIA.v.act = Object.assign({}, UIA.v.act && typeof UIA.v.act === 'object' ? UIA.v.act : {}); UIA.v.act[f] = nv;
+  uiaApply();
+  if (Date.now() < UIA.off) { if (!UIA.warned) { UIA.warned = true; toast('ยังไม่ได้รัน SQL ส่วน 57 — ขนาดแผงจำเฉพาะเครื่องนี้'); } return; }   /* อ่านแล้วไม่พบฟังก์ชัน = แจ้งครั้งเดียว */
+  try { const d = await rpc('cn_prd_ui_set', { p_f: f, p_z: nv.z, p_min: nv.min }); if (d && typeof d === 'object' && d.act) UIA.v = d; UIA.at = Date.now(); }
+  catch (e) {
+    if (e.code === 'session') { forceLogout(e.message); return; }
+    if (e.code === 'PGRST202' || e.status === 404 || /cn_prd_ui_set/.test(e.message || '')) { UIA.off = Date.now() + 600000; if (!UIA.warned) { UIA.warned = true; toast('ยังไม่ได้รัน SQL ส่วน 57 — ขนาดแผงจำเฉพาะเครื่องนี้'); } }
+    else toast(e.message, 'err');
+  }
+}
+on('actMin', () => { uiaSet({ min: !uiaGet().min }); });
+document.addEventListener('pointerdown', (e) => {
+  const g = e.target && e.target.closest ? e.target.closest('.spn-grip') : null; if (!g) return;
+  const p = g.closest('.spn-act'); if (!p) return;
+  e.preventDefault();
+  const z0 = uiaGet().z; UIA.drag = { y0: e.clientY, z0, z: z0, el: p };
+  try { g.setPointerCapture(e.pointerId); } catch (x) { /* */ }
+  const mv = (ev) => { const d = UIA.drag; if (!d) return; const z = uiaZ(d.z0 + (d.y0 - ev.clientY) / 400); d.z = z; d.el.style.zoom = z; const t = d.el.querySelector('.spn-actz'); if (t) t.textContent = Math.round(z * 100) + '%'; };
+  const up = () => { document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up);
+    const d = UIA.drag; UIA.drag = null; if (d && d.z !== d.z0) uiaSet({ z: d.z }); };
+  document.addEventListener('pointermove', mv); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
+});
+document.addEventListener('dblclick', (e) => { const g = e.target && e.target.closest ? e.target.closest('.spn-grip') : null; if (g) uiaSet({ z: 1 }); });
 async function forceLogout(msg) {
   await signOut(); DB = null; S.user = null; lastState = ''; FURL.clear(); psnUserReset(); closeOverlay();   /* PSN V2.0.6 */
   if (msg) toast(msg, 'err');
@@ -2893,6 +2960,7 @@ async function refresh() { await reload(); S.user = DB.me; }
 window.addEventListener('hashchange', () => { S.navOpen = false; closeOverlay(); render(); if (Date.now() - LAST_LOAD > 4000) poll(); });   /* V7.12: เปลี่ยนหน้า → ดึงข้อมูลล่าสุด (ตัวเลขแจ้งเตือนตรงกับงานที่ฝ่ายอื่นเพิ่งทำ) */
 /* อัปเดตข้อมูลจาก Server ทุก 20 วินาที (และเมื่อกลับมาที่แท็บ) */
 async function poll() {
+  try { if (AUTH.s && document.visibilityState === 'visible') uiaLoad(); } catch (e) { /* */ }   /* PSN V2.0.7: ขนาดแผงที่เครื่องอื่นตั้ง */
   if (!AUTH.s || !DB || busyN || document.visibilityState !== 'visible' || SNB.hidden) return; /* V7.6: แท็บใน Production ที่ซ่อนอยู่ไม่ดึงข้อมูล */
   try {
     const changed = await reload(); S.user = DB.me;
@@ -3389,13 +3457,36 @@ const AV = { at: {}, img: {}, t: 0, busy: null, off: 0 };
 const AV_RX = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/]+=*$/;
 try { const c0 = JSON.parse(localStorage.getItem('psn_av') || 'null'); if (c0 && c0.img && typeof c0.img === 'object') Object.keys(c0.img).forEach((id) => { if (AV_RX.test(c0.img[id] || '')) { AV.img[id] = c0.img[id]; AV.at[id] = (c0.at || {})[id] || 0; } }); } catch (e) { /* */ }
 function avSave() { try { localStorage.setItem('psn_av', JSON.stringify({ at: AV.at, img: AV.img })); } catch (e) { /* กรอบใน Production / เครื่องไม่ให้เก็บ = จำในหน้านี้ */ } }
+/* PSN V2.0.7 (ผู้ใช้ 27/11 09:45 “หารูปแทนแต่ละแผนก … ตอนนี้มันเป็น ผ หมดเลย”): บัญชีฝ่ายผลิต = ไอคอนตามงานของแผนก (ไม่ใช่ตัวอักษร)
+   ดูจากชื่อบัญชีก่อน (แผนกสีโพลี → 🎨) · ไม่มีคำในชื่อ = ดูจากส่วนงานที่ติ๊กให้บัญชี (ปิดผิว / งานสี / แผนกสั่งตัด-สั่งทำ) · ไม่รู้ = 🏭
+   ใช้อีโมจิรุ่นเก่า (Windows 10 / Android เก่าเห็นครบ) · อัปโหลดรูปโปรไฟล์แล้ว = ใช้รูปนั้นแทนเหมือนเดิม · บัญชี Admin / ผู้รับเหมา = ตัวอักษรเหมือนเดิม */
+const DEP_IC = [[/สี|พ่น|โพลี|paint|colou?r/i, '🎨'], [/ปิดผิว|ลามิ|laminat|เคลือบ|\bLM\b/i, '🗜️'], [/อลู|alu/i, '🚪'], [/เหล็ก|steel|เชื่อม|โลหะ|metal/i, '🔩'], [/กระจก|glass/i, '🔳'],
+  [/สโตร์|store|คลัง|เบิก|warehouse/i, '🏬'], [/ขอบ|edge/i, '📏'], [/cnc|ซีเอ็นซี|เจาะ/i, '⚙️'], [/ตัด|เลื่อย|saw|\bcut/i, '✂️'], [/ไม้|wood|board/i, '🌲'], [/ประกอบ|assembl/i, '🛠️'],
+  [/แพ็ค|แพค|pack|บรรจุ/i, '📦'], [/\bqc\b|ตรวจ|คุณภาพ/i, '🔍'], [/ขนส่ง|จัดส่ง|ส่งของ|logist|deliver/i, '🚚'], [/ติดตั้ง|install|ซ่อม|maint/i, '🔧'], [/วางแผน|แผนผลิต|planning/i, '📅'],
+  [/จัดซื้อ|purchas/i, '🛒'], [/ออกแบบ|เขียนแบบ|design|drawing/i, '📐'], [/fitting|อุปกรณ์/i, '🧩']];
+function depIcTxt(t) { t = String(t || ''); for (const x of DEP_IC) if (x[0].test(t)) return x[1]; return ''; }
+function depIcSt(k) { return k === 'lm' ? '🗜️' : k === 'paint' ? '🎨' : k === 'mo' ? '📋' : prdIsDep(k) ? depIcTxt(prdDepName(prdDepId(k))) : ''; }
+function depIc(name, st) {   /* ชื่อบัญชี → ส่วนงาน → 🏭 */
+  const a = depIcTxt(name); if (a) return a;
+  const L = (Array.isArray(st) ? st : []).map(depIcSt).filter(Boolean); if (L.length && L.every((x) => x === L[0])) return L[0];
+  return L[0] || '🏭';
+}
+function avIcOf(id, name) {   /* บัญชีฝ่ายผลิตเท่านั้น */
+  try {
+    const U = PRD.stn && Array.isArray(PRD.stn.users) ? PRD.stn.users : [], u = id ? U.find((x) => x.id === id) : null; if (u) return depIc(u.name || name, u.st);
+    if (S.user && id && id === S.user.id && S.user.role === 'production') return depIc(name, prdMySt());
+    const L = typeof liveUsers === 'function' ? liveUsers() : [], v = id ? L.find((x) => x.id === id) : null; if (v && v.role === 'production') return depIc(v.name || name, []);   /* ยังไม่มีส่วนงาน (เช่น ไม่ใช่ Admin) */
+  } catch (e) { /* */ }
+  return '';
+}
 function avHtml(id, name, color, cls) {
-  const im = id && AV.img[id];
-  return '<span class="' + (cls || 'av') + (im ? ' av-img' : '') + '" data-av="' + esc(id || '') + '" data-n="' + esc(name || '') + '" data-c="' + esc(color || '#64748B') + '" style="background:' + (im ? '#E2E8F0 url(' + im + ') center/cover no-repeat' : esc(color || '#64748B')) + '">' + (im ? '' : esc(initials(name))) + '</span>';
+  const im = id && AV.img[id], ic = im ? '' : avIcOf(id, name);
+  return '<span class="' + (cls || 'av') + (im ? ' av-img' : '') + (ic ? ' av-ic' : '') + '" data-av="' + esc(id || '') + '" data-n="' + esc(name || '') + '" data-c="' + esc(color || '#64748B') + '" style="background:' + (im ? '#E2E8F0 url(' + im + ') center/cover no-repeat' : ic ? '#FFF7ED' : esc(color || '#64748B')) + (ic ? ';box-shadow:inset 0 0 0 2px ' + esc(color || '#64748B') : '') + '"' + (ic ? ' title="' + esc(name || '') + '"' : '') + '>' + (im ? '' : esc(ic || initials(name))) + '</span>';
 }
 function avPaint() {
   document.querySelectorAll('[data-av]').forEach((el) => { const id = el.dataset.av, im = id && AV.img[id];
-    el.classList.toggle('av-img', !!im); el.style.background = im ? '#E2E8F0 url(' + im + ') center/cover no-repeat' : (el.dataset.c || '#64748B'); el.textContent = im ? '' : initials(el.dataset.n); });
+    const ic = im ? '' : avIcOf(id, el.dataset.n);   /* V2.0.7 */
+    el.classList.toggle('av-img', !!im); el.classList.toggle('av-ic', !!ic); el.style.background = im ? '#E2E8F0 url(' + im + ') center/cover no-repeat' : ic ? '#FFF7ED' : (el.dataset.c || '#64748B'); el.style.boxShadow = ic ? 'inset 0 0 0 2px ' + (el.dataset.c || '#64748B') : ''; el.textContent = im ? '' : (ic || initials(el.dataset.n)); });
 }
 function avLoad(force) {
   if (!S.user || AV.busy || Date.now() < AV.off || (!force && Date.now() - AV.t < 300000)) return AV.busy || Promise.resolve();
@@ -4696,6 +4787,7 @@ function prdAllTabs() {
 
 /* ---------- ส่วนงานของบัญชี ---------- */
 async function prdStLoad(force) {
+  uiaLoad();   /* PSN V2.0.7 */
   if (PRD.stnBusy || (!force && PRD.stn && Date.now() - PRD.stnAt < 60000)) return;
   PRD.stnBusy = true; const g0 = PSU.g;   /* PSN V2.0.6: ออก / เข้าระบบระหว่างรอ = ทิ้งผลของบัญชีเดิม */
   try { const d = await rpc('cn_prd_stations'); if (g0 !== PSU.g) return; PRD.stn = d; PRD.stnAt = Date.now(); } catch (e) { if (e.code === 'session') { forceLogout(e.message); return; } PRD.stn = PRD.stn || { me: [], err: e.message }; }
@@ -4877,8 +4969,11 @@ function prdDueBox(u, done) {
   else if (k === '9999-99-99') { tone = 'none'; left = 'ยังไม่รู้วัน'; }
   else { const n = prdDays(u.due); tone = n < 0 ? 'late' : n <= 3 ? 'soon' : 'ok'; left = n < 0 ? 'เลยมา ' + -n + ' วัน' : n === 0 ? 'วันนี้' : 'อีก ' + n + ' วัน'; }
   const d = k === '9999-99-99' ? null : new Date(+k.slice(0, 4), +k.slice(5, 7) - 1, +k.slice(8, 10));
-  return '<span class="spn-due t-' + tone + '"' + tipA(spnDueTip(u.dueL)) + '><span class="dl">' + esc(u.dueL) + '</span>' + (d ? '<b>' + d.getDate() + '</b><span class="dm">' + d.toLocaleDateString('th-TH', { month: 'short' }) + '</span>' : '<b>—</b>') + '<span class="dleft">' + left + '</span></span>';
+  return '<span class="spn-due t-' + tone + '"' + tipA(spnDueTip(u.dueL)) + '><span class="dl">' + esc(u.dueL) + '</span>' + (d ? '<b>' + d.getDate() + '</b><span class="dm">' + d.toLocaleDateString('th-TH', { month: 'short' }) + '</span>' : '<b>—</b>') + '<span class="dleft">' + left + '</span>' + (prdRushIs(u) ? '<span class="drush"' + tipA('กำหนดจบด่วนของ Order นี้ — แผนใส่ตอนส่งเข้า App ไลน์ผลิต (แทนกำหนดตามเงื่อนไขปกติ)') + '>⚡ ด่วน</span>' : '') + '</span>';
 }
+/* PSN V2.0.7: กำหนดจบด่วนของ Order (Production ใส่ตอนส่ง · pdue.rush) — กล่องกำหนดที่เป็นวันนั้น = ป้าย ⚡ */
+function prdRushOf(oid) { const b = oid ? prdBrief(oid) : null, p = (b && b.pdue) || {}; return /^\d{4}-\d{2}-\d{2}$/.test(String(p.rush || '')) ? String(p.rush) : ''; }
+function prdRushIs(u) { const r = u && prdRushOf(u.oid || u.job); return !!(r && prdDueKey(r) === prdDueKey(u.due)); }
 function prdDays(s) { const k = prdDueKey(s); if (k === '9999-99-99') return null; const t = new Date();
   return Math.round((Date.UTC(+k.slice(0, 4), +k.slice(5, 7) - 1, +k.slice(8, 10)) - Date.UTC(t.getFullYear(), t.getMonth(), t.getDate())) / 864e5); }
 const prdWHref = (k, ref) => '#/prd/w/' + k + '/' + encodeURIComponent(ref);
@@ -5236,7 +5331,7 @@ route(/^\/prd\/w\/(lm|cut|paint|mo|d\.[a-z0-9]{1,24})\/(.+)$/, 'prd', (m) => {
   W.items.forEach((i) => { i.chg = prdChgOf(i, PG5); i.isNew = prdNewOf(D, i, W.items); });
   const nChg = W.items.filter((i) => i.chg).length, nNew = W.items.filter((i) => i.isNew).length;
   const T = sel.size ? W.items.filter((i) => sel.has(i.key)) : W.items, msg = PRD.msg[wk];
-  const u = { due: W.due, dueL: W.dueL };
+  const u = { due: W.due, dueL: W.dueL, oid };   /* PSN V2.0.7: + oid (ป้าย ⚡ ด่วน) */
   const steps = [1, 2, 3].map((s) => { const on = T.length > 0 && T.every((i) => prdRank(i.st) >= s), nOn = T.filter((i) => prdRank(i.st) >= s).length;
     return '<button type="button" class="spn-tg s' + s + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-act="prdTick" data-k="' + k + '" data-ref="' + esc(ref) + '" data-oid="' + esc(oid) + '" data-s="' + s + '"' + tipA(spnTip('s' + s)) + (can ? '' : ' disabled') + '>' +
       '<span class="bx">' + icon('check', 'sm') + '</span><b>' + prdStg(k).st[PRD_ORD[s]][0] + '</b><span class="sub">' + (on ? 'ติ๊กแล้ว' : nOn ? nOn + '/' + T.length : 'ยังไม่ติ๊ก') + '</span></button>'; }).join('');
@@ -5263,7 +5358,8 @@ route(/^\/prd\/w\/(lm|cut|paint|mo|d\.[a-z0-9]{1,24})\/(.+)$/, 'prd', (m) => {
       (can ? '<span class="si-hint">' + (sel.size ? 'เลือกไว้ ' + sel.size + ' รายการ — ปุ่มติ๊ก / ติดป้ายรอ ด้านล่างทำเฉพาะที่เลือก' : 'แตะรายการ = เลือก (✓ ฟ้าอ่อน) · ✓ สีทึบ = ติ๊กสถานะแล้ว · ไม่เลือก = ทำทั้งใบ') + '</span>' : '') + '</div>' +
     (can ? '<div class="si-ih-r">' + (sel.size ? '<button type="button" class="btn sm" data-act="prdPickClr" data-w="' + esc(wk) + '">' + icon('x', 'sm') + ' ล้างที่เลือก</button>' : '') +
       '<label class="si-pk' + (allSel ? ' on' : '') + '"' + tipA(spnTip('all')) + '><input type="checkbox" data-chg="prdPickAll" data-w="' + esc(wk) + '"' + (allSel ? ' checked' : '') + '><span class="pk-o">' + (allSel ? icon('check', 'xs') : '') + '</span>เลือกทั้งหมด</label></div>' : '') + '</div>' + items + '</div>';
-  const bar = can ? '<div class="spn-act" role="group" aria-label="ติ๊กสถานะ">' + (msg ? '<div class="spn-msg ' + msg.kind + '" role="status">' + esc(msg.t) + '</div>' : '') +
+  const UA = uiaGet();   /* PSN V2.0.7: ขนาด / ย่อ (ทุกเครื่องเหมือนกัน) */
+  const bar = can ? '<div class="spn-act' + (UA.min ? ' min' : '') + '" role="group" aria-label="ติ๊กสถานะ" style="zoom:' + UA.z + '">' + uiaBar(UA) + (msg ? '<div class="spn-msg ' + msg.kind + '" role="status">' + esc(msg.t) + '</div>' : '') +
       prdNextBtn(k, ref, oid, T) +   /* V1.8.5: ปุ่มใหญ่ ขั้นต่อไป */
       '<div class="spn-act-h"><b>' + (sel.size ? 'ติ๊กให้ ' + sel.size + ' รายการที่เลือก' : 'ติ๊กให้ทั้งใบ (' + W.items.length + ' รายการ)') + '</b><span>แตะติ๊ก · แตะซ้ำยกเลิก' + tipI(spnTip('act'), 'วิธีติ๊ก') + '</span></div><div class="spn-tgs">' + steps + '</div>' +
       '<div class="spn-hrow">' + (T.some((i) => i.st !== 'done') ? '<button type="button" class="btn spn-hbtn" data-act="prdHoldAsk" data-k="' + k + '" data-ref="' + esc(ref) + '" data-oid="' + esc(oid) + '"' + tipA('ติดป้ายรอ (รอวัตถุดิบ ฯลฯ) ให้' + (sel.size ? 'รายการที่เลือก' : 'ทุกรายการที่ยังไม่เสร็จ') + ' — คนอื่นเห็นในภาพรวม + แจ้งเตือน') + '>' + icon('pause', 'sm') + ' ติดป้ายรอ · ' + (sel.size ? T.filter((i) => i.st !== 'done').length + ' รายการที่เลือก' : 'ทั้งใบ') + '…</button>' : '') +
@@ -5508,7 +5604,7 @@ function prdOverview(r, all, tb, sub) {
         (b.title && b.title !== b.oid ? '<div class="sub">' + esc(b.title) + (b.adm ? ' ' + prdAdmTag() : '') + '</div>' : b.adm ? '<div class="sub">' + prdAdmTag() + '</div>' : '') + (b.iid && b.iid !== b.oid ? '<div class="sub mono prd-oid0">' + esc(b.oid) + '</div>' : '') + '</td>' +   /* V1.9.4: LOT ย้ายขึ้นบนสุด */
       '<td data-l="ค้างอยู่ที่">' + prdNowH(b) + '</td>' +   /* PSN V2.0.5 */
       '<td data-l="สถานะแต่ละส่วน" class="prd-pipe-td">' + prdPipe(b, show) + '</td>' +
-      '<td data-l="กำหนด" class="small prd-nw"><div>' + (d ? (d === prdPaintD(b) ? '<div class="sub">' + prdPaintL(b) + '</div>' : '') + '<b class="' + (open && prdLate(d) ? 'prd-late' : '') + '">' + prdIso(d) + '</b>' + prdLeft(d, open) : '—') + (b.install ? '<div class="sub">ติดตั้ง ' + prdIso(b.install) + '</div>' : '') + '</div></td>' +
+      '<td data-l="กำหนด" class="small prd-nw"><div>' + (d ? (d === prdPaintD(b) ? '<div class="sub">' + prdPaintL(b) + '</div>' : '') + '<b class="' + (open && prdLate(d) ? 'prd-late' : '') + '">' + prdIso(d) + '</b>' + (prdRushOf(b.oid) && prdDueKey(prdRushOf(b.oid)) === prdDueKey(d) ? ' <span class="drush">⚡ ด่วน</span>' : '') + prdLeft(d, open) : '—') + (b.install ? '<div class="sub">ติดตั้ง ' + prdIso(b.install) + '</div>' : '') + '</div></td>' +
       '<td data-l="อัปเดต" class="small prd-nw">' + fmtDT(lastOf(b)) + '</td><td class="prd-go"><span class="prd-docb">' + icon('file', 'sm') + ' เปิดเอกสาร</span></td></tr>';   /* V1.8.6: ปุ่มชัด (ผู้ใช้ “หาปุ่มเปิดเอกสารไม่เจอ”) */
   }).join('');
   if (r === 'admin') setTimeout(() => prdRmLoad(), 0);
