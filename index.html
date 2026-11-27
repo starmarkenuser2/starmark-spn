@@ -1463,6 +1463,11 @@ a.spn-row .sr-p b{font-size:19px;min-width:52px}
 .av-btn{border:0;padding:0;margin:0;background:none;cursor:pointer;border-radius:50%;flex:none;line-height:0;position:relative}.av-btn:focus-visible{outline:2px solid #60A5FA;outline-offset:2px}
 .av-btn::after{content:'';position:absolute;right:-2px;bottom:-2px;width:12px;height:12px;border-radius:50%;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.4'%3E%3Cpath d='M4 8h3l2-3h6l2 3h3v11H4z'/%3E%3Ccircle cx='12' cy='13' r='3.5'/%3E%3C/svg%3E") center/9px no-repeat;box-shadow:0 0 0 1px #CBD5E1}
 .av.av-img,.av-g.av-img{color:transparent!important}
+.arch-c .arch-h{margin:0 0 10px;font-size:16px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.arch-bar{height:14px;border-radius:999px;background:#E2E8F0;overflow:hidden}.arch-bar i{display:block;height:100%;background:#16A34A}.arch-bar.t-warn i{background:#F59E0B}.arch-bar.t-bad i{background:#DC2626}   /* V2.0.9 เก็บถาวร */
+.arch-n{margin:8px 0 6px;font-size:14px}.arch-st{display:flex;gap:6px 18px;flex-wrap:wrap;align-items:center;font-size:13.5px;color:var(--text-2)}.arch-f{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:13.5px}
+.arch-tw{max-height:460px;overflow:auto}.arch-t tr.on td{background:#EFF6FF}.arch-a{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 6px}.arch-ok{font-size:13px;color:#166534;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:6px 10px}
+.arch-wn{font-size:13px;color:#92400E;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:6px 10px}.arch-fi{font-size:13px;margin-top:8px}.arch-r{cursor:pointer}.arch-r.on td{background:#EFF6FF}.arch-dr>td{background:#F8FAFC}
+.arch-d h4{margin:12px 0 4px;font-size:13.5px}.arch-dh{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline;font-size:13.5px}.arch-pipe{margin-top:8px;overflow-x:auto}
 .upd-b{position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;border:1px solid rgba(148,163,184,.55);background:transparent;color:inherit;cursor:pointer;padding:0}   /* V2.0.8 ปุ่มอัปเดตโปรแกรม */
 .upd-b .ico{width:19px;height:19px}.upd-b i{display:none;position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;background:#EF4444;border:2px solid #fff}.upd-b.new{background:#16A34A;border-color:#16A34A;color:#fff}.upd-b.new i{display:block}
 .upd-b.side{margin-left:auto;margin-right:4px}.upd-b.spin .ico{animation:updspin .8s linear infinite}@keyframes updspin{to{transform:rotate(360deg)}}
@@ -1909,7 +1914,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.8' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.9' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -6821,7 +6826,178 @@ route(/^\/prd\/set$/, 'prd', () => {   /* Admin: ตั้งค่าไลน�
   setTimeout(() => prdStLoad(), 0); setTimeout(() => prdRmLoad(), 0);
   if (S.user.role !== 'admin') return { nav: '#/prd/set', html: pageHead('ตั้งค่าไลน์ผลิต', '') + '<div class="card"><div class="card-b">' + notice('info', 'เฉพาะ Admin') + '</div></div>' };
   const nRm = PRD.rm ? PRD.rm.L.reduce((n, x) => n + prdRmCount(x), 0) : 0;
-  return { nav: '#/prd/set', html: pageHead('ตั้งค่าไลน์ผลิต', 'วันเข้าแผนกสี · ส่วนงานของบัญชีฝ่ายผลิต (ปิดผิว · ทำสี · สั่งตัด / สั่งทำ) · แผนก / ลำดับแท็บ · รายการที่ลบ', '<button class="btn sm" data-act="prdRm">' + icon('trash', 'sm') + ' รายการที่ลบ' + (nRm ? ' <span class="badge t-red">' + nRm + '</span>' : '') + '</button>') + prdStnCard() + prdDepCard() };
+  return { nav: '#/prd/set', html: pageHead('ตั้งค่าไลน์ผลิต', 'วันเข้าแผนกสี · ส่วนงานของบัญชีฝ่ายผลิต (ปิดผิว · ทำสี · สั่งตัด / สั่งทำ) · แผนก / ลำดับแท็บ · รายการที่ลบ', '<button class="btn sm" data-act="prdRm">' + icon('trash', 'sm') + ' รายการที่ลบ' + (nRm ? ' <span class="badge t-red">' + nRm + '</span>' : '') + '</button><a class="btn sm" href="#/prd/arch">📦 เก็บถาวร / ขนาดข้อมูล</a>')   /* V2.0.9 */ + prdStnCard() + prdDepCard() };
+});
+/* ---------- PSN V2.0.9 (ผู้ใช้ 27/11 10:52): 📦 เก็บถาวร — ขนาดข้อมูล · Export JSON → ลบออกจาก Server · เปิดไฟล์ดูอย่างเดียว · Admin (SQL ส่วน 58) ----------
+   เฉพาะ Order เสร็จครบทุกส่วน (กติกาเดียวกับหน้าภาพรวม) · ลบได้เฉพาะชุดที่ Export ในหน้านี้ · Server ลบเฉพาะที่ข้อมูลยังตรงกับไฟล์ (ลายนิ้วมือ h)
+   ลบแบบเดียวกับ “ลบถาวร” (จดเลขงานไว้ = Production ส่งข้อมูลเดิมซ้ำไม่กลับมา) · ไม่ลบใน Production · ไม่แจ้งเตือนใคร */
+const ARCH = { info: null, err: '', at: 0, busy: false, days: 30, q: '', sel: new Set(), exp: null, file: null, fq: '', open: '', msg: '' };
+const ARCH_PLAN_MB = 500;
+function archMB(b) { return (Math.round((+b || 0) / 104857.6) / 10).toLocaleString('th-TH') + ' MB'; }
+function archIso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function archInst(b) { return prdDueKey((b && (b.installProd || b.install)) || ''); }
+async function archInfoLoad(force) {
+  if (ARCH.busy || (!force && ARCH.at && Date.now() - ARCH.at < (ARCH.err === 'sql' ? 600000 : 60000))) return;   /* อ่านไม่ได้ก็ไม่วนอ่านซ้ำ (วาดหน้าใหม่ = ไม่เรียก Server ซ้ำ) */
+  ARCH.busy = true; ARCH.at = Date.now();
+  try { ARCH.info = await rpc('cn_prd_arch_info'); ARCH.err = ''; }
+  catch (e) { if (e && e.code === 'session') { ARCH.busy = false; forceLogout(e.message); return; } ARCH.err = (e && (e.status === 404 || /PGRST202|cn_prd_arch_info/.test(e.message || ''))) ? 'sql' : String((e && e.message) || 'อ่านไม่ได้'); }
+  ARCH.busy = false;
+  if (curPath() === '/prd/arch') rerender();
+}
+function archCands() {
+  const d = new Date(); d.setDate(d.getDate() - Math.max(0, +ARCH.days || 0)); const lim = archIso(d), q = String(ARCH.q || '').trim().toLowerCase();
+  return prdList().filter((b) => prdAllDone(b))
+    .filter((b) => { const k = archInst(b); return !(+ARCH.days > 0) || (k !== '9999-99-99' && k <= lim); })
+    .filter((b) => !q || String(prdQ(b) || '').toLowerCase().indexOf(q) >= 0)
+    .sort((a, c) => (archInst(a) < archInst(c) ? -1 : archInst(a) > archInst(c) ? 1 : String(a.oid).localeCompare(String(c.oid))));
+}
+function archKey() { return Array.from(ARCH.sel).sort().join('|'); }
+function archInfoCard() {
+  const nAll = prdList().length, nDone = prdList().filter((b) => prdAllDone(b)).length, I = ARCH.info;
+  let b = '';
+  if (ARCH.err === 'sql') b = notice('warn', '<b>ยังไม่ได้รัน SQL ส่วน 58</b> — Admin รันไฟล์ SQL ชุด PSN V2.0.9 ใน Supabase ก่อน · ขนาดข้อมูล / Export / ลบ ยังใช้ไม่ได้ (📂 เปิดไฟล์ดูได้)');
+  else if (!I) b = '<div class="small muted">' + (ARCH.err ? 'อ่านขนาดข้อมูลไม่ได้: ' + esc(ARCH.err) : 'กำลังอ่านขนาดข้อมูล…') + '</div>';
+  else {
+    const db = +I.db || 0, pct = Math.min(100, db / (ARCH_PLAN_MB * 1048576) * 100), T = I.tables || {};
+    const prd = ['prd_orders', 'prd_docs', 'prd_items', 'prd_stages', 'prd_hold'].reduce((n, k) => n + (+T[k] || 0), 0);
+    b = '<div class="arch-bar t-' + (pct < 60 ? 'ok' : pct < 85 ? 'warn' : 'bad') + '"><i style="width:' + Math.max(1, pct).toFixed(1) + '%"></i></div>' +
+      '<div class="arch-n"><b>' + archMB(db) + '</b> จาก ' + ARCH_PLAN_MB + ' MB (' + pct.toFixed(pct < 10 ? 1 : 0) + '%) — ขนาดฐานข้อมูลทั้งหมด · 500 MB = แพ็กเกจฟรีของ Supabase (แพ็กเกจอื่นดูที่หน้า Supabase)</div>' +
+      '<div class="arch-st"><span>ข้อมูลไลน์ผลิต <b>' + archMB(prd) + '</b></span><span>Order ในไลน์ผลิต <b>' + (+I.orders || 0) + '</b> (เสร็จครบ <b>' + nDone + '</b>)</span><span>เก็บถาวร / ลบถาวรแล้ว <b>' + (+I.purged || 0) + '</b></span>' +
+      '<button class="btn sm ghost" data-act="archInfoRe">' + icon('refresh', 'sm') + ' อ่านใหม่</button></div>';
+  }
+  return '<div class="card arch-c"><div class="card-b"><h3 class="arch-h">💾 ขนาดข้อมูล</h3>' + b + (I ? '' : '<div class="xs muted" style="margin-top:6px">Order ในรายการตอนนี้ ' + nAll + ' (เสร็จครบ ' + nDone + ')</div>') + '</div></div>';
+}
+function archExpCard() {
+  const L = archCands(), sel = ARCH.sel; Array.from(sel).forEach((o) => { if (!L.some((b) => b.oid === o)) sel.delete(o); });
+  const key = archKey(), expOk = !!(ARCH.exp && sel.size && ARCH.exp.key === key), allOn = L.length > 0 && L.every((b) => sel.has(b.oid)), off = ARCH.busy || ARCH.err === 'sql';
+  const rows = L.map((b) => '<tr' + (sel.has(b.oid) ? ' class="on"' : '') + '><td class="c"><input type="checkbox" data-chg="archPick" data-oid="' + esc(b.oid) + '"' + (sel.has(b.oid) ? ' checked' : '') + ' aria-label="เลือก ' + esc(b.oid) + '"></td>' +
+    '<td data-l="Order"><b class="mono">' + esc(b.oid) + '</b>' + (b.title && b.title !== b.oid ? '<div class="sub">' + esc(b.title) + '</div>' : '') + '</td><td data-l="Item ID" class="mono">' + esc(b.iid || '') + '</td>' +
+    '<td data-l="LOT" class="mono">' + esc(b.lot || '') + '</td><td data-l="ติดตั้ง">' + (archInst(b) !== '9999-99-99' ? prdIso(archInst(b)) : '—') + '</td><td data-l="สถานะ"><span class="badge t-green">เสร็จครบ</span></td></tr>').join('');
+  const st = ARCH.exp ? (expOk ? '<div class="arch-ok">✓ Export แล้ว <b>' + ARCH.exp.n + '</b> Order — ไฟล์ <b>' + esc(ARCH.exp.name) + '</b> · ' + fmtDT(new Date(ARCH.exp.at).toISOString()) + ' · <b>เก็บไฟล์ไว้ก่อน</b> (เช่น Google Drive) แล้วจึงกดลบ</div>'
+      : '<div class="arch-wn">เลือกเปลี่ยนจากชุดที่ Export ไว้ — กด ⬇ Export ใหม่ก่อนลบ</div>') : '<div class="xs muted">ขั้นตอน: ① ติ๊กเลือก Order ② ⬇ Export JSON (เก็บไฟล์ไว้) ③ 🗑 ลบออกจาก Server · ลบได้เฉพาะชุดที่ Export แล้ว</div>';
+  return '<div class="card arch-c"><div class="card-b"><h3 class="arch-h">⬇ Export + 🗑 ลบออกจาก Server <span class="xs muted">เฉพาะ Order ที่เสร็จครบทุกส่วน</span></h3>' +
+    '<div class="arch-f"><label>ติดตั้งผ่านมาแล้วอย่างน้อย <input class="input" type="number" min="0" max="3650" data-chg="archDays" value="' + (+ARCH.days || 0) + '" style="width:84px"> วัน <span class="xs muted">(0 = ทุก Order ที่เสร็จครบ)</span></label>' +
+    '<input class="input" type="search" placeholder="ค้นหา Order / ชื่องาน / LOT (Enter)" data-chg="archQ" value="' + esc(ARCH.q) + '" style="max-width:280px"></div>' +
+    (ARCH.msg ? notice('info', esc(ARCH.msg)) : '') +
+    (L.length ? '<div class="table-wrap arch-tw"><table class="t resp arch-t"><thead><tr><th class="c"><input type="checkbox" data-chg="archAll"' + (allOn ? ' checked' : '') + ' aria-label="เลือกทั้งหมด"></th><th>Order</th><th>Item ID</th><th>LOT</th><th>ติดตั้ง</th><th>สถานะ</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+      : '<div class="small muted" style="padding:10px 0">ไม่มี Order ที่เสร็จครบตามเงื่อนไข' + (+ARCH.days > 0 ? ' (ลองลดจำนวนวัน)' : '') + '</div>') +
+    '<div class="arch-a"><span class="small">เลือกไว้ <b>' + sel.size + '</b> / ' + L.length + ' Order</span><span class="spacer"></span>' +
+    '<button class="btn" data-act="archExp"' + (sel.size && !off ? '' : ' disabled') + '>⬇ Export JSON (' + sel.size + ')</button>' +
+    '<button class="btn danger" data-act="archDel"' + (expOk && !off ? '' : ' disabled') + '>' + icon('trash', 'sm') + ' ลบออกจาก Server (' + (expOk ? ARCH.exp.n : 0) + ')</button></div>' + st + '</div></div>';
+}
+const ARCH_ST = { sent: 'ยังไม่รับงาน', got: 'รับงานแล้ว', doing: 'กำลังทำ', done: 'เสร็จแล้ว', none: '—', ordered: 'สั่งแล้ว', received: 'รับของแล้ว' };
+function archT(v) { return v == null || v === '' ? '' : esc(String(v)); }
+function archDT(v) { return v ? esc(fmtDT(v)) : ''; }
+function archTbl(head, rows) { return rows.length ? '<div class="table-wrap"><table class="t resp arch-t"><thead><tr>' + head.map((h) => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>' : '<div class="xs muted">—</div>'; }
+function archDetail(x) {
+  const r = x.raw || {}, o = r.order || {}, v = x.view || {}, vo = v.order || {}, b = x.brief || null;
+  const by = (a, w) => (a ? archDT(a) : '') + (w ? ' · ' + archT(w) : '');
+  const stg = (r.stages || []).map((s) => '<tr><td data-l="ส่วน">' + archT(s.stage === 'paint' ? 'งานสี' : s.stage === 'cut' ? 'ตัด' : s.stage) + '</td><td data-l="สถานะ"><b>' + archT(ARCH_ST[s.st] || s.st) + '</b></td><td data-l="รับงาน">' + by(s.got_at, s.got_by) + '</td><td data-l="กำลังทำ">' + by(s.doing_at, s.doing_by) + '</td><td data-l="เสร็จ">' + by(s.done_at, s.done_by) + '</td></tr>');
+  const docs = (r.docs || []).map((d) => '<tr><td data-l="ใบ" class="mono">' + archT(d.no) + '</td><td data-l="ประเภท">' + (d.kind === 'lm' ? 'ใบปิดผิว' : d.kind === 'rq' ? 'ใบเบิก' : archT(d.kind)) + '</td><td data-l="รายการ">' + (Array.isArray(d.lines) ? d.lines.length : 0) + '</td><td data-l="สถานะ">' + archT(ARCH_ST[d.st] || d.st || (d.cancelled ? 'ยกเลิก' : '')) + '</td><td data-l="เวลา">' + archDT(d.done_at || d.updated_at || d.first_at) + '</td></tr>');
+  const ist = ((((v.stages || {}).mo) || {}).ist) || {};
+  const its = (Array.isArray(v.items) && v.items.length ? v.items : (r.items || [])).map((i) => { const s = ist[i.key] || {};
+    return '<tr><td data-l="รหัส" class="mono">' + archT(i.code) + '</td><td data-l="รายการ">' + archT(i.name) + (i.spec ? ' · ' + archT(i.spec) : '') + (i.cab ? ' · ตู้ ' + archT(i.cab) : '') + '</td><td data-l="จำนวน" class="r nw">' + archT(i.qty) + ' ' + archT(i.unit || 'EA') + '</td>' +
+      '<td data-l="แผนก">' + archT(i.depName || (i.dep ? prdDepName(i.dep) : '')) + '</td><td data-l="สถานะ">' + archT(ARCH_ST[s.st || i.st] || s.st || i.st || '') + (s.at ? '<div class="xs muted">' + archDT(s.at) + (s.by ? ' · ' + archT(s.by) : '') + '</div>' : '') + '</td></tr>'; });
+  const holds = (r.holds || []).map((h) => '<tr><td data-l="ส่วน">' + archT(h.kind) + '</td><td data-l="รายการ" class="mono">' + archT(h.key) + '</td><td data-l="เหตุ">' + archT(PRD_HOLD_R[h.reason] || h.reason) + (h.note ? ' · ' + archT(h.note) : '') + '</td><td data-l="ติดโดย">' + by(h.set_at, h.set_by) + '</td></tr>');
+  let pipe = ''; try { pipe = b ? '<div class="arch-pipe">' + prdPipe(b, true) + '</div>' : ''; } catch (e) { pipe = ''; }
+  return '<div class="arch-d"><div class="arch-dh"><b>' + archT(vo.title || o.title || x.oid) + '</b><span class="mono">' + archT(x.oid) + '</span>' + (o.item_id_set ? '<span>Item ID <b class="mono">' + archT(o.item_id_set) + '</b></span>' : '') +
+      ((b && b.lot) || vo.lot ? '<span>LOT <b class="mono">' + archT((b && b.lot) || vo.lot) + '</b></span>' : '') + (b && archInst(b) !== '9999-99-99' ? '<span>ติดตั้ง <b>' + prdIso(archInst(b)) + '</b></span>' : '') + '</div>' + pipe +
+    '<h4>สถานะตัด / สี</h4>' + archTbl(['ส่วน', 'สถานะ', 'รับงาน', 'กำลังทำ', 'เสร็จ'], stg) +
+    '<h4>ใบปิดผิว / ใบเบิก</h4>' + archTbl(['ใบ', 'ประเภท', 'รายการ', 'สถานะ', 'เวลา'], docs) +
+    '<h4>รายการสั่งตัด / สั่งทำ (' + its.length + ')</h4>' + archTbl(['รหัส', 'รายการ', 'จำนวน', 'แผนก', 'สถานะ'], its) +
+    (holds.length ? '<h4>ป้ายรอ</h4>' + archTbl(['ส่วน', 'รายการ', 'เหตุ', 'ติดโดย'], holds) : '') + '</div>';
+}
+function archViewCard() {
+  const F = ARCH.file;
+  const head = '<h3 class="arch-h">📂 เปิดไฟล์เก็บถาวร <span class="xs muted">ดูอย่างเดียว · ไม่เขียนกลับ Server · ไม่ต้องใช้ SQL</span></h3>' +
+    '<label class="btn"><input type="file" accept=".json,application/json" data-chg="archFile" hidden>' + icon('upload', 'sm') + ' เลือกไฟล์ JSON…</label>';
+  if (!F) return '<div class="card arch-c"><div class="card-b">' + head + '<div class="xs muted" style="margin-top:6px">ไฟล์ที่ได้จาก ⬇ Export ด้านบน (PSN_เก็บถาวร_….json)</div></div></div>';
+  const q = String(ARCH.fq || '').trim().toLowerCase();
+  const L = F.orders.filter((x) => { const o = (x.raw || {}).order || {}, b = x.brief || {}; return !q || [x.oid, o.title, o.item_id_set, b.lot, b.title].join(' ').toLowerCase().indexOf(q) >= 0; });
+  const rows = L.map((x) => { const o = (x.raw || {}).order || {}, b = x.brief || {}, on = ARCH.open === x.oid;
+    return '<tr class="arch-r' + (on ? ' on' : '') + '" data-act="archOpen" data-oid="' + esc(x.oid) + '" tabindex="0"><td data-l="Order"><b class="mono">' + esc(x.oid) + '</b>' + ((b.title || o.title) && (b.title || o.title) !== x.oid ? '<div class="sub">' + esc(b.title || o.title) + '</div>' : '') + '</td>' +
+      '<td data-l="Item ID" class="mono">' + esc(o.item_id_set || b.iid || '') + '</td><td data-l="LOT" class="mono">' + esc(b.lot || '') + '</td><td data-l="ติดตั้ง">' + (archInst(b) !== '9999-99-99' ? prdIso(archInst(b)) : '—') + '</td><td class="r">' + (on ? '▴' : '▾') + '</td></tr>' +
+      (on ? '<tr class="arch-dr"><td colspan="5">' + archDetail(x) + '</td></tr>' : ''); }).join('');
+  return '<div class="card arch-c"><div class="card-b">' + head + '<div class="arch-fi">ไฟล์ <b>' + esc(F.name) + '</b> · ' + F.orders.length + ' Order · Export ' + (F.at ? esc(fmtDT(F.at)) : '') + (F.by ? ' โดย ' + esc(F.by) : '') + (F.app ? ' · ' + esc(F.app) : '') +
+    ' <button class="btn sm ghost" data-act="archClose">ปิดไฟล์</button></div>' +
+    '<input class="input" type="search" placeholder="ค้นหาในไฟล์ (Enter)" data-chg="archFq" value="' + esc(ARCH.fq) + '" style="max-width:280px;margin:8px 0">' +
+    '<div class="table-wrap"><table class="t resp arch-t"><thead><tr><th>Order</th><th>Item ID</th><th>LOT</th><th>ติดตั้ง</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></div></div>';
+}
+route(/^\/prd\/arch$/, 'prd', () => {
+  if (S.user.role !== 'admin') return { nav: '#/prd/set', html: pageHead('📦 เก็บถาวร', '') + '<div class="card"><div class="card-b">' + notice('info', 'เฉพาะ Admin') + '</div></div>' };
+  setTimeout(() => archInfoLoad(false), 0);
+  return { nav: '#/prd/set', html: pageHead('📦 เก็บถาวร', 'ข้อมูลเยอะ → Export เป็นไฟล์ JSON เก็บไว้ แล้วลบออกจาก Server · อยากดูทีหลังเปิดไฟล์ได้ · เฉพาะ Admin', '<a class="btn sm" href="#/prd/set">' + icon('chevLeft', 'sm') + ' ตั้งค่าไลน์ผลิต</a>') +
+    archInfoCard() + archExpCard() + archViewCard() };
+});
+on('archInfoRe', () => { archInfoLoad(true); });
+Acts.archDays = (el) => { ARCH.days = Math.max(0, Math.min(3650, Math.round(+el.value || 0))); ARCH.msg = ''; rerender(); };
+Acts.archQ = (el) => { ARCH.q = String(el.value || '').slice(0, 80); rerender(); };
+Acts.archFq = (el) => { ARCH.fq = String(el.value || '').slice(0, 80); rerender(); };
+Acts.archPick = (el) => { const o = el.dataset.oid; if (el.checked) ARCH.sel.add(o); else ARCH.sel.delete(o); ARCH.msg = ''; rerender(); };
+Acts.archAll = (el) => { const L = archCands(); if (el.checked) L.forEach((b) => ARCH.sel.add(b.oid)); else L.forEach((b) => ARCH.sel.delete(b.oid)); ARCH.msg = ''; rerender(); };
+on('archOpen', (el) => { ARCH.open = ARCH.open === el.dataset.oid ? '' : el.dataset.oid; rerender(); });
+on('archClose', () => { ARCH.file = null; ARCH.open = ''; rerender(); });
+Acts.archFile = async (el) => {
+  const f = el.files && el.files[0]; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text());
+    if (!j || j.kind !== 'starmark-psn-archive' || !Array.isArray(j.orders)) throw new Error('ไม่ใช่ไฟล์เก็บถาวรของ Starmark PSN');
+    ARCH.file = { name: String(f.name).slice(0, 120), at: j.at || '', by: String(j.by || '').slice(0, 60), app: String(j.app || '').slice(0, 20), orders: j.orders.filter((x) => x && typeof x.oid === 'string') }; ARCH.open = ''; ARCH.fq = '';
+  } catch (e) { toast('เปิดไฟล์ไม่ได้: ' + ((e && e.message) || e), 'err'); }
+  try { el.value = ''; } catch (e) { /* */ }
+  rerender();
+};
+function archDownload(name, text) {
+  const u = URL.createObjectURL(new Blob([text], { type: 'application/json' })), a = document.createElement('a');
+  a.href = u; a.download = name; a.rel = 'noopener'; document.body.appendChild(a); a.click(); setTimeout(() => { a.remove(); URL.revokeObjectURL(u); }, 60000);
+}
+on('archExp', async () => {
+  if (ARCH.busy || !ARCH.sel.size || S.user.role !== 'admin') return;
+  const oids = Array.from(ARCH.sel).sort(), out = [], miss = []; ARCH.busy = true; ARCH.msg = ''; rerender();
+  try {
+    for (let i = 0; i < oids.length; i += 50) {
+      const d = await rpc('cn_prd_arch_get', { p_oids: oids.slice(i, i + 50) });
+      ((d && d.list) || []).forEach((x) => out.push({ oid: x.oid, h: x.h, raw: x.raw, view: x.view, brief: prdBrief(x.oid) || null }));
+      ((d && d.miss) || []).forEach((m) => miss.push(m));
+    }
+  } catch (e) {
+    ARCH.busy = false; rerender(); if (e && e.code === 'session') { forceLogout(e.message); return; }
+    toast((e && (e.status === 404 || /PGRST202|cn_prd_arch_get/.test(e.message || ''))) ? 'ยังไม่ได้รัน SQL ส่วน 58 — Export ไม่ได้' : 'Export ไม่สำเร็จ: ' + ((e && e.message) || e), 'err'); return;
+  }
+  const now = new Date(), stamp = archIso(now) + '_' + ('0' + now.getHours()).slice(-2) + ('0' + now.getMinutes()).slice(-2), name = 'PSN_เก็บถาวร_' + stamp + '_' + out.length + 'Order.json';
+  archDownload(name, JSON.stringify({ kind: 'starmark-psn-archive', v: 1, app: APP_VERSION, at: now.toISOString(), by: S.user.name || '', count: out.length, miss, orders: out }));
+  miss.forEach((m) => ARCH.sel.delete(m));
+  ARCH.exp = { key: out.map((x) => x.oid).sort().join('|'), list: out.map((x) => ({ oid: x.oid, h: x.h })), name, at: now.getTime(), n: out.length };
+  ARCH.busy = false; toast('Export แล้ว ' + out.length + ' Order — เก็บไฟล์ ' + name + ' ไว้ก่อนลบ' + (miss.length ? ' · ไม่พบ ' + miss.length : ''));
+  rerender();
+});
+on('archDel', () => {
+  if (!ARCH.exp || ARCH.exp.key !== archKey() || !ARCH.exp.n) { toast('Export ก่อน — ลบได้เฉพาะชุดที่ Export แล้ว', 'err'); return; }
+  modal({ title: icon('trash') + ' ลบ ' + ARCH.exp.n + ' Order ออกจาก Server?', sub: 'ไฟล์ที่ Export: ' + esc(ARCH.exp.name),
+    body: notice('danger', '<b>ลบแล้วกลับเข้า PSN ไม่ได้</b> — ดูย้อนหลังได้จากไฟล์ JSON ที่ Export (📂 เปิดไฟล์เก็บถาวร) · ตรวจว่าไฟล์อยู่ในเครื่อง / Google Drive แล้ว') +
+      '<ul class="prd-rmul" style="margin:10px 0 12px"><li>ลบทั้ง Order: ใบปิดผิว · งานสี · สั่งตัด / สั่งทำ · สถานะ · ป้ายรอ · การติดตาม</li><li>ไม่ลบใน Production · ไม่แจ้งเตือนใคร · ข้อมูลเดิมที่ Production ส่งซ้ำ = ไม่กลับมา</li>' +
+      '<li>Order ที่มีคนติ๊ก / แผนส่งใหม่หลัง Export = <b>ไม่ลบ</b> (Export ใหม่)</li></ul>' +
+      '<label class="small" for="archTxt">พิมพ์ <b>' + PRD_PURGE_TXT + '</b> เพื่อยืนยัน</label><input class="input" id="archTxt" autocomplete="off" data-inp="archDelChk" style="margin-top:6px">',
+    foot: '<button class="btn" data-act="closeOv">ยกเลิก</button><button class="btn danger" id="archDelBtn" data-act="archDelOk" disabled>' + icon('trash', 'sm') + ' ลบถาวร ' + ARCH.exp.n + ' Order</button>' });
+  setTimeout(() => { const i = $('#archTxt'); if (i) i.focus(); }, 50);
+});
+on('archDelChk', () => { const b = $('#archDelBtn'), t = $('#archTxt'); if (b && t) b.disabled = t.value.trim() !== PRD_PURGE_TXT; });
+on('archDelOk', async (el) => {
+  const t = $('#archTxt'), v = t ? t.value.trim() : '';
+  if (v !== PRD_PURGE_TXT) { toast('พิมพ์คำว่า ' + PRD_PURGE_TXT + ' ให้ตรงก่อน', 'err'); if (t) t.focus(); return; }
+  if (!ARCH.exp || ARCH.exp.key !== archKey()) { closeOverlay(); toast('ชุดที่เลือกเปลี่ยน — Export ใหม่ก่อนลบ', 'err'); return; }
+  el.disabled = true; ARCH.busy = true;
+  const L = ARCH.exp.list, R = { ok: [], changed: [], gone: [] };
+  let err = '';
+  try { for (let i = 0; i < L.length; i += 50) { const d = await rpc('cn_prd_arch_del', { p_list: L.slice(i, i + 50), p_confirm: v }); ['ok', 'changed', 'gone'].forEach((k) => ((d && d[k]) || []).forEach((x) => R[k].push(x))); } }
+  catch (e) { if (e && e.code === 'session') { ARCH.busy = false; forceLogout(e.message); return; } err = String((e && e.message) || e); }
+  closeOverlay();
+  R.ok.forEach((o) => { ARCH.sel.delete(o); delete PRD.det[o]; delete PRD.sig[o]; });
+  ARCH.exp = null; ARCH.busy = false;
+  ARCH.msg = (err ? 'ลบไม่สำเร็จบางส่วน: ' + err + ' · ' : '') + 'ลบออกจาก Server แล้ว ' + R.ok.length + ' Order' + (R.changed.length ? ' · ไม่ลบ ' + R.changed.length + ' Order (มีคนติ๊ก / แผนส่งใหม่หลัง Export — Export ใหม่): ' + R.changed.join(', ') : '') + (R.gone.length ? ' · ไม่พบแล้ว ' + R.gone.length : '');
+  toast(ARCH.msg, err || R.changed.length ? 'err' : undefined);
+  try { prdGoneSoon(); } catch (e) { /* */ }
+  await refresh(); archInfoLoad(true); rerender();
 });
 /* ---------- V7.17.2 ย้อน / ยกเลิกสถานะที่กดผิด (ผู้ใช้ 16:04 “เผลอติ๊กรับ แต่ติ๊กผิด”) ----------
    1) กดสถานะแล้ว มีแถบ “↩ กดผิด — ย้อนกลับ” 12 วินาที (กดทีเดียวกลับเป็นสถานะเดิม)
