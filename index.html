@@ -1232,7 +1232,7 @@ a.spn-row.hidden{display:none}
 .spn-act{position:sticky;bottom:0;z-index:15;background:#fff;border:1px solid var(--line);border-radius:14px 14px 0 0;padding:10px 12px 12px;margin:14px -4px 0;box-shadow:0 -8px 22px rgba(20,35,59,.10);display:flex;flex-direction:column;gap:8px}
 .spn-act-h{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--text-2);flex-wrap:wrap}.spn-act-h b{color:var(--ink-text)}
 /* PSN V2.0.7: แถบบนแผงติ๊ก — ลากที่จับปรับขนาด · ย่อ / ขยาย (ทุกเครื่องเหมือนกัน) */
-.spn-actbar{display:flex;align-items:center;gap:8px;margin:-4px 0 -2px;font-size:12.5px;color:var(--text-2)}.spn-act{padding-top:0;gap:0}.spn-rsz{position:relative;flex:none;height:16px;margin:0 -12px;cursor:row-resize;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:14px 14px 0 0}.spn-rsz::before{content:'';position:absolute;left:50%;top:6px;width:48px;height:4px;margin-left:-24px;border-radius:4px;background:#CBD5E1;transition:background .12s}.spn-rsz::after{content:'';position:absolute;left:0;right:0;top:-10px;height:10px}.spn-rsz:hover::before,.spn-act.rsz .spn-rsz::before{background:#3B82F6}.spn-act.rsz,.spn-act:has(> .spn-rsz:hover){border-top-color:#3B82F6;box-shadow:0 -8px 22px rgba(20,35,59,.10),0 -2px 0 #93C5FD}html.uia-rsz,html.uia-rsz *{cursor:row-resize!important;user-select:none!important;-webkit-user-select:none!important}.spn-actin{display:flex;flex-direction:column;gap:8px;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:2px 2px 0;margin:0 -2px}@media (pointer:coarse){.spn-rsz{height:22px}.spn-rsz::before{top:8px;width:56px;height:5px;margin-left:-28px}}.spn-grip{display:inline-flex;align-items:center;justify-content:center;width:64px;height:20px;border-radius:999px;background:#E2E8F0;color:#475569;font-weight:900;letter-spacing:2px;cursor:ns-resize;touch-action:none;user-select:none;-webkit-user-select:none}.spn-grip:hover{background:#CBD5E1}.spn-actz{font-variant-numeric:tabular-nums;font-weight:700;min-width:36px}.spn-actsp{flex:1}.spn-actmin{font:inherit;font-size:13px;font-weight:700;border:1px solid #94A3B8;background:#fff;color:#1E293B;border-radius:999px;padding:3px 12px;cursor:pointer}.spn-actmin:hover{border-color:#2563EB;color:#1D4ED8}.spn-act.min{gap:6px;padding-top:8px;padding-bottom:8px}.spn-act.min .spn-act-h,.spn-act.min .spn-tgs,.spn-act.min .spn-hrow{display:none}.spn-act.min .spn-next{min-height:44px;padding:4px 12px;font-size:16px}.spn-act.min .spn-next .sub{font-size:13px}.drush{display:inline-block;margin-top:2px;padding:0 7px;border-radius:999px;background:#FEF3C7;color:#92400E;border:1px solid #F59E0B;font-size:11.5px;font-weight:800;white-space:nowrap}.spn-due .drush{display:block;margin:3px auto 0;width:max-content}
+.spn-actbar{display:flex;align-items:center;gap:8px;margin:-4px 0 -2px;font-size:12.5px;color:var(--text-2)}.spn-act{padding-top:0;gap:0}.spn-rsz{position:relative;flex:none;height:16px;margin:0 -12px;cursor:row-resize;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:14px 14px 0 0}.spn-rsz::before{content:'';position:absolute;left:50%;top:6px;width:48px;height:4px;margin-left:-24px;border-radius:4px;background:#CBD5E1;transition:background .12s}.spn-rsz::after{content:'';position:absolute;left:0;right:0;top:-10px;height:10px}.spn-rsz:hover::before,.spn-act.rsz .spn-rsz::before{background:#3B82F6}.spn-act.rsz,.spn-act:has(> .spn-rsz:hover){border-top-color:#3B82F6;box-shadow:0 -8px 22px rgba(20,35,59,.10),0 -2px 0 #93C5FD}html.uia-rsz,html.uia-rsz *{cursor:row-resize!important;user-select:none!important;-webkit-user-select:none!important}.spn-actin{display:flex;flex-direction:column;gap:8px;min-height:0;overflow:hidden;padding:2px 2px 0;margin:0 -2px}.spn-act[data-fit] .spn-actin>*{flex-shrink:0}.spn-act[data-fit]:not([data-d="0"]) .spn-actin>.spn-next,.spn-act[data-fit]:not([data-d="0"]) .spn-actin>.spn-tgs{flex-grow:1}/* V2.0.11 ขั้น 1 กะทัดรัด */.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin{gap:6px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-next{min-height:50px;padding:4px 12px;font-size:17px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-next .sub{font-size:13px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-next .ico{width:20px;height:20px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-act-h b{font-size:14.5px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-act-h span{font-size:13px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-tgs{gap:6px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-tgs .spn-tg{min-height:0;padding:4px 6px;gap:1px;border-width:2px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-tgs .spn-tg .bx{width:22px;height:22px;border-width:2px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-tgs .spn-tg b{font-size:16.5px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-tgs .spn-tg .sub{font-size:12.5px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-tgs .spn-tg .tm{font-size:11.5px;margin-top:0}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-hrow{margin-top:0;gap:6px}.spn-act:is([data-d="1"],[data-d="2"],[data-d="3"]) .spn-actin .spn-hbtn{min-height:40px;font-size:15px;padding-top:4px;padding-bottom:4px}/* ขั้น 2 */.spn-act:is([data-d="2"],[data-d="3"]) .spn-actin .spn-act-h{display:none}.spn-act:is([data-d="2"],[data-d="3"]) .spn-actin .spn-tgs .spn-tg .bx{display:none}.spn-act:is([data-d="2"],[data-d="3"]) .spn-actin .spn-next{min-height:44px;font-size:16px}.spn-act:is([data-d="2"],[data-d="3"]) .spn-actin .spn-hbtn{min-height:36px;font-size:14px}.spn-act:is([data-d="2"],[data-d="3"]) .spn-actin .spn-msg{font-size:12.5px;padding:4px 8px}/* ขั้น 3 เล็กสุด */.spn-act[data-d="3"] .spn-actin{gap:5px}.spn-act[data-d="3"] .spn-actin .spn-hrow{display:none}.spn-act[data-d="3"] .spn-actin .spn-next{min-height:42px;padding:2px 10px;font-size:16px}.spn-act[data-d="3"] .spn-actin .spn-next .ico{width:18px;height:18px}.spn-act[data-d="3"] .spn-actin .spn-tgs .spn-tg{flex-direction:row;flex-wrap:wrap;align-content:center;gap:0 6px;padding:2px 6px;min-height:42px}.spn-act[data-d="3"] .spn-actin .spn-tgs .spn-tg b{font-size:16px}.spn-act[data-d="3"] .spn-actin .spn-tgs .spn-tg .tm{display:none}.spn-act[data-d="3"] .spn-actin .spn-msg{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media (pointer:coarse){.spn-rsz{height:22px}.spn-rsz::before{top:8px;width:56px;height:5px;margin-left:-28px}}.spn-grip{display:inline-flex;align-items:center;justify-content:center;width:64px;height:20px;border-radius:999px;background:#E2E8F0;color:#475569;font-weight:900;letter-spacing:2px;cursor:ns-resize;touch-action:none;user-select:none;-webkit-user-select:none}.spn-grip:hover{background:#CBD5E1}.spn-actz{font-variant-numeric:tabular-nums;font-weight:700;min-width:36px}.spn-actsp{flex:1}.spn-actmin{font:inherit;font-size:13px;font-weight:700;border:1px solid #94A3B8;background:#fff;color:#1E293B;border-radius:999px;padding:3px 12px;cursor:pointer}.spn-actmin:hover{border-color:#2563EB;color:#1D4ED8}.spn-act.min{gap:6px;padding-top:8px;padding-bottom:8px}.spn-act.min .spn-act-h,.spn-act.min .spn-tgs,.spn-act.min .spn-hrow{display:none}.spn-act.min .spn-next{min-height:44px;padding:4px 12px;font-size:16px}.spn-act.min .spn-next .sub{font-size:13px}.drush{display:inline-block;margin-top:2px;padding:0 7px;border-radius:999px;background:#FEF3C7;color:#92400E;border:1px solid #F59E0B;font-size:11.5px;font-weight:800;white-space:nowrap}.spn-due .drush{display:block;margin:3px auto 0;width:max-content}
 .spn-tgs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .spn-tg{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:78px;border-radius:12px;border:2px solid #9AA6B4;background:#fff;color:var(--ink-text);cursor:pointer;padding:6px 4px;font:inherit}
 .spn-tg b{font-size:15.5px;line-height:1.2}.spn-tg .sub{font-size:12px;color:var(--text-2)}
@@ -1467,7 +1467,7 @@ a.spn-row .sr-p b{font-size:19px;min-width:52px}
 .arch-n{margin:8px 0 6px;font-size:14px}.arch-st{display:flex;gap:6px 18px;flex-wrap:wrap;align-items:center;font-size:13.5px;color:var(--text-2)}.arch-f{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:13.5px}
 .arch-tw{max-height:460px;overflow:auto}.arch-t tr.on td{background:#EFF6FF}.arch-a{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 6px}.arch-ok{font-size:13px;color:#166534;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:6px 10px}
 .arch-wn{font-size:13px;color:#92400E;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:6px 10px}.arch-fi{font-size:13px;margin-top:8px}.arch-r{cursor:pointer}.arch-r.on td{background:#EFF6FF}.arch-dr>td{background:#F8FAFC}
-.arch-d h4{margin:12px 0 4px;font-size:13.5px}.spn-tg .tm{display:block;font-size:12px;font-weight:600;color:#334155;margin-top:2px;font-variant-numeric:tabular-nums}.sr-tm{font-size:12px;color:#475569;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}.spn-wt .sr-tm{margin-left:6px}   /* V2.0.10 เวลาที่กด */.arch-sec{border:1px solid var(--line,#E2E8F0);border-radius:10px;margin:8px 0;background:#fff}.arch-sec>summary{cursor:pointer;padding:8px 12px;font-size:14px;list-style-position:inside}.arch-sec[open]>summary{border-bottom:1px solid var(--line,#E2E8F0)}.arch-sec>:not(summary){margin:8px 10px}   /* V2.0.10 */
+.arch-d h4{margin:12px 0 4px;font-size:13.5px}.spn-tg .tm{display:block;font-size:12px;font-weight:600;color:#334155;margin-top:2px;font-variant-numeric:tabular-nums}.sr-tm{font-size:12px;color:#475569;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}.sr-h .sr-st{margin-left:auto;flex-direction:column;align-items:flex-end;flex-wrap:nowrap;gap:2px}.sr-st1{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.sr-h .sr-st .sr-tm{margin-left:0;align-self:flex-start}.card-h h2 .sr-tm{font-size:13px;margin-left:4px;vertical-align:middle}.spn-wt .sr-tm{margin-left:6px}   /* V2.0.10 เวลาที่กด */.arch-sec{border:1px solid var(--line,#E2E8F0);border-radius:10px;margin:8px 0;background:#fff}.arch-sec>summary{cursor:pointer;padding:8px 12px;font-size:14px;list-style-position:inside}.arch-sec[open]>summary{border-bottom:1px solid var(--line,#E2E8F0)}.arch-sec>:not(summary){margin:8px 10px}   /* V2.0.10 */
 .arch-sec .arch-sec{margin:6px 0}.arch-s3{display:flex;gap:4px 16px;flex-wrap:wrap;font-size:12.5px;color:var(--text-2)}.arch-gone td{opacity:.55}.arch-tl{margin:0;padding:0 0 0 2px;list-style:none;max-height:420px;overflow:auto}
 .arch-tl li{display:grid;grid-template-columns:150px 140px 1fr;gap:4px 10px;padding:5px 6px;border-bottom:1px dashed #E2E8F0;font-size:13px}.arch-tl .t{font-variant-numeric:tabular-nums;color:#334155;font-weight:600}.arch-tl .w{color:#475569}
 .arch-tl li.k-plan{background:#F8FAFC}@media (max-width:640px){.arch-tl li{grid-template-columns:1fr}.arch-tl .w{font-size:12px}}.arch-dh{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline;font-size:13.5px}.arch-pipe{margin-top:8px;overflow-x:auto}
@@ -1917,7 +1917,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.10' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.11' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -2699,19 +2699,40 @@ function uiaGet() {
 const UIA_MINH = 60;
 function uiaHp(h) { h = Math.round(+h); return isFinite(h) && h > 0 ? Math.max(UIA_MINH, Math.min(3000, h)) : 0; }
 function uiaCap() { return Math.max(UIA_MINH, (window.innerHeight || 800) - 120); }   /* แผงไม่สูงเกินจอ */
-function uiaLim(h) { const c = uiaCap(); return h > 0 ? Math.min(h, c) : c; }
 function uiaIn(p) { return p ? p.querySelector('.spn-actin') : null; }
-function uiaFull(c) { const m = c.style.maxHeight; c.style.maxHeight = 'none'; const f = c.scrollHeight; c.style.maxHeight = m; return f; }
+/* PSN V2.0.11 (ผู้ใช้ 27/11 13:05 “ทำปุ่มให้มันเล็กลง จะได้ไม่ต้องเลื่อนไปเลื่อนมา”): แผงเตี้ยลง = ปุ่มเล็กลงเป็นขั้น · ไม่มีแถบเลื่อนในแผง
+   data-d: 0 ปกติ · 1 กะทัดรัด · 2 ซ่อนบรรทัดหัว + ช่องสี่เหลี่ยม · 3 เล็กสุด (ปุ่มขั้นบรรทัดเดียว · ซ่อนป้ายรอ / เวลาบนปุ่ม)
+   ความสูงที่ลากเหลือจากขั้นนั้น = ปุ่มยืดเต็มพื้นที่ (ขอบบนตามเมาส์ ไม่กระโดด) */
+const UIA_LV = 3;
+function uiaNat(p, c) {   /* ความสูงเนื้อหาจริงของแต่ละขั้น */
+  const d0 = p.getAttribute('data-d'), hs = c.style.height, ov = c.style.overflowY, N = [];
+  c.style.height = 'auto'; c.style.overflowY = 'hidden';
+  for (let d = 0; d <= UIA_LV; d++) { p.setAttribute('data-d', String(d)); N.push(Math.ceil(c.scrollHeight)); }
+  if (d0 == null) p.removeAttribute('data-d'); else p.setAttribute('data-d', d0);
+  c.style.height = hs; c.style.overflowY = ov; return N;
+}
+function uiaFit(p, h, N) {   /* h = ความสูงที่ต้องการ (px · 0 = สูงเต็ม) → ขั้นที่ใส่ได้พอดี */
+  const c = uiaIn(p); if (!c) return null;
+  N = N || uiaNat(p, c);
+  if (!N[0]) { p.removeAttribute('data-fit'); return null; }   /* ยังไม่แสดงบนจอ = ลองใหม่ตอนแสดง */
+  const want = Math.min(h > 0 ? h : N[0], uiaCap());
+  let d = 0; while (d < UIA_LV && N[d] > want) d++;
+  p.setAttribute('data-d', String(d)); p.setAttribute('data-fit', '1');
+  if (!d) { c.style.height = ''; c.style.overflowY = ''; return { d, H: N[0], N }; }
+  const H = N[d] > want ? Math.max(UIA_MINH, want) : Math.min(want, N[d - 1]);   /* เล็กสุดยังเกินจอ (จอเตี้ยมาก) = เลื่อนได้ */
+  c.style.height = Math.round(H) + 'px'; c.style.overflowY = N[d] > H + 1 ? 'auto' : 'hidden';
+  return { d, H, N };
+}
 function uiaBar(U) {
   return '<div class="spn-rsz" role="separator" aria-orientation="horizontal" aria-label="ลากขึ้น-ลง ปรับความสูงแผงติ๊ก · ดับเบิลคลิก = สูงเต็ม"></div>' +   /* ไม่มีกล่องคำอธิบายตอนชี้ (บังแผง) — อยู่ใน ⓘ วิธีติ๊ก */
-    '<div class="spn-actin" style="max-height:' + uiaLim(U.h) + 'px">';
+    '<div class="spn-actin">';   /* V2.0.11: ขั้น / ความสูง ใส่ตอนแสดง (uiaFit) */
 }
 function uiaApply() {   /* ค่าใหม่ (เครื่องอื่นตั้ง / กดเอง / จอเปลี่ยนขนาด) → แผงที่เปิดอยู่ ไม่ต้องวาดทั้งหน้า */
   const U = uiaGet();
   document.querySelectorAll('.spn-act').forEach((p) => {
     if (UIA.drag && UIA.drag.el === p) return;
     p.classList.remove('min'); p.style.zoom = '';
-    const c = uiaIn(p); if (c) c.style.maxHeight = uiaLim(U.h) + 'px';
+    uiaFit(p, U.h);
   });
 }
 async function uiaLoad(force) {
@@ -2741,26 +2762,27 @@ async function uiaSet(p) {   /* V2.0.10: { h } ความสูง px (0 = ส
     else toast(e.message, 'err');
   }
 }
-document.addEventListener('pointerdown', (e) => {   /* V2.0.10: ลากขอบบน = ความสูงอย่างเดียว (ขอบล่างอยู่กับที่ · ความกว้างไม่เปลี่ยน) */
+document.addEventListener('pointerdown', (e) => {   /* V2.0.10: ลากขอบบน = ความสูงอย่างเดียว (ขอบล่างอยู่กับที่ · ความกว้างไม่เปลี่ยน) · V2.0.11: เตี้ยลง = ปุ่มเล็กลง */
   const g = e.target && e.target.closest ? e.target.closest('.spn-rsz') : null; if (!g || (e.pointerType === 'mouse' && e.button !== 0 && e.button !== 2)) return;   /* ปุ่มซ้าย / ขวา / นิ้ว */
   const p = g.closest('.spn-act'), c = uiaIn(p); if (!c) return;
   e.preventDefault(); try { tipHide(); } catch (x) { /* */ }
-  const h0 = c.getBoundingClientRect().height, full = uiaFull(c), top = Math.min(full, uiaCap());
-  UIA.drag = { y0: e.clientY, h0, h: h0, full, top, el: p, c, moved: false };
+  const N = uiaNat(p, c), top = Math.min(N[0], uiaCap()), bot = Math.min(N[UIA_LV], top), h0 = c.getBoundingClientRect().height;
+  UIA.drag = { y0: e.clientY, h0, h: h0, N, top, bot, el: p, c, moved: false };
   p.classList.add('rsz'); document.documentElement.classList.add('uia-rsz');
   try { g.setPointerCapture(e.pointerId); } catch (x) { /* */ }
   const mv = (ev) => { const d = UIA.drag; if (!d) return; const dy = d.y0 - ev.clientY; if (Math.abs(dy) >= 2) d.moved = true;
-    const h = Math.max(Math.min(UIA_MINH, d.top), Math.min(d.top, Math.round(d.h0 + dy))); d.h = h; d.c.style.maxHeight = h + 'px'; };   /* ลากขึ้น = สูงขึ้น · ลากลง = เตี้ยลง */
+    const h = Math.max(d.bot, Math.min(d.top, Math.round(d.h0 + dy))); d.h = h; uiaFit(d.el, h, d.N); };   /* ลากขึ้น = สูงขึ้น · ลากลง = เตี้ยลง (ปุ่มเล็กลง) */
   const up = () => { document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up);
     p.classList.remove('rsz'); document.documentElement.classList.remove('uia-rsz');
     const d = UIA.drag; UIA.drag = null; if (!d) return; if (!d.moved) { uiaApply(); return; }
-    uiaSet({ h: d.h >= d.full - 1 ? 0 : d.h }); };   /* ลากจนสุดเนื้อหา = สูงเต็ม */
+    uiaSet({ h: d.h >= d.N[0] - 1 ? 0 : d.h }); };   /* ลากจนสุดเนื้อหา = สูงเต็ม */
   document.addEventListener('pointermove', mv); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
 });
 document.addEventListener('contextmenu', (e) => { if (e.target && e.target.closest && e.target.closest('.spn-rsz')) e.preventDefault(); });   /* ลากด้วยปุ่มขวาได้ (ไม่ขึ้นเมนู) */
 document.addEventListener('dblclick', (e) => { if (e.target && e.target.closest && e.target.closest('.spn-rsz')) uiaSet({ h: 0 }); });   /* สูงเต็ม */
 window.addEventListener('resize', () => { if (document.querySelector('.spn-act')) uiaApply(); });
 document.addEventListener('scroll', (e) => { const t = e.target; if (t && t.classList && t.classList.contains('spn-actin')) UIA.sc = { k: location.hash, t: t.scrollTop }; }, true);
+try { new MutationObserver(() => { const ps = document.querySelectorAll('.spn-act:not([data-fit])'); if (!ps.length) return; const U = uiaGet(); ps.forEach((p) => { if (!(UIA.drag && UIA.drag.el === p)) uiaFit(p, U.h); }); }).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) { /* */ }   /* V2.0.11: แผงที่วาดใหม่ = ขั้น / ความสูงที่ตั้งไว้ (ก่อนแสดงบนจอ) */
 try { new MutationObserver(() => { const c = document.querySelector('.spn-actin:not([data-sc])'); if (!c) return; c.setAttribute('data-sc', '1'); if (UIA.sc && UIA.sc.k === location.hash && UIA.sc.t > 0) c.scrollTop = UIA.sc.t; else UIA.sc = null; }).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) { /* */ }   /* ติ๊กแล้ววาดใหม่ = เลื่อนในแผงอยู่ที่เดิม */
 /* PSN V2.0.8 (ผู้ใช้ 27/11 10:48): ปุ่มอัปเดตโปรแกรม + เช็คเวอร์ชันใหม่เอง (version.json) — ไม่ต้องลบแอปแล้วลงใหม่ */
 const UPD = { v: '', at: 0, busy: false, ok: (() => { try { return /^https?:$/.test(location.protocol) && !FRAMED && APP_KIND === 'spn'; } catch (e) { return false; } })() };
@@ -3557,6 +3579,7 @@ function avIcOf(id, name) {   /* บัญชีฝ่ายผลิตเท�
     const U = PRD.stn && Array.isArray(PRD.stn.users) ? PRD.stn.users : [], u = id ? U.find((x) => x.id === id) : null; if (u) return depIc(u.name || name, u.st);
     if (S.user && id && id === S.user.id && S.user.role === 'production') return depIc(name, prdMySt());
     const L = typeof liveUsers === 'function' ? liveUsers() : [], v = id ? L.find((x) => x.id === id) : null; if (v && v.role === 'production') return depIc(v.name || name, []);   /* ยังไม่มีส่วนงาน (เช่น ไม่ใช่ Admin) */
+    if (id && ((S.user && id === S.user.id && S.user.role === 'admin') || (v && v.role === 'admin'))) return '🛡️';   /* PSN V2.0.11 (ผู้ใช้ 13:12): ผู้ดูแลระบบ */
   } catch (e) { /* */ }
   return '';
 }
@@ -5348,7 +5371,7 @@ route(/^\/prd\/orders$/, 'prd', () => {
     body = '<div class="prd-flt"><div class="chips">' + chips + '</div><span class="xs muted">เรียงตามวันกำหนด (ใกล้สุดก่อน)' + (f === 'todo' ? ' · แบ่งกลุ่ม เลยกำหนด / วันนี้–พรุ่งนี้ / 7 วัน' : '') + ' · แตะเพื่อดูรายการและติ๊กสถานะ</span></div>' +
       '<div class="spn-list">' + (rows.length ? rows.map((u, ix) => { const done = prdUnitDone(u), gk = f === 'todo' ? prdDg(u) : '';   /* V1.8.5: หัวกลุ่มวันกำหนด */
         return (gk && (!ix || prdDg(rows[ix - 1]) !== gk) ? prdDgHead(gk, rows) : '') + '<a class="spn-row prd-qc st-' + (done ? 'done' : (u.st || 'sent')) + (u.hold ? ' st-hold' : '') + '" href="' + prdWHref(u.k, u.ref) + '" data-pq="' + esc(u.pq) + '"' + (gk ? ' data-g="' + gk + '"' : '') + '>' + prdDueBox(u, done) +
-          '<span class="sr-h">' + prdIdl(u.docNo, u.lot, u.iid, u.job) + folMark(u.oid) + '<span class="sr-st">' + prdBadge(u.k, u.st) + prdStTmH(u.oid, u.k, u.st) + prdSnChip(u.sn, prdOno(u.iid, u.job)) + '</span></span><span class="sr-b">' +   /* V1.9.5: หัวงานเป็นลูกตรงของการ์ด (จัดวางด้วย grid) · 📐 แบบผลิต + แชร์ */   /* V1.9.4: เลขที่เอกสาร / LOT / Item ID */
+          '<span class="sr-h">' + prdIdl(u.docNo, u.lot, u.iid, u.job) + folMark(u.oid) + '<span class="sr-st"><span class="sr-st1">' + prdBadge(u.k, u.st) + prdSnChip(u.sn, prdOno(u.iid, u.job)) + '</span>' + prdStTmH(u.oid, u.k, u.st) + '</span></span><span class="sr-b">' +   /* V1.9.5: หัวงานเป็นลูกตรงของการ์ด (จัดวางด้วย grid) · 📐 แบบผลิต + แชร์ */   /* V1.9.4: เลขที่เอกสาร / LOT / Item ID */
             '<span class="sr-j">' + esc(u.title) + (!u.iid || u.iid === u.job ? '' : (u.title ? ' · ' : '') + '<span class="xs muted mono prd-oid0">' + esc(u.job) + '</span>') + (u.adm ? ' ' + prdAdmTag() : '') + '</span>' +
             '<span class="sr-m">' + esc(u.meta) + '</span>' + (u.note ? '<span class="prd-anote small">' + icon('edit', 'xs') + ' ' + esc(u.note) + '</span>' : '') +
             (u.warn ? '<span class="sr-w">' + esc(u.warn) + '</span>' : '') + prdHoldSum(u.hold) +
@@ -7139,7 +7162,7 @@ function prdDocTabs(D) {   /* V1.8.0 (ผู้ใช้ 18/11 09:27 “แย�
 function prdDepStage(k, oid, L, ist, HM) {   /* V1.8.0: สถานะของแผนกเดียว (แท็บแผนก) */
   const c = L.reduce((x, i) => { const t = (ist[i.key] || {}).st; x.n++; if (t && x[t] != null) x[t]++; return x; }, { n: 0, got: 0, doing: 0, done: 0 }), st = prdStFromCnt(c), G = prdStg(k), can = prdCan(k);
   const H = L.filter((i) => (ist[i.key] || {}).st !== 'done').map((i) => HM[i.key]).filter(Boolean);
-  return '<div class="card prd-doc prd-stage st-' + st + (st === 'done' ? ' ok' : '') + '"><div class="card-h"><h2>' + icon(G.ico) + ' สถานะ' + esc(G.t) + ' ' + prdBadge(k, st) + '</h2><span class="small muted">' + esc(((G.st || {})[st] || [])[2] || '') + '</span></div><div class="card-b">' +
+  return '<div class="card prd-doc prd-stage st-' + st + (st === 'done' ? ' ok' : '') + '"><div class="card-h"><h2>' + icon(G.ico) + ' สถานะ' + esc(G.t) + ' ' + prdBadge(k, st) + (st !== 'sent' ? prdTmB(prdTmAt(null, st, ist, L.map((i) => i.key)) || prdStAtSt(oid, k, st)) : '') + '</h2><span class="small muted">' + esc(((G.st || {})[st] || [])[2] || '') + '</span></div><div class="card-b">' +
     '<div class="spn-jp"><div class="spn-wp-h"><span>ความคืบหน้า · ' + prdCntTxt(c) + '</span><b>' + prdPct(c, st) + '%</b></div>' + prdBar(c, true, H.length) +
     '<a class="btn ' + (can ? 'primary' : '') + ' spn-jgo" href="' + prdWHref(k, oid) + '">' + icon(can ? 'check' : 'eye', 'sm') + ' ' + (can ? 'ติ๊กสถานะ / ติดป้ายรอ' : 'ดูรายการ') + ' ' + icon('chevRight', 'xs') + '</a></div>' + prdHoldBanner(H) + '</div></div>';
 }
@@ -7371,9 +7394,20 @@ function prdProg(k, ref, st, c) {   /* ความคืบหน้า + ป�
   return '<div class="spn-jp"><div class="spn-wp-h"><span>ความคืบหน้า · ' + prdCntTxt(c) + '</span><b>' + prdPct(c, st) + '%</b></div>' + prdBar(c, true) +
     '<a class="btn ' + (prdCan(k) ? 'primary' : '') + ' spn-jgo" href="' + prdWHref(k, ref) + '">' + icon(prdCan(k) ? 'check' : 'eye', 'sm') + ' ' + (prdCan(k) ? 'ติ๊กสถานะ' : 'ดูรายการ') + ' ' + icon('chevRight', 'xs') + '</a></div>';
 }
+/* PSN V2.0.11 (ผู้ใช้ 27/11 13:08 “เวลาตรงนี้ก็ไม่มี ตรงรับงานแล้ว”): การ์ดสถานะในหน้า Order = 🕑 เวลาที่เข้าสถานะนี้ · คนกด */
+function prdTmAt(g, st, ist, keys) {   /* เวลาทั้งส่วน (gotAt / doingAt / doneAt) หรือรายการล่าสุดที่อยู่สถานะนี้ (เอาเวลาล่าสุด) */
+  if (!st || st === 'sent') return null;
+  const t = (a) => { const d = toDate(a); return d ? +d : 0; };
+  let best = g && g[st + 'At'] ? { at: g[st + 'At'], by: g[st + 'By'] } : null;
+  const I = ist && typeof ist === 'object' ? ist : {}, K = Array.isArray(keys) ? keys : Object.keys(I);
+  K.forEach((k) => { const x = I[k]; if (x && x.at && x.st === st && (!best || t(x.at) > t(best.at))) best = x; });
+  return best;
+}
+function prdStAtSt(oid, k, st) { const a = prdStAt(prdBrief(oid), k); return a && (!a.st || a.st === st) ? a : null; }   /* สำรอง: เวลาจากภาพรวม (SQL ส่วน 56) */
+function prdTmB(a) { return a && a.at ? ' <span class="sr-tm"' + tipA('กดสถานะนี้ ' + fmtDT(a.at) + (a.by ? ' · โดย ' + a.by : '')) + '>🕑 ' + esc(prdAtTxt(a.at)) + (a.by ? ' · ' + esc(a.by) : '') + '</span>' : ''; }
 function prdStageCard(k, oid, x, extra, H) {   /* V1.8.0: H = ป้ายรอ */
   const st = x.st || 'sent';
-  return '<div class="card prd-doc prd-stage st-' + st + (st === 'done' ? ' ok' : '') + '"><div class="card-h"><h2>' + icon(PRD_STG[k].ico) + ' สถานะ' + PRD_STG[k].t + ' ' + prdBadge(k, st) + (extra || '') + '</h2>' +
+  return '<div class="card prd-doc prd-stage st-' + st + (st === 'done' ? ' ok' : '') + '"><div class="card-h"><h2>' + icon(PRD_STG[k].ico) + ' สถานะ' + PRD_STG[k].t + ' ' + prdBadge(k, st) + (st !== 'sent' ? prdTmB(prdTmAt(x, st, x.ist) || prdStAtSt(oid, k, st)) : '') + (extra || '') + '</h2>' +
     '<span class="small muted">' + esc(PRD_STG[k].st[st][2]) + '</span></div><div class="card-b">' + prdProg(k, oid, st, prdCntK(x)) + prdHoldBanner(H) + '</div></div>';
 }
 
@@ -7393,7 +7427,7 @@ function prdLmHtml(oid, docs, r, o) {
         (a.due || a.note ? '<button class="btn sm ghost" data-act="prdAdmClear" data-kind="lm" data-oid="' + esc(oid) + '" data-ref="' + esc(d.id) + '" title="คืนค่าจาก Production">' + icon('refresh', 'sm') + '</button>' : '') +
         '<button class="btn sm ghost prd-del" data-act="prdAdmDel" data-kind="lm" data-oid="' + esc(oid) + '" data-ref="' + esc(d.id) + '" title="Admin ลบใบนี้ (ซ่อนจากทุกคน)">' + icon('trash', 'sm') + ' ลบ</button>') + '</span>' : '';
     return '<div class="card prd-doc' + (off ? ' off' : d.st === 'done' ? ' ok' : '') + '"><div class="card-h"><h2><span class="mono">' + esc(d.no) + '</span> ' +
-        (d.removedAt ? '<span class="badge t-red">Admin ลบแล้ว (ซ่อนจากทุกคน)</span>' : off ? '<span class="badge t-gray">' + (d.gone ? 'ไม่อยู่ในรอบที่แผนส่งล่าสุด' : 'ยกเลิกแล้ว') + '</span>' : prdBadge('lm', d.st)) +
+        (d.removedAt ? '<span class="badge t-red">Admin ลบแล้ว (ซ่อนจากทุกคน)</span>' : off ? '<span class="badge t-gray">' + (d.gone ? 'ไม่อยู่ในรอบที่แผนส่งล่าสุด' : 'ยกเลิกแล้ว') + '</span>' : prdBadge('lm', d.st) + prdTmB(prdTmAt(d, d.st, d.ist))) +
         (edited ? ' <span class="badge t-red">แผนแก้ใบหลังรับงาน ' + fmtDT(d.at) + '</span>' : '') + (+d.orders > 1 ? ' <span class="badge t-violet">รวม ' + d.orders + ' Order</span>' : '') + (a.due || a.note ? ' ' + prdAdmTag() : '') + '</h2>' +
         '<span class="small muted">ออกใบ ' + prdD(d.issuedAt) + ab + '</span></div><div class="card-b">' + (d.removedAt ? '<div class="small muted" style="margin-bottom:8px">ลบโดย ' + esc(d.removedBy || 'Admin') + ' ' + fmtDT(d.removedAt) + '</div>' : '') +
 
@@ -7620,7 +7654,7 @@ function spnTip(k) {
     s1: '**รับงานแล้ว** = ได้เอกสาร / ของแล้ว ยังไม่เริ่มทำ\nแตะอีกครั้ง = ยกเลิก (กดผิดแก้ได้เอง)',
     s2: '**กำลังทำ** = เริ่มลงมือทำแล้ว (ติ๊ก “รับงานแล้ว” ให้ด้วย)\nแตะอีกครั้ง = ยกเลิก',
     s3: '**เสร็จแล้ว** = ทำเสร็จครบ (ติ๊กขั้นก่อนหน้าให้ด้วย)\nแตะอีกครั้ง = ยกเลิก',
-    act: 'ไม่ติ๊กช่องสี่เหลี่ยมหน้ารายการ = ติ๊กทั้งใบ\nติ๊กเลือกบางรายการก่อน = ติ๊กเฉพาะที่เลือก\nแตะปุ่มที่ติ๊กแล้วซ้ำ = ยกเลิก\nเส้นขอบบนของแผงนี้: ลากขึ้น-ลง = ปรับความสูง (เหมือน Excel) · ดับเบิลคลิก = สูงเต็ม · ทุกเครื่องเห็นความสูงเดียวกัน',
+    act: 'ไม่ติ๊กช่องสี่เหลี่ยมหน้ารายการ = ติ๊กทั้งใบ\nติ๊กเลือกบางรายการก่อน = ติ๊กเฉพาะที่เลือก\nแตะปุ่มที่ติ๊กแล้วซ้ำ = ยกเลิก\nเส้นขอบบนของแผงนี้: ลากขึ้น-ลง = ปรับความสูง (เหมือน Excel) · เตี้ยลง = ปุ่มเล็กลง (ไม่ต้องเลื่อน) · ดับเบิลคลิก = สูงเต็ม · ทุกเครื่องเห็นความสูงเดียวกัน',
     all: 'ติ๊กเลือกทุกรายการในใบ (ไม่เลือกเลยก็ = ทั้งใบ เหมือนกัน) · แตะอีกครั้งเพื่อเอาออก',
     prog: 'ความคืบหน้า % = เฉลี่ยทุกรายการในใบ — ต่อรายการ: รับงานแล้ว 10% · กำลังทำ 50% · เสร็จแล้ว 100% (ยังไม่รับ 0%)\nเช่น 3 รายการ กำลังทำทั้ง 3 = 50% · เสร็จ 1 + กำลังทำ 2 = 67% · 100% เมื่อเสร็จครบทุกรายการ\nเขียว = เสร็จ · ม่วงลายทาง = กำลังทำ · ฟ้า = รับงานแล้ว · เทา = ยังไม่รับ',
     back: 'กลับไปหน้ารายการงานของสถานีนี้',
