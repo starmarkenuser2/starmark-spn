@@ -1487,6 +1487,8 @@ a.spn-row .sr-p b{font-size:19px;min-width:52px}
 .prd-pipe-h span{font-size:13.5px;font-weight:800;color:#26344A;line-height:1.25;white-space:normal}
 .prd-pipe-h em{font-style:normal;font-weight:400;color:#9AA6B6;margin-right:3px}
 .prd-tbl-all th.prd-pipe-th{white-space:normal;vertical-align:bottom}
+/* PSN V2.0.6 (ผู้ใช้ 27/11 08:46 “ระยะห่างสถานะกับแผนกมากไป · ดูไม่ตรงกับแผนก”): จอกว้าง — ทุกช่องชิดบน (กล่องอยู่ใต้หัวทันที) · ชื่อแผนกบนกล่อง · หัวมีเส้นใต้เท่ากล่อง · ช่องค้างอยู่ที่กว้างขึ้น */
+@media (min-width:761px){.prd-tbl-all tbody td{vertical-align:top}.prd-tbl-all td.prd-pipe-td{padding-top:10px}.prd-pipe-h span{padding-bottom:5px;border-bottom:3px solid #CBD5E1;align-self:end}.prd-tbl-all .prd-pipe .pp .pp-k{display:block;font-size:12px;font-weight:700;color:#475569;line-height:1.2;margin:0 0 2px;white-space:normal}.prd-tbl-all .prd-pipe .pp-done .pp-k{padding-right:20px}.prd-tbl-all .prd-pipe .pp-na .pp-k{color:#64748B}.prd-tbl-all td[data-l="ค้างอยู่ที่"]{width:154px;min-width:154px}.prd-tbl-all td .prd-nows .prd-now{max-width:none;font-size:13px;line-height:1.25;padding:4px 10px;border-radius:10px}.prd-tbl-all td .prd-nows{gap:5px}}
 @media (min-width:761px){.prd-tbl-all .prd-pipe-td{min-width:600px}.prd-tbl-all th,.prd-tbl-all td{padding-left:10px;padding-right:10px}.prd-tbl-all td .prd-now{white-space:normal;max-width:150px;line-height:1.3;border-radius:12px;font-size:14px;padding:6px 10px}.prd-tbl-all td[data-l="อัปเดต"]{white-space:normal;min-width:84px}}
 /* ตัวติ๊กกรองสถานะ: ช่องที่มีงาน = สีของสถานะ · ติ๊กแล้ว = สีทึบ */
 .prd-tick.pt-sent:not(.zero){background:var(--s-sent-bg);color:var(--s-sent);border-color:#C9D2DC}
@@ -1897,7 +1899,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.5' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.6' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -2653,12 +2655,22 @@ const AREA_NAME = { sale: ' Sale', pur: 'จัดซื้อ', con: 'ผู้
 /* V7.17: หน้าไลน์ผลิตเปิดได้ทั้งฝ่ายผลิต · คลัง · จัดซื้อ (แต่ละบทบาทกดได้เฉพาะขั้นของตัวเอง — Server ตรวจซ้ำ) */
 function canSee(area) { return S.user.role === 'admin' || AREA_ROLE[area] === S.user.role || (area === 'prd' && canPrd()); }
 
+/* PSN V2.0.6 (ผู้ใช้ 27/11 09:18 “เข้าหน้าแผนกอลูอยู่ กดออกจากโปรแกรมแล้ว login แผนกอื่น มันค้างหน้าแผนกอลู ต้องกด F5 ตลอด”):
+   ส่วนงานของบัญชี (PRD.stn) จำไว้ 60 วิ · แผนผลิต 30 วิ — ไม่ดูว่าเป็นบัญชีไหน → ล้างตอนออก / เข้าระบบ · คำขอที่ค้างของบัญชีเดิมตอบมาทีหลัง = ทิ้ง */
+const PSU = { g: 0 };
+function psnUserReset() {
+  PSU.g++;
+  try { Object.keys(PRD).forEach((k) => { delete PRD[k]; });
+    Object.assign(PRD, { det: {}, sig: {}, loading: {}, err: {}, q: '', f: {}, so: {}, lt: '', tab: {}, cf: {}, lq: { open: null, done: null, sig: '', busy: false, err: '' }, stn: null, stnAt: 0, stnBusy: false, pick: {}, msg: {} }); } catch (e) { /* ยังไม่โหลด */ }
+  try { Object.assign(PLAN, { rows: null, can: false, today: '', at: 0, busy: false, err: '', open: '', ed: '', saving: '' }); } catch (e) { /* ยังไม่โหลด */ }
+  try { PRD_OVKC = { a: null, s: null, t: null, v: [] }; } catch (e) { /* ยังไม่โหลด */ }
+}
 async function forceLogout(msg) {
-  await signOut(); DB = null; S.user = null; lastState = ''; FURL.clear(); closeOverlay();
+  await signOut(); DB = null; S.user = null; lastState = ''; FURL.clear(); psnUserReset(); closeOverlay();   /* PSN V2.0.6 */
   if (msg) toast(msg, 'err');
   go('#/login');
 }
-on('logout', async () => { await pushOnLogout(); await signOut(); DB = null; S.user = null; lastState = ''; FURL.clear(); toast('ออกจากระบบแล้ว'); go('#/login'); });
+on('logout', async () => { await pushOnLogout(); await signOut(); DB = null; S.user = null; lastState = ''; FURL.clear(); psnUserReset(); toast('ออกจากระบบแล้ว'); go('#/login'); });   /* PSN V2.0.6: ล้างข้อมูลของบัญชีเดิม */
 on('go', (el) => go(el.dataset.h));
 function go(h) { if (location.hash === h) render(); else if (FRAMED) location.replace(location.href.split('#')[0] + h); else location.hash = h; } /* V7.6: ในแท็บของ Production ไม่เพิ่มประวัติปุ่ม Back ของหน้าแม่ */
 
@@ -3482,6 +3494,7 @@ on('doLogin', async () => {
   if (Date.now() < LOGIN.until) { e.textContent = 'ใส่รหัสผิดหลายครั้ง — รอ ' + Math.ceil((LOGIN.until - Date.now()) / 1000) + ' วินาที'; return; }
   if (!/^[a-z0-9._-]{3,32}$/.test(name) || !pw) { e.textContent = 'กรอก Username และ Password'; return; }
   e.textContent = '';
+  psnUserReset();   /* PSN V2.0.6: เข้าระบบใหม่ = เริ่มจากข้อมูลว่าง (ไม่ใช้ส่วนงาน / แผนผลิตของบัญชีก่อน) */
   try { await signIn(name, pw); }
   catch (err) { if (err.status && err.status < 500 && err.status !== 429) { LOGIN.fails++; if (LOGIN.fails >= 5) { LOGIN.until = Date.now() + 30000; LOGIN.fails = 0; } } e.textContent = err.message; f.p.value = ''; return; }
   try { await refresh(); }
@@ -4684,8 +4697,8 @@ function prdAllTabs() {
 /* ---------- ส่วนงานของบัญชี ---------- */
 async function prdStLoad(force) {
   if (PRD.stnBusy || (!force && PRD.stn && Date.now() - PRD.stnAt < 60000)) return;
-  PRD.stnBusy = true;
-  try { PRD.stn = await rpc('cn_prd_stations'); PRD.stnAt = Date.now(); } catch (e) { if (e.code === 'session') { forceLogout(e.message); return; } PRD.stn = PRD.stn || { me: [], err: e.message }; }
+  PRD.stnBusy = true; const g0 = PSU.g;   /* PSN V2.0.6: ออก / เข้าระบบระหว่างรอ = ทิ้งผลของบัญชีเดิม */
+  try { const d = await rpc('cn_prd_stations'); if (g0 !== PSU.g) return; PRD.stn = d; PRD.stnAt = Date.now(); } catch (e) { if (e.code === 'session') { forceLogout(e.message); return; } PRD.stn = PRD.stn || { me: [], err: e.message }; }
   finally { PRD.stnBusy = false; }
   if (/^\/prd\//.test(curPath()) && !isEditing() && !$('#overlay.on')) rerender();
 }
@@ -4757,7 +4770,7 @@ function prdLateList() { return prdList().filter((b) => { const d = prdOvDue(b);
 function prdOvNavItem() {
   const L = prdLateList();
   return { h: '#/prd/all', i: 'chart', t: 'ภาพรวมทุกงาน', s: 'ภาพรวม', n: L.length, w: true, red: L.length > 0,
-    tip: L.length ? '**งานเลยกำหนดแล้ว ยังไม่เสร็จ ' + L.length + ' งาน** (ทุกส่วน)\n' + L.slice(0, 6).map((b) => '• ' + prdOno(b.iid, b.oid) + ' — ' + prdNowAt(b).t + ' · กำหนด ' + prdIso(prdOvDue(b))).join('\n') + (L.length > 6 ? '\n… อีก ' + (L.length - 6) + ' งาน' : '') + '\nแตะเมนู = เปิดภาพรวม (ติ๊ก “ใกล้กำหนด” ดูเฉพาะงานนี้)'
+    tip: L.length ? '**งานเลยกำหนดแล้ว ยังไม่เสร็จ ' + L.length + ' งาน** (ทุกส่วน)\n' + L.slice(0, 6).map((b) => '• ' + prdOno(b.iid, b.oid) + ' — ' + ((prdOpenKs(b).map((o) => o.t).join(' / ')) || prdNowAt(b).t) + ' · กำหนด ' + prdIso(prdOvDue(b))).join('\n') + (L.length > 6 ? '\n… อีก ' + (L.length - 6) + ' งาน' : '') + '\nแตะเมนู = เปิดภาพรวม (ติ๊ก “ใกล้กำหนด” ดูเฉพาะงานนี้)'
       : 'งานที่เลยกำหนดแล้ว ยังไม่เสร็จ (ตอนนี้ไม่มี)' };
 }
 function prdNavItem(c) {
@@ -5452,7 +5465,7 @@ function prdPipe(b, show) {   /* V1.8.0: ต่อแผนก + ป้ายร
   const lmc = prdLmC(b);   /* V1.9.1: ตามรายการ (เหมือนหน้าใบ) */   /* V1.8.8 (ผู้ใช้ 16:57 “ทำไม % ไม่ขึ้น”): ปิดผิว % ตามสถานะใบ (รับงาน 10 · กำลังทำ 50 · เสร็จ 100) เหมือนหน้าใบ */
   const dt = (k) => !x[k] || x[k] === 'na' ? '' : k === 'lm' ? prdPct(lmc, x[k]) + '% · เสร็จ ' + lmc.done + '/' + lmc.n + (lmc.ln ? ' รายการ' : ' ใบ') : prdPct(cn(k), x[k]) + '% · ' + (k === 'paint' ? prdM2(b.cutM2) + ' ตร.ม.' : k === 'cut' ? prdQty(b.cutAll) + ' ชิ้น' : (+cn(k).n || 0) + ' รายการ');
   const pc = (k) => !x[k] || x[k] === 'na' ? -1 : k === 'lm' ? prdPct(lmc, x[k]) : prdPct(cn(k), x[k]);
-  return '<div class="prd-pipe" style="grid-template-columns:repeat(' + show.length + ',minmax(112px,1fr))">' + show.map((k) => { const v = x[k] || 'na', h = v !== 'done' && v !== 'na' ? prdHoldOf(b, k) : null, p = pc(k);
+  return '<div class="prd-pipe" style="grid-template-columns:repeat(' + show.length + ',minmax(108px,1fr))">' + show.map((k) => { const v = x[k] || 'na', h = v !== 'done' && v !== 'na' ? prdHoldOf(b, k) : null, p = pc(k);
     return '<span class="pp pp-' + PRD_DOT[v][1] + (v === 'na' ? (prdNa(b, k).no ? ' pp-no' : ' pp-wait') : '') + (h ? ' pp-hold' : '') + '"' + (v === 'na' ? '' : ' data-act="prdGoDoc" data-oid="' + esc(b.oid) + '" data-t="' + esc(k) + '" role="button" tabindex="0"') + ' title="' + esc((v === 'na' ? '' : 'แตะ = เปิดเอกสาร ') + prdOvT(k) + ': ' + st(k) + (dt(k) ? ' · ' + dt(k) : '') + (ex(k) ? ' — ' + ex(k) : '') + (h ? ' · ⏸ ' + (PRD_HOLD_R[h.r] || 'รอ') + ' ' + h.n + ' รายการ' + (h.note ? ' — ' + h.note : '') + (h.due ? ' · คาดเข้า ' + prdIso(h.due) : '') : '')) + '">' + (v === 'done' ? '<i>' + icon('check', 'xs') + '</i>' : '') +
       '<b class="pp-k">' + esc(prdOvT(k)) + '</b><span class="ps">' + (v === 'na' ? icon(prdNa(b, k).no ? 'x' : 'clock', 'xs') + ' ' : '') + esc(st(k)) + '</span>' + (dt(k) ? '<span class="pd">' + esc(dt(k)) + '</span>' : '') +
       (() => { const a = v !== 'na' && v !== 'sent' ? prdStAt(b, k) : null; return a ? '<span class="pt" title="' + esc('กดสถานะล่าสุด ' + fmtDT(a.at) + (a.by ? ' · โดย ' + a.by : '')) + '">🕑 ' + esc(prdAtTxt(a.at)) + (a.by ? ' · ' + esc(a.by) : '') + '</span>' : ''; })() +   /* PSN V2.0.5 */
@@ -5507,7 +5520,7 @@ function prdOverview(r, all, tb, sub) {
       '<div class="card" style="margin-top:12px"><div class="card-b">' +
         '<div class="sbox">' + icon('search', 'sm') + '<input class="input" type="search" id="prd-q" data-inp="prdQ" value="' + esc(PRD.q) + '" placeholder="ค้นเลขงาน / ชื่องาน / Item Id / LOT" aria-label="ค้นหางาน"></div>' +
         '<div class="prd-flt"><div class="chips">' + chips + '</div>' + sorts + '</div>' + tick + atChips + '</div>' +
-        '<div class="table-wrap"><table class="t resp prd-tbl prd-tbl-all"><thead><tr><th>งาน (Order)</th><th>ค้างอยู่ที่' + tipI(spnTip('ov_at'), 'ค้างอยู่ที่') + '</th><th class="prd-pipe-th">สถานะแต่ละส่วน' + tipI(spnTip('ov_st'), 'สถานะแต่ละส่วน') + '<div class="prd-pipe-h" style="grid-template-columns:repeat(' + show.length + ',minmax(112px,1fr))">' + show.map((k) => '<span>' + esc(prdOvT(k)) + '</span>').join('') + '</div></th><th>กำหนด</th><th>อัปเดต</th><th aria-label="ดูเอกสาร"></th></tr></thead><tbody>' +
+        '<div class="table-wrap"><table class="t resp prd-tbl prd-tbl-all"><thead><tr><th>งาน (Order)</th><th>ค้างอยู่ที่' + tipI(spnTip('ov_at'), 'ค้างอยู่ที่') + '</th><th class="prd-pipe-th">สถานะแต่ละส่วน' + tipI(spnTip('ov_st'), 'สถานะแต่ละส่วน') + '<div class="prd-pipe-h" style="grid-template-columns:repeat(' + show.length + ',minmax(108px,1fr))">' + show.map((k) => '<span>' + esc(prdOvT(k)) + '</span>').join('') + '</div></th><th>กำหนด</th><th>อัปเดต</th><th aria-label="ดูเอกสาร"></th></tr></thead><tbody>' +
           (rows || '<tr><td colspan="6">' + (all.length ? empty('search', 'ไม่มีงานตามที่ติ๊ก', 'กด “ล้างตัวกรอง” หรือเลือก “ทั้งหมด”') : empty('factory', 'ยังไม่มีงานจากแผน', 'งานที่แผนกด “📤 ส่งเอกสารเข้า App ไลน์ผลิต” ใน Production จะขึ้นที่นี่')) + '</td></tr>') +
           '<tr id="prd-none" class="hidden"><td colspan="6">' + empty('search', 'ไม่พบงานที่ค้น', 'ลองคำค้นอื่น') + '</td></tr></tbody></table></div></div>' + prdRemCard() };   /* V1.8.5 */
 }
@@ -5542,9 +5555,10 @@ function psnHome() { try { return kvGet('psn_home') === 'plan' ? '#/prd/plan' : 
 async function planLoad(force) {
   if (PLAN.busy || (!force && PLAN.rows && Date.now() - PLAN.at < 30000)) return;
   if (!S.user || !SPN_ROLES[S.user.role]) return;
-  PLAN.busy = true;
+  PLAN.busy = true; const g0 = PSU.g;   /* PSN V2.0.6 */
   try {
     const d = await rpc('cn_prd_plan');
+    if (g0 !== PSU.g) return;
     PLAN.rows = (d && Array.isArray(d.rows)) ? d.rows : []; PLAN.can = !!(d && d.can); PLAN.today = String((d && d.today) || ''); PLAN.err = ''; PLAN.at = Date.now();
   } catch (e) {
     if (e.code === 'session') { forceLogout(e.message); return; }
@@ -7200,7 +7214,7 @@ function spnDueTip(lbl) {
 helpPage(/^\/prd\/orders$/, () => 'หน้านี้คือ **รายการงานของสถานี**\n1) แตะแท็บด้านบนเพื่อเลือกสถานีของคุณ\n2) งานเรียงตามวันกำหนด — ใกล้สุดอยู่บนสุด\n3) แตะที่งานเพื่อเข้าไปติ๊กสถานะ\nตัวเลขบนแท็บ = งานที่ยังไม่เสร็จ');
 helpPage(/^\/prd\/w\//, () => 'หน้านี้คือ **หน้าติ๊กสถานะ**\n1) ทำทั้งใบ: ไม่ต้องติ๊กช่องสี่เหลี่ยม แตะปุ่มด้านล่างได้เลย\n2) ทำบางรายการ: ติ๊กช่องหน้ารายการก่อน แล้วแตะปุ่ม\n3) แตะผิด: แตะปุ่มเดิมซ้ำ = ยกเลิก\nตัวเลข % = รายการที่เสร็จแล้ว ÷ ทั้งหมด');
 helpPage(/^\/prd\/o\//, () => 'หน้านี้คือ **เอกสารทั้งงาน** — ดูทุกใบของงานนี้แยกเป็นแท็บ (ปิดผิว · ใบส่งทำสี · งานสั่งตัด / สั่งทำ)\nจะติ๊กสถานะ: กลับไปที่ “งาน Support ไลน์ผลิต” แล้วแตะงาน');
-helpPage(/^\/prd\/all$/, () => 'หน้านี้คือ **ภาพรวมทุกงาน** — 1 แถว = 1 งาน\n“ตอนนี้อยู่ที่” = สถานีแรกที่ยังไม่เสร็จ · เส้นทาง ปิดผิว → ตัด → ทำสี → สั่งทำ\nติ๊กช่องด้านบนเพื่อกรองดูเฉพาะที่ต้องการ · แตะแถวเพื่อดูเอกสาร');
+helpPage(/^\/prd\/all$/, () => 'หน้านี้คือ **ภาพรวมทุกงาน** — 1 แถว = 1 งาน\n“ค้างอยู่ที่” = ทุกส่วนที่ยังไม่เสร็จของงานนั้น · แต่ละส่วนทำแยกกัน (วัตถุดิบคนละอย่าง ไม่ต้องรอกัน)\n“สถานะแต่ละส่วน” = กล่องละแผนก (ชื่อแผนกอยู่บนหัวคอลัมน์ + บนกล่อง)\nติ๊กช่องด้านบนเพื่อกรองดูเฉพาะที่ต้องการ · แตะแถวเพื่อดูเอกสาร');
 helpPage(/^\/prd\/set$/, () => 'หน้านี้สำหรับ **Admin**\n• วันเข้าแผนกสี = ค่าสำรอง — ใช้เมื่อ Production ไม่ได้ส่งกำหนดจบงานสี (📅) มา\n• ส่วนงานของบัญชี = ติ๊กว่าแต่ละคนดูแลสถานีไหน (Support ติ๊ก “สั่งทำ”) · ไม่ติ๊กเลย = เห็นทุกสถานี\n• รายการที่ลบ = กู้คืนสิ่งที่ Admin / Support ลบไว้');
 /* ---------- วิธีใช้ 3 ขั้น (ครั้งแรกในเครื่องนี้ + ปุ่ม “วิธีใช้”) ---------- */
 const SPN_GUIDE_K = 'spn_guide_v1';
