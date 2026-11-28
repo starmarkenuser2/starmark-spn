@@ -1917,7 +1917,7 @@ function rid(p) { return (p || '') + Date.now().toString(36) + Math.random().toS
 
 /* ---------- ค่าระบบ ---------- */
 /* V7.18: โค้ดชุดเดียวสร้าง 2 แอป — APP_KIND มาจาก build.py: 'cn' = Contractor Nexus · 'spn' = Starmark PSN (Support Production Nexus · ไลน์ผลิต) */
-const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.11' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
+const APP_NAME = APP_KIND === 'spn' ? 'Plan & Support Nexus' : 'Contractor Nexus', APP_VERSION = APP_KIND === 'spn' ? 'V2.0.12' : 'V7.18.14';   /* PSN V1.9.0: ชื่อแอป SPN (Support Production Nexus) → PSN (Plan & Support Nexus) — เฉพาะชื่อที่เห็น · Supabase / index / repo เดิม */
 const APP_SHORT = APP_KIND === 'spn' ? 'Starmark PSN' : 'Starmark CN';
 /* V7.9: ลิงก์ที่ผู้รับเหมาใช้เปิดโปรแกรม (GitHub Pages) — V7.9.2 แสดงเฉพาะหน้าผู้รับเหมา (Admin ดูหน้าจอผู้รับเหมา) ให้คัดลอกส่งผู้รับเหมา / เปิดดูได้ */
 const CONTRACTOR_URL = 'https://starmarkenuser2.github.io/starnexus-bidding/';
@@ -2038,13 +2038,32 @@ let refreshing = null;
 function refreshSession() {
   if (!AUTH.s) return Promise.reject(new ApiError('กรุณาเข้าสู่ระบบ', 401, 'session'));
   if (!refreshing) refreshing = (async () => {
-    const r = await http('/auth/v1/token?grant_type=refresh_token', { method: 'POST', headers: { apikey: CN.key, 'Content-Type': 'application/json' }, body: JSON.stringify({ refresh_token: AUTH.s.refresh }) });
+    if (auth212Adopt(60)) return;   /* PSN V2.0.12: แท็บอื่นของเครื่องนี้ต่ออายุไปแล้ว → ใช้ของใหม่ (ไม่ส่งรหัสต่ออายุเก่า) */
+    const used = AUTH.s.refresh;
+    const r = await http('/auth/v1/token?grant_type=refresh_token', { method: 'POST', headers: { apikey: CN.key, 'Content-Type': 'application/json' }, body: JSON.stringify({ refresh_token: used }) });
     const d = await bodyOf(r);
-    if (!r.ok) { AUTH.s = null; saveAuth(); throw new ApiError('หมดเวลาการใช้งาน — กรุณาเข้าสู่ระบบใหม่', 401, 'session'); }
+    if (!r.ok) {
+      if (auth212Adopt(0, used)) return;   /* PSN V2.0.12: แท็บอื่นแย่งต่ออายุพร้อมกัน (รหัสที่ส่งถูกใช้ไปแล้ว) → ใช้ของแท็บนั้น */
+      if (r.status === 429 || r.status >= 500) throw new ApiError(r.status === 429 ? 'ระบบยืนยันตัวตนตอบช้า (มีคนเปิดแอปพร้อมกันหลายเครื่อง) — ลองใหม่อีกครั้งในไม่กี่วินาที' : 'ระบบยืนยันตัวตนไม่พร้อมชั่วคราว — ลองใหม่อีกครั้ง', r.status, 'retry');   /* PSN V2.0.12: ไม่ล้างการเข้าระบบ */
+      AUTH.s = null; saveAuth(); throw new ApiError('หมดเวลาการใช้งาน — กรุณาเข้าสู่ระบบใหม่', 401, 'session');
+    }
     setSession(d);
   })().finally(() => { refreshing = null; });
   return refreshing;
 }
+/* PSN V2.0.12: อ่านการเข้าระบบล่าสุดจากที่เก็บ — รหัสต่ออายุไม่ใช่ตัวที่แท็บนี้ถือ (แท็บอื่นต่อให้แล้ว) · บัญชีเดียวกัน · ยังไม่หมดอายุ = ใช้ของนั้น */
+function auth212Adopt(minLeft, used) {
+  let x = null; try { x = JSON.parse(kvGet(AK) || 'null'); } catch (e) { x = null; }
+  if (!x || !x.access || !x.refresh || !AUTH.s) return false;
+  if (x.refresh === (used || AUTH.s.refresh)) return false;
+  if (x.uid && AUTH.s.uid && x.uid !== AUTH.s.uid) return false;   /* อีกบัญชี (มีคนเข้าอีกบัญชีในแท็บอื่น) = ไม่ยุ่ง */
+  if (!(Date.now() / 1000 < (+x.exp || 0) - (minLeft || 0))) return false;
+  AUTH.s = x; return true;
+}
+window.addEventListener('storage', (e) => {   /* PSN V2.0.12: แท็บอื่นต่ออายุ = แท็บนี้รับรหัสใหม่ทันที (บัญชีเดียวกันเท่านั้น · ออกจากระบบในแท็บอื่น = แท็บนี้ไม่ยุ่ง) */
+  try { if (e.key !== AK || !e.newValue || !AUTH.s) return; const x = JSON.parse(e.newValue);
+    if (x && x.access && x.refresh && x.refresh !== AUTH.s.refresh && (!x.uid || !AUTH.s.uid || x.uid === AUTH.s.uid) && (+x.exp || 0) >= (+AUTH.s.exp || 0)) AUTH.s = x; } catch (er) { /* ข้าม */ }
+});
 async function token() {
   if (!AUTH.s) throw new ApiError('กรุณาเข้าสู่ระบบ', 401, 'session');
   if (Date.now() / 1000 > AUTH.s.exp - 60) await refreshSession();
@@ -2137,8 +2156,21 @@ async function signOut() {
 }
 let lastState = '', LAST_LOAD = 0;
 /* โหลดข้อมูลทั้งหมดที่ผู้ใช้มีสิทธิ์เห็น (Server คัดกรองตามบทบาทแล้ว) — คืน true ถ้าข้อมูลเปลี่ยน */
+const ST212 = { sig: '', off: false };   /* PSN V2.0.12: ลายเซ็นข้อมูลรอบล่าสุด · off = Server ยังไม่มี cn_state_if (ยังไม่รัน SQL ส่วน 60) */
 async function reload() {
-  const st = await rpc('cn_state');
+  let st = null;
+  if (!ST212.off) {
+    const sg = DB && lastState && ST212.sig ? ST212.sig : null;
+    try { st = await rpc('cn_state_if', { p_sig: sg }); }
+    catch (e) { if (e.status === 404 || e.code === 'PGRST202') { ST212.off = true; st = null; } else throw e; }
+    if (st && !st.same && !(st.settings && st.now)) { ST212.off = true; st = null; }   /* คำตอบไม่ใช่ข้อมูลแบบ cn_state = ไม่ใช้ตัวนี้ (กันพัง) */
+    if (st && st.same) {
+      if (sg && DB) { LAST_LOAD = Date.now(); if (st.now) SKEW = Date.parse(st.now) - Date.now(); return false; }   /* ไม่เปลี่ยน = ใช้ข้อมูลเดิม */
+      st = null;
+    }
+  }
+  if (!st) st = await rpc('cn_state');
+  ST212.sig = st && typeof st.sig === 'string' ? st.sig : '';
   LAST_LOAD = Date.now();
   SKEW = Date.parse(st.now) - Date.now();
   const sig = JSON.stringify(Object.assign({}, st, { now: 0 }));
